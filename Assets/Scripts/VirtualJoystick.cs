@@ -7,9 +7,9 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
 
     public float time = .1f;
 
-    private Image bgImg;
-    private Image joystickImg;
-    private Vector3 inputVector;
+    Image bgImg;
+    Image joystickImg;
+    Vector3 inputVector;
 
     void Start() {
         bgImg = GetComponent<Image>();
@@ -24,7 +24,10 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
             pos.x /= bgImg.rectTransform.sizeDelta.x;
             pos.y /= bgImg.rectTransform.sizeDelta.y;
 
-            inputVector = new Vector3(pos.x * 2 + 1, 0f, pos.y * 2 - 1);
+            float x = (bgImg.rectTransform.pivot.x == 1) ? pos.x * 2 + 1 : pos.x * 2 - 1;
+            float y = (bgImg.rectTransform.pivot.y == 1) ? pos.y * 2 + 1 : pos.y * 2 - 1;
+
+            inputVector = new Vector3(x, 0f, y);
             inputVector = (inputVector.magnitude > 1.0f) ? inputVector.normalized : inputVector;
 
             // Move Joystick Image
@@ -42,8 +45,7 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
     }
 
     public virtual void OnPointerUp(PointerEventData ped) {
-        inputVector = Vector3.zero;
-        // 
+        inputVector = Vector3.zero; 
         StartCoroutine("SlideBack");
     }
 

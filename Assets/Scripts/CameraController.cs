@@ -4,13 +4,13 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
     public GameObject player;
-    Vector3 offset;
+    public VirtualJoystick joystick;
 
-    void Start() {
-        offset = transform.position - player.transform.position;
-    }
+    void FixedUpdate() {
 
-    void LateUpdate() {
-        transform.position = player.transform.position + offset;
+        transform.position = player.transform.position;
+        transform.Rotate(joystick.Vertical(), joystick.Horizontal(), 0);
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+
     }
 }

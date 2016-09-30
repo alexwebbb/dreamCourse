@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
     public float speed;
+    public VirtualJoystick joystick;
     Rigidbody rb;
 
     void Start() {
@@ -12,8 +13,8 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate() {
 
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = joystick.Horizontal();
+        float moveVertical = joystick.Vertical();
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 

@@ -57,7 +57,7 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
         while(elapsedTime < time) {
             joystickImg.rectTransform.anchoredPosition = Vector2.Lerp(startPosition, Vector2.zero, elapsedTime / time);
             elapsedTime += Time.deltaTime;
-            Debug.Log(elapsedTime);
+            // Debug.Log(elapsedTime);
             yield return new WaitForEndOfFrame();
         }
 

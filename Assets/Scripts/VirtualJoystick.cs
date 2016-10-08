@@ -7,6 +7,9 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
 
     public float time = .1f;
 
+    public enum ControlType { Mouse, Wasd };
+    public ControlType controlType;
+
     Image bgImg;
     Image joystickImg;
     Vector3 inputVector;
@@ -68,16 +71,24 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
     public float Horizontal() {
         if(inputVector.x != 0) {
             return inputVector.x;
-        } else {
+        } else if(controlType == ControlType.Mouse) {
+            return -Input.GetAxis("Mouse X");
+        } else if (controlType == ControlType.Wasd) {
             return Input.GetAxis("Horizontal");
+        } else {
+            return 0;
         }
     }
 
     public float Vertical() {
         if (inputVector.z != 0) {
             return inputVector.z;
-        } else {
+        } else if (controlType == ControlType.Mouse) {
+            return -Input.GetAxis("Mouse Y");
+        } else if (controlType == ControlType.Wasd) {
             return Input.GetAxis("Vertical");
+        } else {
+            return 0;
         }
     }
 }

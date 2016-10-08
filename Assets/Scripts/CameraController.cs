@@ -6,6 +6,10 @@ public class CameraController : MonoBehaviour {
     public GameObject player;
     public VirtualJoystick joystick;
 
+    void Start() {
+        transform.rotation = player.transform.rotation;
+    }
+
     void FixedUpdate() {
 
         transform.position = player.transform.position;

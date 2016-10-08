@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
     public float speed;
+    public float jumpPower = 10;
     public VirtualJoystick joystick;
     public Transform camTransform;
     Rigidbody rb;
@@ -14,6 +15,7 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate() {
 
+        // Joystick Input
         float moveHorizontal = joystick.Horizontal();
         float moveVertical = joystick.Vertical();
 
@@ -26,6 +28,15 @@ public class PlayerController : MonoBehaviour {
         dir.Set(dir.x, 0, dir.z);
         movement = dir.normalized * movement.magnitude;
 
-        rb.AddForce(movement * speed);
+        // Player movement
+        rb.AddForce(movement * speed, ForceMode.Force);
+
+        // jump mechanics
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            rb.AddForce(new Vector3(0,1,0) * jumpPower, ForceMode.Impulse);
+            
+        }
+
     }
 }

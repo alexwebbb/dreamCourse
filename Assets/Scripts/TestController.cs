@@ -5,8 +5,11 @@ public class TestController : MonoBehaviour {
 
     public GameObject launchedObject;
     public float force;
-    public float posit;
-    public float angle;
+    public Vector3 spinForce;
+
+    public float ballGap;
+
+    bool launchBool;
 
 	// Use this for initialization
 	void Start () {
@@ -17,8 +20,27 @@ public class TestController : MonoBehaviour {
 	void Update () {
 
         if (Input.GetKeyDown(KeyCode.L)) {
-            GameObject testBall = (GameObject)Instantiate(launchedObject, new Vector3(posit, 0, 0), Quaternion.Euler(angle, 0, 0));
-            testBall.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0, 1, 0) * force, ForceMode.Impulse);
+
+            if(!launchBool) {
+                StartCoroutine("BallLooper");
+            } else {
+                StopCoroutine("BallLooper");
+            }
         }
 	}
+
+    IEnumerator BallLooper() {
+
+        launchBool = true;
+        while(launchBool) {
+            GameObject testBall = (GameObject)Instantiate(launchedObject, transform.position, transform.rotation);
+            Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
+            testballRB.AddRelativeForce(new Vector3(0, 1, 0) * force, ForceMode.Impulse);
+            testballRB.AddTorque(spinForce);
+            Destroy(testBall, 6f);
+            yield return new WaitForSeconds(ballGap);
+        }
+
+        yield return null;
+    }
 }

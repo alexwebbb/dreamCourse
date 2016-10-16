@@ -6,7 +6,6 @@ public class TestController : MonoBehaviour {
     public GameObject launchedObject;
     public float force;
     public Vector3 spinForce;
-    public float lifetime;
 
     public float ballGap;
 
@@ -38,7 +37,7 @@ public class TestController : MonoBehaviour {
             Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
             testballRB.AddRelativeForce(new Vector3(0, 1, 0) * force, ForceMode.Impulse);
             testballRB.AddTorque(spinForce);
-            Destroy(testBall, lifetime);
+            Destroy(testBall, 6f);
             yield return new WaitForSeconds(ballGap);
         }
 

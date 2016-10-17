@@ -15,4 +15,6 @@ public class MagnusEffect : MonoBehaviour {
 	void FixedUpdate () {
         rb.AddForce(Vector3.Cross(rb.angularVelocity, rb.velocity) * magnusConstant);
 	}
+
+
 }

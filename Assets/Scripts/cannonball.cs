@@ -3,14 +3,21 @@ using System.Collections;
 
 public class cannonball : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    public Vector3 force;
+    Rigidbody rb;
 
+    // Use this for initialization
+    void Start() {
+        rb = GetComponent<Rigidbody>();
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    }
+
+    void FixedUpdate() {
+        // Debug.Log(rb.velocity.magnitude);
+    }
+
+    void OnCollisionEnter(Collision collision) {
+        Debug.Log("Collision");
+        rb.AddForce(force);
+    }
 }

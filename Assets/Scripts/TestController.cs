@@ -8,6 +8,7 @@ public class TestController : MonoBehaviour {
     public Vector3 spinForce;
     public float lifetime;
     public float angleDrag;
+    public float drag;
 
     public float ballGap;
 
@@ -37,9 +38,13 @@ public class TestController : MonoBehaviour {
         while(launchBool) {
             GameObject testBall = (GameObject)Instantiate(launchedObject, transform.position, transform.rotation);
             Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
+
+            testballRB.maxAngularVelocity = 1000f;
+
             testballRB.AddRelativeForce(new Vector3(0, 1, 0) * force, ForceMode.Impulse);
             testballRB.AddTorque(spinForce);
             testballRB.angularDrag = angleDrag;
+            testballRB.drag = drag;
             Destroy(testBall, lifetime);
             yield return new WaitForSeconds(ballGap);
         }

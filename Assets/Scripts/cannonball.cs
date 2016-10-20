@@ -3,7 +3,8 @@ using System.Collections;
 
 public class cannonball : MonoBehaviour {
 
-    public Vector3 force;
+    // public Vector3 force;
+    public float force;
     Rigidbody rb;
 
     // Use this for initialization
@@ -17,7 +18,13 @@ public class cannonball : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision collision) {
-        Debug.Log("Collision");
-        rb.AddForce(force);
+        // Debug.Log(rb.angularVelocity + " :enter");
+        // rb.AddForce(rb.angularVelocity * force, ForceMode.Impulse);
+        // next lets try setting the force based on the angular velocity
+    }
+
+    void OnCollisionExit(Collision collision) {
+        //Debug.Log(rb.angularVelocity + " :Exit");
+        // rb.AddForce(Vector3.back * force, ForceMode.Impulse);
     }
 }

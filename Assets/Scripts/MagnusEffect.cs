@@ -23,8 +23,8 @@ public class MagnusEffect : MonoBehaviour {
 
     void OnCollisionEnter(Collision goop) {
         // rb.AddForce(Vector3.left * 4, ForceMode.Impulse);
-        magnusCache = magnusConstant;
-        magnusConstant = 0f;
+        // magnusCache = magnusConstant;
+        // magnusConstant = 0f;
     }
 
     void OnCollisionExit(Collision goop) {

@@ -12,22 +12,26 @@ public class LaunchController : MonoBehaviour {
     public float lifetime;
     public float angleDrag;
     public float drag;
+    public float rollLimit = 5f;
+    public float velocitySleep = 5f;
 
     public float ballGap;
 
-    bool launchBool;
+    public bool launchBool;
+
+    Rigidbody rb;
+
     bool playerLaunchBool;
 
-    // Use this for initialization
-    void Start() {
 
+    void Start() {
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
+
     void Update() {
 
         if (Input.GetKeyDown(KeyCode.L)) {
-
             if (!launchBool) {
                 StartCoroutine("BallLooper");
             } else {
@@ -35,7 +39,10 @@ public class LaunchController : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)) playerLaunchBool = true;
+        if (launchBool && Input.GetKeyDown(KeyCode.Space)) playerLaunchBool = true;
+
+        if (rb.angularVelocity.sqrMagnitude < rollLimit && rb.velocity.sqrMagnitude < velocitySleep) PositionReset();
+
     }
 
     IEnumerator BallLooper() {
@@ -66,14 +73,19 @@ public class LaunchController : MonoBehaviour {
         Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
 
         testballRB.maxAngularVelocity = 1000f;
-
-        testballRB.AddRelativeForce(launchDirection * force, ForceMode.Impulse);
-        testballRB.AddTorque(spinForce);
         testballRB.angularDrag = angleDrag;
         testballRB.drag = drag;
 
-        if(traceBool) Destroy(testBall, lifetime);
+        testballRB.AddRelativeForce(launchDirection * force, ForceMode.Impulse);
+        testballRB.AddTorque(spinForce);
+        
 
+        if(traceBool) Destroy(testBall, lifetime);
+    }
+
+    void PositionReset() {
+        rb.angularVelocity = rb.velocity = Vector3.zero;
+        rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.identity, 2f * Time.time);
     }
 
 

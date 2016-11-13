@@ -27,7 +27,6 @@ public class SpinScript : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision) {
         collisionActive = true;
-        Debug.Log(spinFloat);
 
         if (spinFloat < 0 && bounceCount < bounceLimit) {
             rb.AddForce(Vector3.forward * power * rb.angularVelocity.x, ForceMode.Impulse);

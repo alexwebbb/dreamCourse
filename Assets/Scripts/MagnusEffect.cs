@@ -3,8 +3,8 @@ using System.Collections;
 
 public class MagnusEffect : MonoBehaviour {
 
-    public float time = 2f;
-    public float mcLimit = 1f;
+    // public float time = 2f;
+    // public float mcLimit = 1f;
     public float magnusConstant = 1f;
     float magnusCache = 0f;
     Rigidbody rb;
@@ -22,12 +22,12 @@ public class MagnusEffect : MonoBehaviour {
 	}
 
     void OnCollisionEnter(Collision goop) {
-        // rb.AddForce(Vector3.left * 4, ForceMode.Impulse);
-        // magnusCache = magnusConstant;
-        // magnusConstant = 0f;
+        // -- rb.AddForce(Vector3.left * 4, ForceMode.Impulse);
+        magnusCache = magnusConstant;
+        magnusConstant = 0f;
     }
 
     void OnCollisionExit(Collision goop) {
-        // magnusConstant = magnusCache;
+        magnusConstant = magnusCache;
     }
 }

@@ -35,7 +35,8 @@ public class LaunchController : MonoBehaviour {
             if (!launchBool) {
                 StartCoroutine("BallLooper");
             } else {
-                StopCoroutine("BallLooper");
+                playerLaunchBool = false;
+                launchBool = false;
             }
         }
 

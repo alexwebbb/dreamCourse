@@ -11,16 +11,25 @@ public class CursorController : MonoBehaviour {
     Ray ray;
     Plane groundPlane;
     float rayDistance;
+    bool launchMode;
 
     void Start() {
-
+        launchCon = FindObjectOfType<LaunchController>();
+        launchCon.launchModeBegin += StartLaunch;
+        launchCon.launchModeEnd += EndLaunch;
         viewCamera = Camera.main;
-        launchCon = GetComponent<LaunchController>();
     }
 
+    void StartLaunch () {
+        launchMode = true;
+    }
+
+    void EndLaunch() {
+        launchMode = false;
+    }
 
     void Update() {
-        while (launchCon.launchBool) {
+        if (launchMode) {
 
             // Look Input
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class LaunchController : MonoBehaviour {
@@ -14,13 +15,14 @@ public class LaunchController : MonoBehaviour {
     public float drag;
     public float rollLimit = 5f;
     public float velocitySleep = 5f;
-
     public float ballGap;
 
-    public bool launchBool;
+    public event Action launchModeBegin;
+    public event Action launchModeEnd;
 
     Rigidbody rb;
 
+    bool launchBool;
     bool playerLaunchBool;
 
 
@@ -34,7 +36,9 @@ public class LaunchController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.L)) {
             if (!launchBool) {
                 StartCoroutine("BallLooper");
+                if (launchModeBegin != null) launchModeBegin();
             } else {
+                if (launchModeBegin != null) launchModeEnd();
                 playerLaunchBool = false;
                 launchBool = false;
             }

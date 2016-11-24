@@ -3,6 +3,13 @@ using System.Collections;
 
 public class CursorController : MonoBehaviour {
 
+    public VirtualJoystick joystick1;
+
+    public enum Mode { Mouse, Joystick };
+    public Mode controlMode;
+
+    public float horizontalScalar = 2;
+
     // public Crosshairs crosshairs;
     Camera viewCamera;
 
@@ -29,7 +36,7 @@ public class CursorController : MonoBehaviour {
     }
 
     void Update() {
-        if (launchMode) {
+        if (launchMode && controlMode == Mode.Mouse) {
 
             // Look Input
             ray = viewCamera.ScreenPointToRay(Input.mousePosition);
@@ -44,6 +51,11 @@ public class CursorController : MonoBehaviour {
                 // crosshairs.DetectTargets(ray);
             } 
         }
+
+        if (launchMode && controlMode == Mode.Joystick) {
+            transform.Rotate(0, joystick1.Horizontal() * horizontalScalar, 0);
+        }
+
     }
 
     void LookAt(Vector3 lookPoint) {

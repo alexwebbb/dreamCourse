@@ -38,13 +38,16 @@ public class LaunchController : MonoBehaviour {
                 StartCoroutine("BallLooper");
                 if (launchModeBegin != null) launchModeBegin();
             } else {
-                if (launchModeBegin != null) launchModeEnd();
+                if (launchModeEnd != null) launchModeEnd();
                 playerLaunchBool = false;
                 launchBool = false;
             }
         }
 
-        if (launchBool && Input.GetKeyDown(KeyCode.Space)) playerLaunchBool = true;
+        if (launchBool && Input.GetKeyDown(KeyCode.Space)) {
+            if (launchModeEnd != null) launchModeEnd();
+            playerLaunchBool = true;
+        }
 
         if (rb.angularVelocity.sqrMagnitude < rollLimit && rb.velocity.sqrMagnitude < velocitySleep) PositionReset();
 
@@ -90,7 +93,7 @@ public class LaunchController : MonoBehaviour {
 
     void PositionReset() {
         rb.angularVelocity = rb.velocity = Vector3.zero;
-        rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.identity, 2f * Time.time);
+        // rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.identity, 2f * Time.time);
     }
 
 

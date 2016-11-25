@@ -49,7 +49,7 @@ public class LaunchController : MonoBehaviour {
             playerLaunchBool = true;
         }
 
-        if (rb.angularVelocity.sqrMagnitude < rollLimit && rb.velocity.sqrMagnitude < velocitySleep) PositionReset();
+        if (!launchBool && rb.angularVelocity.sqrMagnitude < rollLimit && rb.velocity.sqrMagnitude < velocitySleep) PositionReset();
 
     }
 
@@ -94,6 +94,7 @@ public class LaunchController : MonoBehaviour {
     void PositionReset() {
         rb.angularVelocity = rb.velocity = Vector3.zero;
         // rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.identity, 2f * Time.time);
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
     }
 
 

@@ -8,7 +8,7 @@ public class CursorController : MonoBehaviour {
     public enum Mode { Mouse, Joystick };
     public Mode controlMode;
 
-    public float horizontalScalar = 2;
+    public float scalar = 2;
 
     // public Crosshairs crosshairs;
     Camera viewCamera;
@@ -53,7 +53,8 @@ public class CursorController : MonoBehaviour {
         }
 
         if (launchMode && controlMode == Mode.Joystick) {
-            transform.Rotate(0, joystick1.Horizontal() * horizontalScalar, 0);
+            transform.Rotate(joystick1.Vertical() * scalar, joystick1.Horizontal() * scalar, 0);
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
         }
 
     }

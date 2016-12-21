@@ -35,10 +35,12 @@ public class LaunchController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.L)) {
             if (!launchBool) {
+                Time.timeScale = 2f;
                 StartCoroutine("BallLooper");
                 if (launchModeBegin != null) launchModeBegin();
             } else {
                 if (launchModeEnd != null) launchModeEnd();
+                Time.timeScale = 1f;
                 playerLaunchBool = false;
                 launchBool = false;
             }
@@ -46,6 +48,7 @@ public class LaunchController : MonoBehaviour {
 
         if (launchBool && Input.GetKeyDown(KeyCode.Space)) {
             if (launchModeEnd != null) launchModeEnd();
+            Time.timeScale = 1f;
             playerLaunchBool = true;
         }
 

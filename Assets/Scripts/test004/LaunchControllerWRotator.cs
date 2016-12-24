@@ -25,8 +25,9 @@ public class LaunchControllerWRotator : MonoBehaviour {
 
     Rigidbody playerObjectRB;
 
-    bool launchBool;
+    bool launchModeBool;
     bool playerLaunchBool;
+    bool resetBool;
 
 
     void Start() {
@@ -39,27 +40,27 @@ public class LaunchControllerWRotator : MonoBehaviour {
     void Update() {
 
         if (Input.GetKeyDown(KeyCode.L)) {
-            if (!launchBool) {
+            if (!launchModeBool) {
                 StartCoroutine("BallLooper");
             } else {
                 playerLaunchBool = false;
-                launchBool = false;
+                launchModeBool = false;
             }
         }
 
-        if (launchBool && Input.GetKeyDown(KeyCode.Space)) {
+        if (launchModeBool && Input.GetKeyDown(KeyCode.Space)) {
             playerLaunchBool = true;
         }
 
-        // if (!launchBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) PositionReset();
+        if (resetBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) PositionReset();
            
 
     }
 
     IEnumerator BallLooper() {
 
-        launchBool = true;
-        while (launchBool) {
+        launchModeBool = true;
+        while (launchModeBool) {
 
             launchDirection = pointerCube.transform.position - transform.position;
 
@@ -67,7 +68,8 @@ public class LaunchControllerWRotator : MonoBehaviour {
                 // launch player, end coroutine
                 Launch(false);
                 playerLaunchBool = false;
-                launchBool = false;
+                launchModeBool = false;
+                resetBool = true;
 
             } else {
                 // launch tracer
@@ -99,8 +101,9 @@ public class LaunchControllerWRotator : MonoBehaviour {
 
     void PositionReset() {
         playerObjectRB.angularVelocity = playerObjectRB.velocity = Vector3.zero;
-        playerObject.transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+        playerObject.transform.rotation = Quaternion.identity;
         transform.position = playerObject.transform.position;
+        resetBool = false;
     }
 
 }

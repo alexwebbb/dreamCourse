@@ -80,7 +80,7 @@ public class LaunchController : MonoBehaviour {
 
     void Launch(GameObject missile, bool traceBool) {
 
-        GameObject testBall = traceBool ? (GameObject)Instantiate(missile, playerObject.transform.position, transform.rotation) : playerObject;
+        GameObject testBall = traceBool ? (GameObject)Instantiate(missile, playerObject.transform.position, playerObject.transform.rotation) : playerObject;
         Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
 
         testballRB.maxAngularVelocity = 1000f;

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SpinScript : MonoBehaviour {
 
-    public float cutoff;
+    // public float cutoff;
     public float power;
     public int bounceLimit;
     int bounceCount;
@@ -28,12 +28,13 @@ public class SpinScript : MonoBehaviour {
     void OnCollisionEnter(Collision collision) {
         collisionActive = true;
 
-        if (spinFloat < 0 && bounceCount < bounceLimit) {
-            rb.AddForce(Vector3.forward * power * rb.angularVelocity.x, ForceMode.Impulse);
-        } else {
-            rb.AddForce(Vector3.back * power * rb.angularVelocity.x, ForceMode.Impulse);
+        if (bounceCount > 2 && bounceCount < bounceLimit) {
+            if (spinFloat < 0) {
+                rb.AddForce(Vector3.forward * power, ForceMode.Impulse);
+            } else {
+                rb.AddForce(Vector3.back * power, ForceMode.Impulse);
+            }
         }
-
         bounceCount++;
     }
 

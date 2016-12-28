@@ -4,12 +4,13 @@ using System.Collections;
 
 public class LaunchControllerWRotator : MonoBehaviour {
 
+
     public GameObject tracerObject;
     public GameObject playerObject;
 
     Transform pointerCube;
 
-    Vector3 launchDirection;
+    public Vector3 launchDirection;
 
     public float force;
     public Vector3 spinForce;
@@ -74,6 +75,7 @@ public class LaunchControllerWRotator : MonoBehaviour {
         launchModeBool = true;
         while (launchModeBool) {
 
+            // replaced with lookat
             launchDirection = pointerCube.transform.position - transform.position;
 
             if (playerLaunchBool) {
@@ -97,15 +99,18 @@ public class LaunchControllerWRotator : MonoBehaviour {
 
     void Launch(bool traceBool) {
 
-        GameObject testBall = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, Quaternion.identity) : playerObject;
+        GameObject testBall = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.rotation) : playerObject;
         Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
+
+        // testballRB.transform.rotation = Quaternion.LookRotation(launchDirection);
+        testballRB.transform.LookAt(pointerCube);
 
         testballRB.maxAngularVelocity = 1000f;
         testballRB.angularDrag = angleDrag;
         testballRB.drag = drag;
 
-        testballRB.AddRelativeForce(launchDirection * force, ForceMode.Impulse);
-        testballRB.AddTorque(spinForce);
+        testballRB.AddRelativeForce(Vector3.forward * force, ForceMode.Impulse);
+        testballRB.AddRelativeTorque(spinForce);
 
         if (traceBool) Destroy(testBall, lifetime);
     }

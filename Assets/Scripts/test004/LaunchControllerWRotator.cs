@@ -25,6 +25,9 @@ public class LaunchControllerWRotator : MonoBehaviour {
 
     Rigidbody playerObjectRB;
 
+    int restCounter = 0;
+    int restLimit = 150;
+
     bool launchModeBool;
     bool playerLaunchBool;
     bool resetBool;
@@ -52,7 +55,16 @@ public class LaunchControllerWRotator : MonoBehaviour {
             playerLaunchBool = true;
         }
 
-        if (resetBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) PositionReset();
+        if (resetBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
+
+            restCounter++;
+
+            if (restCounter > restLimit) {
+                
+                PositionReset();
+                restCounter = 0;
+            }
+        }
            
 
     }
@@ -66,6 +78,7 @@ public class LaunchControllerWRotator : MonoBehaviour {
 
             if (playerLaunchBool) {
                 // launch player, end coroutine
+                playerObjectRB.constraints = RigidbodyConstraints.None;
                 Launch(false);
                 playerLaunchBool = false;
                 launchModeBool = false;
@@ -91,8 +104,6 @@ public class LaunchControllerWRotator : MonoBehaviour {
         testballRB.angularDrag = angleDrag;
         testballRB.drag = drag;
 
-        Debug.Log(launchDirection);
-
         testballRB.AddRelativeForce(launchDirection * force, ForceMode.Impulse);
         testballRB.AddTorque(spinForce);
 
@@ -103,6 +114,7 @@ public class LaunchControllerWRotator : MonoBehaviour {
         playerObjectRB.angularVelocity = playerObjectRB.velocity = Vector3.zero;
         playerObject.transform.rotation = Quaternion.identity;
         transform.position = playerObject.transform.position;
+        playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
         resetBool = false;
     }
 

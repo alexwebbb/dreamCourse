@@ -59,6 +59,7 @@ public class LaunchControllerWRotator : MonoBehaviour {
         if (resetBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
 
             restCounter++;
+            playerObject.GetComponent<SpinScriptUpgraded>().bounceCount = 0;
 
             if (restCounter > restLimit) {
                 

@@ -27,7 +27,8 @@ public class SpinScriptUpgraded : MonoBehaviour {
 
 
 	}
-	
+
+    /*
 	// Update is called once per frame
 	void FixedUpdate () {
         if (!collisionActive) {
@@ -35,10 +36,11 @@ public class SpinScriptUpgraded : MonoBehaviour {
         }
     }
 
+    
     void OnCollisionEnter(Collision collision) {
         collisionActive = true;
 
-        Debug.Log(collision.collider.gameObject.layer);
+        // Debug.Log(collision.collider.gameObject.layer);
 
         if (collision.collider.gameObject.layer == 11) {
 
@@ -46,6 +48,7 @@ public class SpinScriptUpgraded : MonoBehaviour {
 
         }
     }
+    */
 
     void OnCollisionExit(Collision collision) {
 
@@ -56,15 +59,17 @@ public class SpinScriptUpgraded : MonoBehaviour {
             // Vector3 spinForce = exitVector - entranceVector;
 
             Vector3 spinDirection = new Vector3(launchCon.launchDirection.x, 0, launchCon.launchDirection.z);
-
+            Vector3.Normalize(spinDirection);
 
             if (launchCon.spinForce.x > 0) {
 
-                rb.AddForce(spinDirection * power, ForceMode.Impulse);
+                rb.AddForce(spinDirection * launchCon.spinForce.x * launchCon.spinForceFactor, ForceMode.Impulse);
+                
 
             } else if(launchCon.spinForce.x < 0) {
                
-                rb.AddForce(spinDirection * -power, ForceMode.Impulse);
+                rb.AddForce(spinDirection * launchCon.spinForce.x * launchCon.spinForceFactor, ForceMode.Impulse);
+                
             }
 
         }

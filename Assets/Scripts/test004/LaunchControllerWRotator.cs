@@ -21,6 +21,9 @@ public class LaunchControllerWRotator : MonoBehaviour {
     public float velocitySleep = 5f;
     public float ballGap;
 
+    // variables for spin script
+    public float spinForceFactor = 0.05f;
+
     public event Action launchModeBegin;
     public event Action launchModeEnd;
 
@@ -124,4 +127,16 @@ public class LaunchControllerWRotator : MonoBehaviour {
         resetBool = false;
     }
 
+
+    public void setForce(float _force) {
+        force = _force;
+    }
+
+    public void setMedialSpin(float _medialSpin) {
+        spinForce.x = _medialSpin;
+    }
+
+    public void setLateralSpin(float _lateralSpin) {
+        spinForce.y = _lateralSpin;
+    }
 }

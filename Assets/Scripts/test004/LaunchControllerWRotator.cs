@@ -114,7 +114,7 @@ public class LaunchControllerWRotator : MonoBehaviour {
         testballRB.drag = drag;
 
         testballRB.AddRelativeForce(Vector3.forward * force, ForceMode.Impulse);
-        testballRB.AddRelativeTorque(spinForce);
+        testballRB.AddRelativeTorque(spinForce, ForceMode.Impulse);
 
         if (traceBool) Destroy(testBall, lifetime);
     }

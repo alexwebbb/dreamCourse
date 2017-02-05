@@ -3,7 +3,10 @@ using System.Collections;
 
 public class SpinScriptUpgraded : MonoBehaviour {
 
+    // This script will be renamed to BounceController in the next iteration
+
     public float power;
+    public int bounceLimit = 3;
     public int bounceCount;
 
     Rigidbody rb;
@@ -37,24 +40,25 @@ public class SpinScriptUpgraded : MonoBehaviour {
     void OnCollisionExit(Collision collision) {
 
         // make sure not to consider the very first collision, which is with the ground, as well as any bounces after the second
-        if (bounceCount > 0 && bounceCount < 2) {
-
+        if (bounceCount > 0 && bounceCount < bounceLimit) {
+            
             // calculate the direction spin force will be applied in using the bounce positions array
             Vector3 spinDirection = bouncePositions[0] - bouncePositions[1];
             Vector3.Normalize(spinDirection);
-            
+
+            // this is adds to the vertical force of the bounce. SHOULD work even when hitting things from underneath
+            rb.AddForce(Vector3.up * rb.velocity.y * launchCon.bouncePercent, ForceMode.VelocityChange);
+
             // because unity angular velocity is very finicky and doesn't tell you direction of spin, the power of the spin correction is determined by the original spin power that is entered into the launch controller
-            if (launchCon.spinForce.x > 0) {
+            if (launchCon.spinForce.x > 0 || launchCon.spinForce.x < 0) {
 
                 // force is applied. make sure to always use impulse for the force mode!
-                rb.AddForce(spinDirection * launchCon.spinForce.x * launchCon.spinForceFactor, ForceMode.Impulse);
+                rb.AddForce(spinDirection * launchCon.spinForce.x * launchCon.spinForceFactor, ForceMode.VelocityChange);
+
+                // torque is applied. keeps the object spinning in the correct direction visibly.
+                rb.AddRelativeTorque(launchCon.spinForce, ForceMode.VelocityChange);
                 
-            } else if(launchCon.spinForce.x < 0) {
-                
-                // force is applied in the reverse direction
-                rb.AddForce(spinDirection * launchCon.spinForce.x * launchCon.spinForceFactor, ForceMode.Impulse);
-                
-            }
+            } 
         }
 
         // increment the bounce count. used to establish the range that spin adjustments occur in

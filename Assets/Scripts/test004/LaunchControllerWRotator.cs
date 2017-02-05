@@ -10,20 +10,27 @@ public class LaunchControllerWRotator : MonoBehaviour {
 
     Transform pointerCube;
 
-    public float force;
+
+    [Header("Bounce Controller Items")]
     public Vector3 spinForce;
+    public float spinForceFactor = 0.05f;
+    public float bouncePercent = 0.50f;
+
+    [Header("Launch Components")]
+    public float force;
     public float lifetime;
+    public float ballGap;
+
+    [Header("Rolling Characteristics")]
     public float angleDrag;
     public float drag;
     public float rollLimit = 5f;
     public float velocitySleep = 5f;
-    public float ballGap;
 
-    // variables for spin script
-    public float spinForceFactor = 0.05f;
-
+    /* These events may be used later for UI controls
     public event Action launchModeBegin;
     public event Action launchModeEnd;
+    */
 
     Rigidbody playerObjectRB;
 
@@ -135,8 +142,8 @@ public class LaunchControllerWRotator : MonoBehaviour {
         testballRB.transform.LookAt(pointerCube);
 
         // launch forces are applied
-        testballRB.AddRelativeForce(Vector3.forward * force, ForceMode.Impulse);
-        testballRB.AddRelativeTorque(spinForce, ForceMode.Impulse);
+        testballRB.AddRelativeForce(Vector3.forward * force, ForceMode.VelocityChange);
+        testballRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
 
         // sets the decay time for the tracer objects
         if (traceBool) Destroy(testBall, lifetime);

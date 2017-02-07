@@ -13,7 +13,7 @@ public class CursorController : MonoBehaviour {
     // public Crosshairs crosshairs;
     Camera viewCamera;
 
-    LaunchController launchCon;
+    LaunchControllerOld launchCon;
 
     Ray ray;
     Plane groundPlane;
@@ -21,7 +21,7 @@ public class CursorController : MonoBehaviour {
     bool launchMode;
 
     void Start() {
-        launchCon = FindObjectOfType<LaunchController>();
+        launchCon = FindObjectOfType<LaunchControllerOld>();
         launchCon.launchModeBegin += StartLaunch;
         launchCon.launchModeEnd += EndLaunch;
         viewCamera = Camera.main;

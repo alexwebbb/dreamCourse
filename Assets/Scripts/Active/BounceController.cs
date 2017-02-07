@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpinScriptUpgraded : MonoBehaviour {
+public class BounceController : MonoBehaviour {
 
     // This script will be renamed to BounceController in the next iteration
 
@@ -11,7 +11,7 @@ public class SpinScriptUpgraded : MonoBehaviour {
 
     Rigidbody rb;
     GameObject launcher;
-    LaunchControllerWRotator launchCon;
+    LaunchController launchCon;
     Vector3[] bouncePositions;
 
 	void Start () {
@@ -21,7 +21,7 @@ public class SpinScriptUpgraded : MonoBehaviour {
 
         // find the launcher for the object and capture the controller. this would need to change in a multiplayer context 
         launcher = GameObject.FindGameObjectWithTag("Launcher");
-        launchCon = launcher.GetComponent<LaunchControllerWRotator>();
+        launchCon = launcher.GetComponent<LaunchController>();
 
         // initialize the bounce positions array
         bouncePositions = new Vector3[2];
@@ -52,7 +52,7 @@ public class SpinScriptUpgraded : MonoBehaviour {
             // because unity angular velocity is very finicky and doesn't tell you direction of spin, the power of the spin correction is determined by the original spin power that is entered into the launch controller
             if (launchCon.spinForce.x > 0 || launchCon.spinForce.x < 0) {
 
-                // force is applied. make sure to always use impulse for the force mode!
+                // force is applied. make sure to always use velociy for the force mode!
                 rb.AddForce(spinDirection * launchCon.spinForce.x * launchCon.spinForceFactor, ForceMode.VelocityChange);
 
                 // torque is applied. keeps the object spinning in the correct direction visibly.

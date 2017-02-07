@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 
-public class LaunchController : MonoBehaviour {
+public class LaunchControllerOld : MonoBehaviour {
 
     public GameObject tracerObject;
     public GameObject playerObject;

@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FlyingCamera : MonoBehaviour {
+public class CameraController : MonoBehaviour {
 
     public GameObject player;
     public VirtualJoystick joystick1;
     public VirtualJoystick joystick2;
 
-    public float orthoSize;
+    // public float orthoSize;
     public float scalar = 0.1f;
     public float defaultHeight = 5;
 
@@ -15,8 +15,10 @@ public class FlyingCamera : MonoBehaviour {
 
     void Start() {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        mainCamera.orthographicSize = orthoSize;
         transform.rotation = player.transform.rotation;
+
+
+        // mainCamera.orthographicSize = orthoSize;
     }
 
     void FixedUpdate() {
@@ -42,10 +44,14 @@ public class FlyingCamera : MonoBehaviour {
         mainCamera.transform.localPosition = new Vector3(0, viewAngle - defaultHeight, 0);
     }
 
+    /*
+     * experimenting with a orthographic camera design
+     * 
+     * 
     public void setOrthoSize(float _orthoSize) {
         mainCamera.orthographicSize = _orthoSize;
         mainCamera.transform.localPosition = new Vector3(0, _orthoSize - defaultHeight, 0);
     }
-
+    */
 
 }

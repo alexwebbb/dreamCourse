@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 
-public class LaunchControllerWRotator : MonoBehaviour {
+public class LaunchController : MonoBehaviour {
 
 
     public GameObject tracerObject;
@@ -77,7 +77,7 @@ public class LaunchControllerWRotator : MonoBehaviour {
             restCounter++;
 
             // this resets the bounce counter that is attached to the player
-            playerObject.GetComponent<SpinScriptUpgraded>().bounceCount = 0;
+            playerObject.GetComponent<BounceController>().bounceCount = 0;
 
             // this is where the rest limit is checked
             if (restCounter > restLimit) {

@@ -7,22 +7,19 @@ public class CameraController : MonoBehaviour {
     public VirtualJoystick joystick1;
     public VirtualJoystick joystick2;
 
-    // public float orthoSize;
     public float scalar = 0.1f;
     public float defaultHeight = 5;
 
-    Camera mainCamera;
-
     void Start() {
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
+        // ensures that the camera is pointing in the same direction as the player at the start.
         transform.rotation = player.transform.rotation;
 
-
-        // mainCamera.orthographicSize = orthoSize;
     }
 
     void FixedUpdate() {
 
+        // follows the object placed in the player position
         transform.position = player.transform.position;
 
         // right joystickk control. this is control for rotating the camera
@@ -33,25 +30,6 @@ public class CameraController : MonoBehaviour {
         transform.localScale += new Vector3(joystick1.Vertical() * scalar, joystick1.Vertical() * scalar, joystick1.Vertical() * scalar);
 
         // Clamps range of zoom
-        transform.localScale = new Vector3(Mathf.Clamp(transform.localScale.x, 0.5f, 10f), Mathf.Clamp(transform.localScale.y, 0.5f, 10f), Mathf.Clamp(transform.localScale.z, 0.5f, 10f));
-
-        // 
-        
+        transform.localScale = new Vector3(Mathf.Clamp(transform.localScale.x, 0.5f, 10f), Mathf.Clamp(transform.localScale.y, 0.5f, 10f), Mathf.Clamp(transform.localScale.z, 0.5f, 10f));   
     }
-
-    public void setAngleOfView(float viewAngle) {
-        mainCamera.transform.localRotation = Quaternion.Euler(viewAngle, 0, 0);
-        mainCamera.transform.localPosition = new Vector3(0, viewAngle - defaultHeight, 0);
-    }
-
-    /*
-     * experimenting with a orthographic camera design
-     * 
-     * 
-    public void setOrthoSize(float _orthoSize) {
-        mainCamera.orthographicSize = _orthoSize;
-        mainCamera.transform.localPosition = new Vector3(0, _orthoSize - defaultHeight, 0);
-    }
-    */
-
 }

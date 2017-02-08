@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ObjectRotatorWArrows : MonoBehaviour {
+public class AimController : MonoBehaviour {
 
     public float movementInterval = 15;
 
@@ -11,25 +11,29 @@ public class ObjectRotatorWArrows : MonoBehaviour {
     Vector3 down;
     Vector3 up;
 
-	// Use this for initialization
 	void Start () {
+
+        // default movement interval is assigned to shortcut variables
         left.y = -movementInterval;
         right.y = movementInterval;
         down.z = -movementInterval;
         up.z = movementInterval;
 
+        // a seperate transform is used for the vertical access to avoid gimble lock
         verticalAxis = transform.GetChild(0);
 	}
 	
-	// Update is called once per frame
 	void Update () {
-	
+
+
+        // rotates this transform horizongtally	
         if(Input.GetKeyDown(KeyCode.LeftArrow)) {
             transform.Rotate(left);
         } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
             transform.Rotate(right);
         }
 
+        // rotates this transform vertically. The limits are hard coded, this could perhaps change
         if (Input.GetKeyDown(KeyCode.DownArrow)) {
             if(verticalAxis.eulerAngles.z > 10f) verticalAxis.Rotate(down);
         } else if (Input.GetKeyDown(KeyCode.UpArrow)) {

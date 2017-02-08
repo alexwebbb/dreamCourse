@@ -3,8 +3,6 @@ using System.Collections;
 
 public class BounceController : MonoBehaviour {
 
-    // This script will be renamed to BounceController in the next iteration
-
     public float power;
     public int bounceLimit = 3;
     public int bounceCount;

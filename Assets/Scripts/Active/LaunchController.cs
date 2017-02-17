@@ -41,6 +41,10 @@ public class LaunchController : MonoBehaviour {
     bool playerLaunchBool;
     bool resetBool;
 
+    // experimental section
+    [Header("Experimental Section")]
+    public Vector3 centerOfMass;
+
 
     void Start() {
 
@@ -138,6 +142,10 @@ public class LaunchController : MonoBehaviour {
         testballRB.angularDrag = angleDrag;
         testballRB.drag = drag;
 
+        // experimental --- changing the center of mass 
+
+        testballRB.centerOfMass = centerOfMass;
+
         // the object which has been grabbed is pointed at the cube
         testballRB.transform.LookAt(pointerCube);
 
@@ -155,7 +163,7 @@ public class LaunchController : MonoBehaviour {
         playerObjectRB.angularVelocity = playerObjectRB.velocity = Vector3.zero;
 
         // resets rotation
-        playerObject.transform.rotation = Quaternion.identity;
+        playerObject.transform.rotation = Quaternion.Euler(-90, 0, 0);
 
         // locks the player object in place
         playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;

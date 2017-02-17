@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour {
     void Start() {
 
         // ensures that the camera is pointing in the same direction as the player at the start.
-        transform.rotation = player.transform.rotation;
+        transform.rotation = Quaternion.Euler(0, player.transform.rotation.y, player.transform.rotation.z);
 
     }
 

@@ -8,7 +8,6 @@ public class BounceController : MonoBehaviour {
     public int bounceCount;
 
     Rigidbody rb;
-    GameObject launcher;
     LaunchController launchCon;
     Vector3[] bouncePositions;
 
@@ -18,8 +17,7 @@ public class BounceController : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
 
         // find the launcher for the object and capture the controller. this would need to change in a multiplayer context 
-        launcher = GameObject.FindGameObjectWithTag("Launcher");
-        launchCon = launcher.GetComponent<LaunchController>();
+        launchCon = GameObject.FindGameObjectWithTag("Launcher").GetComponent<LaunchController>();
 
         // initialize the bounce positions array
         bouncePositions = new Vector3[2];

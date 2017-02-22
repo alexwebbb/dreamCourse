@@ -105,7 +105,7 @@ public class LaunchController : MonoBehaviour {
 
                 // unlocks the player object constraints 
                 playerObjectRB.constraints = RigidbodyConstraints.None;
-                
+
                 // launches the player.... the boolean represents whether the tracer will be used or not... false indicates the player
                 Launch(false);
                 
@@ -132,8 +132,16 @@ public class LaunchController : MonoBehaviour {
 
     void Launch(bool traceBool) {
 
+        
+
         // this ternary operator uses the trace bool to determine whether to launch a tracer object or the player object
         GameObject testBall = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.rotation) : playerObject;
+
+        // weird fix for launching inside water bug and other issues
+        if(!traceBool) {
+            testBall.SetActive(false);
+            testBall.SetActive(true);
+        }
 
         // grabs the rigidbody of the object that is produced by the prior operation
         Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
@@ -145,6 +153,8 @@ public class LaunchController : MonoBehaviour {
         // experimental --- changing the center of mass 
 
         testballRB.centerOfMass = centerOfMass;
+
+        
 
         // the object which has been grabbed is pointed at the cube
         testballRB.transform.LookAt(pointerCube);

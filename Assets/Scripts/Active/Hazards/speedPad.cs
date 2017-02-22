@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class speedPad : MonoBehaviour {
 
-    public float power = 15f;
+    public float power = 40f;
 
     private void OnCollisionEnter(Collision collision) {
 
         Rigidbody rb = collision.gameObject.GetComponent<Rigidbody>();
-        Debug.Log(transform.forward);
         rb.AddForce(transform.forward * power, ForceMode.VelocityChange);
     }
 }

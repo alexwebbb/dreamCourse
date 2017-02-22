@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class waterPad : MonoBehaviour {
 
-    public float power = 10f;
+    public float power = 5f;
     public float resistance = 2f;
 
     LaunchController lc;
@@ -18,6 +18,7 @@ public class waterPad : MonoBehaviour {
         other.GetComponent<Rigidbody>().drag = lc.drag + resistance;
 
         ConstantForce cf = other.gameObject.GetComponent<ConstantForce>();
+
         cf.force = new Vector3(0, power, 0);
 
 
@@ -28,6 +29,7 @@ public class waterPad : MonoBehaviour {
         other.GetComponent<Rigidbody>().drag = lc.drag;
 
         ConstantForce cf = other.gameObject.GetComponent<ConstantForce>();
+
         cf.force = Vector3.zero;
 
     }

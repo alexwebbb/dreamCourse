@@ -25,7 +25,9 @@ public class SessionController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+        
+
         if(Input.GetKeyDown(KeyCode.Alpha1)) {
             StartGame(Mode.Test006);
         } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
@@ -47,6 +49,9 @@ public class SessionController : MonoBehaviour {
             SceneManager.LoadScene("test007");
 
         }
+
+        // instantiate level controller
+        // pass it character objects
 
     }
 }

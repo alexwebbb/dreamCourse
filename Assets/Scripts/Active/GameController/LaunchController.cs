@@ -27,10 +27,6 @@ public class LaunchController : MonoBehaviour {
     public float rollLimit = 5f;
     public float velocitySleep = 5f;
 
-    /* These events may be used later for UI controls
-    public event Action launchModeBegin;
-    public event Action launchModeEnd;
-    */
 
     Rigidbody playerObjectRB;
 
@@ -58,6 +54,7 @@ public class LaunchController : MonoBehaviour {
 
     void Update() {
 
+        // the input getkey needs to be moved to an external UI class and the if statement needs to be a delegate
         // this begins the ball looper routine when L is pressed if it is not running, and ends it if it is
         if (Input.GetKeyDown(KeyCode.L)) {
             if (!launchModeBool) {
@@ -68,7 +65,7 @@ public class LaunchController : MonoBehaviour {
             }
         }
 
-
+        // same thing here, ui needs to handle this, needs to be a delegate
         // this actually launches the ball, when space bar is pressed
         if (launchModeBool && Input.GetKeyDown(KeyCode.Space)) {
             playerLaunchBool = true;
@@ -186,6 +183,7 @@ public class LaunchController : MonoBehaviour {
     }
 
 
+    // these also need to be set up to work with delegates
     // these are all simple functions for controlling the variables used in launch ingame
 
     public void setForce(float _force) {

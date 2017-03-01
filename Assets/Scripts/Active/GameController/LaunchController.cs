@@ -49,27 +49,22 @@ public class LaunchController : MonoBehaviour {
 
         // grab the pointer cube that is used to direct the aim of the launcher. the launcher determines launch direction by using this cube and the player object
         pointerCube = transform.GetChild(0).GetChild(0).GetChild(0);
+
+        // event subscription section
+        // get the player object to subscribe
+        LaunchUI launchUI = FindObjectOfType<LaunchUI>();
+        // subscribe to the launch toggle event
+        launchUI.launchToggleEvent += ToggleLaunchMode;
+        launchUI.initiateLaunchEvent += InitiateLaunchFromUI;
+
+    
     }
 
 
     void Update() {
 
-        // the input getkey needs to be moved to an external UI class and the if statement needs to be a delegate
-        // this begins the ball looper routine when L is pressed if it is not running, and ends it if it is
-        if (Input.GetKeyDown(KeyCode.L)) {
-            if (!launchModeBool) {
-                StartCoroutine("BallLooper");
-            } else {
-                playerLaunchBool = false;
-                launchModeBool = false;
-            }
-        }
-
         // same thing here, ui needs to handle this, needs to be a delegate
-        // this actually launches the ball, when space bar is pressed
-        if (launchModeBool && Input.GetKeyDown(KeyCode.Space)) {
-            playerLaunchBool = true;
-        }
+        
 
         // this resets the position of the ball when it gets close enough to not moving
         if (resetBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
@@ -132,7 +127,7 @@ public class LaunchController : MonoBehaviour {
         
 
         // this ternary operator uses the trace bool to determine whether to launch a tracer object or the player object
-        GameObject testBall = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.rotation) : playerObject;
+        GameObject testBall = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation) : playerObject;
 
         // weird fix for launching inside water bug and other issues
         if(!traceBool) {
@@ -169,8 +164,8 @@ public class LaunchController : MonoBehaviour {
         // stops movement
         playerObjectRB.angularVelocity = playerObjectRB.velocity = Vector3.zero;
 
-        // resets rotation
-        playerObject.transform.rotation = Quaternion.Euler(-90, 0, 0);
+        // resets localRotation
+        playerObject.transform.localRotation = Quaternion.Euler(-90, 0, 0);
 
         // locks the player object in place
         playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
@@ -186,15 +181,33 @@ public class LaunchController : MonoBehaviour {
     // these also need to be set up to work with delegates
     // these are all simple functions for controlling the variables used in launch ingame
 
-    public void setForce(float _force) {
+    public void SetForce(float _force) {
         force = _force;
     }
 
-    public void setMedialSpin(float _medialSpin) {
+    public void SetMedialSpin(float _medialSpin) {
         spinForce.x = _medialSpin;
     }
 
-    public void setLateralSpin(float _lateralSpin) {
+    public void SetLateralSpin(float _lateralSpin) {
         spinForce.y = _lateralSpin;
+    }
+
+    // Functions called by the UI
+    void ToggleLaunchMode() {
+        // this begins the ball looper routine when L is pressed if it is not running, and ends it if it is
+        if (!launchModeBool) {
+            StartCoroutine("BallLooper");
+        } else {
+            playerLaunchBool = false;
+            launchModeBool = false;
+        }
+    }
+
+    void InitiateLaunchFromUI() {
+        // this actually launches the ball, when space bar is pressed
+        if (launchModeBool) {
+            playerLaunchBool = true;
+        }
     }
 }

@@ -26,6 +26,8 @@ public class BounceController : MonoBehaviour {
     
     void OnCollisionEnter(Collision collision) {
 
+        // There needs to be an event here that reports the position of the collision to the level controller
+        // something like if(bounceCount > 0) 
 
         // caputures the current bounce position and the very last one. used to determine the bounce direction
         bouncePositions[1] = bouncePositions[0];

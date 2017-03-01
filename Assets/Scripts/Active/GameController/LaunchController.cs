@@ -104,11 +104,12 @@ public class LaunchController : MonoBehaviour {
                 // turns off the player launch trigger now that it has been executed
                 playerLaunchBool = false;
                 
+                // a condition for the position reset
+                resetBool = true;
+
                 // stops the coroutine
                 launchModeBool = false;
                 
-                // a condition for the position reset
-                resetBool = true;
             } else {
                 
                 // launch tracer
@@ -196,7 +197,7 @@ public class LaunchController : MonoBehaviour {
     // Functions called by the UI
     void ToggleLaunchMode() {
         // this begins the ball looper routine when L is pressed if it is not running, and ends it if it is
-        if (!launchModeBool) {
+        if (!launchModeBool && !resetBool) {
             StartCoroutine("BallLooper");
         } else {
             playerLaunchBool = false;

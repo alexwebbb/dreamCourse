@@ -4,12 +4,14 @@ using System.Collections;
 
 public class LaunchController : MonoBehaviour {
 
+    // for grabbing the event parent
+    LaunchUI launchUI;
+
 
     public GameObject tracerObject;
     public GameObject playerObject;
 
     Transform pointerCube;
-
 
     [Header("Bounce Controller Items")]
     public Vector3 spinForce;
@@ -52,9 +54,10 @@ public class LaunchController : MonoBehaviour {
 
         // event subscription section
         // get the player object to subscribe
-        LaunchUI launchUI = FindObjectOfType<LaunchUI>();
+        launchUI = FindObjectOfType<LaunchUI>();
         // subscribe to the launch toggle event
         launchUI.launchToggleEvent += ToggleLaunchMode;
+        // subscribe to initiate launch event
         launchUI.initiateLaunchEvent += InitiateLaunchFromUI;
 
     

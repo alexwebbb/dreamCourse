@@ -6,15 +6,17 @@ public class LaunchUI : MonoBehaviour {
 
     // here is where scripts will go that find and interface with the launch controller. player inputs will use scripts stored in this class
 
-    public delegate void LaunchToggleDelegate();
-    public event LaunchToggleDelegate launchToggleEvent;
+    // public delegate void LaunchToggleDelegate();
+    // public event LaunchToggleDelegate launchToggleEvent;
+    public event Action launchToggleEvent;
 
-    public delegate void InitiateLaunchDelegate();
-    public event InitiateLaunchDelegate initiateLaunchEvent;
+    // public delegate void InitiateLaunchDelegate();
+    // public event InitiateLaunchDelegate initiateLaunchEvent;
+    public event Action initiateLaunchEvent;
 
     void Update() {
 
-        // need to find out if C# unloads references to destroyed gameobjects
+        // YES I need to start unsubscribing event delegates
 
         if (Input.GetKeyDown(KeyCode.L)) {
             // this event is for toggling launch mode

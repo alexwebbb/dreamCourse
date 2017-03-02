@@ -214,4 +214,11 @@ public class LaunchController : MonoBehaviour {
             playerLaunchBool = true;
         }
     }
+
+    void OnDestroy() {
+        // unsubscribe to the launch toggle event
+        launchUI.launchToggleEvent -= ToggleLaunchMode;
+        // unsubscribe to initiate launch event
+        launchUI.initiateLaunchEvent -= InitiateLaunchFromUI;
+    }
 }

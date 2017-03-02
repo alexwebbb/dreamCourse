@@ -33,4 +33,11 @@ public class AimController : MonoBehaviour {
         if (!up && verticalAxis.eulerAngles.z > 10f) verticalAxis.Rotate(direction);
         if (up && verticalAxis.eulerAngles.z < 70f) verticalAxis.Rotate(direction);
     }
+
+    void OnDestroy() {
+        // unsubscribe to the launch toggle event
+        aimUI.rotateHorizontalEvent -= RotateHorizontal;
+        // unsubscribe to initiate launch event
+        aimUI.rotateVerticalEvent -= RotateVertical;
+    }
 }

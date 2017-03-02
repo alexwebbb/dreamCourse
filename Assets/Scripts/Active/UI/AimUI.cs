@@ -21,7 +21,7 @@ public class AimUI : MonoBehaviour {
     void Start() {
 
         // default movement interval is assigned to shortcut variables
-        // will need to change how this works... perhaps functions instead?
+        // will need to change how this works... perhaps an editor button
         left.y = -movementInterval;
         right.y = movementInterval;
         down.z = -movementInterval;

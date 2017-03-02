@@ -4,15 +4,16 @@ using System.Collections;
 
 public class LaunchUI : MonoBehaviour {
 
-    // here is where scripts will go that find and interface with the launch controller. player inputs will use scripts stored in this class
+    // Launch UI handles player input related to the launch sequence
 
-    // public delegate void LaunchToggleDelegate();
-    // public event LaunchToggleDelegate launchToggleEvent;
+    // events are used to communicate with gameobjects in scene
+
     public event Action launchToggleEvent;
-
-    // public delegate void InitiateLaunchDelegate();
-    // public event InitiateLaunchDelegate initiateLaunchEvent;
     public event Action initiateLaunchEvent;
+    public event Action<float> setForceEvent;
+    public event Action<float> setMedialSpinEvent;
+    public event Action<float> setLateralSpinEvent;
+
 
     void Update() {
 
@@ -31,5 +32,18 @@ public class LaunchUI : MonoBehaviour {
                 initiateLaunchEvent();
             }
         }
+    }
+
+    // these functions trigger events that act upon the launch controller
+    public void SetForce(float force) {
+        if (setForceEvent != null) setForceEvent(force);
+    }
+
+    public void SetMedialSpin(float medialSpin) {
+        if (setMedialSpinEvent != null) setMedialSpinEvent(medialSpin);
+    }
+
+    public void SetLateralSpin(float lateralSpin) {
+        if (setLateralSpinEvent != null) setLateralSpinEvent(lateralSpin);
     }
 }

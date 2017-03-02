@@ -59,7 +59,12 @@ public class LaunchController : MonoBehaviour {
         launchUI.launchToggleEvent += ToggleLaunchMode;
         // subscribe to initiate launch event
         launchUI.initiateLaunchEvent += InitiateLaunchFromUI;
-
+        // subscribe to set force event
+        launchUI.setForceEvent += SetForce;
+        // subscribe to set medial spin event
+        launchUI.setMedialSpinEvent += SetMedialSpin;
+        // subscribe to set lateral spin
+        launchUI.setLateralSpinEvent += SetLateralSpin;
     
     }
 
@@ -128,8 +133,6 @@ public class LaunchController : MonoBehaviour {
 
     void Launch(bool traceBool) {
 
-        
-
         // this ternary operator uses the trace bool to determine whether to launch a tracer object or the player object
         GameObject testBall = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation) : playerObject;
 
@@ -181,8 +184,7 @@ public class LaunchController : MonoBehaviour {
         resetBool = false;
     }
 
-
-    // these also need to be set up to work with delegates
+    // these are called by events
     // these are all simple functions for controlling the variables used in launch ingame
 
     public void SetForce(float _force) {
@@ -220,5 +222,11 @@ public class LaunchController : MonoBehaviour {
         launchUI.launchToggleEvent -= ToggleLaunchMode;
         // unsubscribe to initiate launch event
         launchUI.initiateLaunchEvent -= InitiateLaunchFromUI;
+        // unsubscribe to set force event
+        launchUI.setForceEvent -= SetForce;
+        // unsubscribe to set medial spin event
+        launchUI.setMedialSpinEvent -= SetMedialSpin;
+        // unsubscribe to set lateral spin
+        launchUI.setLateralSpinEvent -= SetLateralSpin;
     }
 }

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 39f708347913da745a7aac06b917a9bc
+timeCreated: 1488510515
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Disco Duck 3D
+  fontNames:
+  - Disco Duck 3D
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

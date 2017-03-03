@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class waterPad : MonoBehaviour {
+public class WaterPad : MonoBehaviour {
 
     public float power = 5f;
     public float resistance = 2f;

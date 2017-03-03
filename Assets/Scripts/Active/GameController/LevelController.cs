@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LevelController : MonoBehaviour {
 
+    GameObject levelOrigin;
+
     Vector3 startPosition;
     int numberOfPlayers;
 
@@ -17,7 +19,7 @@ public class LevelController : MonoBehaviour {
     // or maybe turnNumber
     int jumpCount = 0;
 
-    // first field is player one, second 
+    // first field is player one, second is player 2
     int[] score;
 
 

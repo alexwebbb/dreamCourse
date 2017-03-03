@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class speedPad : MonoBehaviour {
+public class SpeedPad : MonoBehaviour {
 
     public float power = 40f;
 

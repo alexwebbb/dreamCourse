@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: dba97962b2a6e1d4d9bdf88c9f4eb179
+timeCreated: 1488510125
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Shadded South
+  fontNames:
+  - Shadded South
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 81d54f31f4635ff4b93a4e79dee18bc4
+timeCreated: 1488510298
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Department H 3D
+  fontNames:
+  - Department H 3D
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

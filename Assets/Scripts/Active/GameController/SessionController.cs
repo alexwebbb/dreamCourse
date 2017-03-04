@@ -54,4 +54,8 @@ public class SessionController : MonoBehaviour {
         // pass it character objects
 
     }
+
+    public void TestOne() {
+        StartGame(Mode.Test006);
+    }
 }

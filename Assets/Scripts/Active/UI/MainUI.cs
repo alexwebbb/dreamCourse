@@ -25,8 +25,15 @@ public class MainUI : MonoBehaviour {
         // animate first layer to a little block in the corner
         // deactivate buttons
 
-        
+        mainPanel.SetActive(false);
+        levelSelect.transform.GetChild(0).gameObject.SetActive(true);
+
 
         // set as not interactable
+    }
+
+    public void BackToMainMenu() {
+        levelSelect.transform.GetChild(0).gameObject.SetActive(false);
+        mainPanel.SetActive(true);
     }
 }

@@ -43,8 +43,9 @@ public class LevelController : MonoBehaviour {
         // load save data if there is any
         // set start position.....hmm maybe actually not. I should just create a start position gameobject with a tag
         // set number of players
-        // initialize player objects at start position
+        // instantiate player objects at start position
         // deactivate all except player 1
+        // tie camera controller to player camera transform
 
 
     }

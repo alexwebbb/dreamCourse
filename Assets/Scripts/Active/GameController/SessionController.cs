@@ -7,55 +7,30 @@ public class SessionController : MonoBehaviour {
 
     static SessionController Instance;
 
-    enum Mode {
-        Test006 = 0,
-        Test007 = 1
-    }
+    AssetManager assetManager;
 
 	void Start () {
 		
+        // singleton
+
         if(Instance != null) {
             GameObject.Destroy(gameObject);
         } else {
             GameObject.DontDestroyOnLoad(gameObject);
             Instance = this;
         }
-
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
+
+    public void StartGame (string fileName) {
+
+        SceneManager.LoadScene(fileName);
         
 
-        if(Input.GetKeyDown(KeyCode.Alpha1)) {
-            StartGame(Mode.Test006);
-        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            StartGame(Mode.Test007);
-        }
-	}
-
-
-
-    void StartGame (Mode mode) {
-
-
-        if (Mode.Test006.Equals(mode)) {
-            Debug.Log("Test1");
-            SceneManager.LoadScene("test006");
-            
-        } else if (Mode.Test007.Equals(mode)) {
-            Debug.Log("Test2");
-            SceneManager.LoadScene("test007");
-
-        }
-
         // instantiate level controller
-        // pass it character objects
+        // call initialize function on level controller
+        // and pass it character objects
 
     }
 
-    public void TestOne() {
-        StartGame(Mode.Test006);
-    }
 }

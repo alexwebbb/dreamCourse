@@ -9,13 +9,19 @@ public class MainUI : MonoBehaviour {
     public GameObject mainPanel;
     public GameObject levelSelect;
 
+    SessionController sessionController;
+    AssetManager assetManager;
 
 	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+        // load session controller, asset manager
+        sessionController = GetComponent<SessionController>();
+        assetManager = GetComponent<AssetManager>();
+
+    }
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 
@@ -35,5 +41,9 @@ public class MainUI : MonoBehaviour {
     public void BackToMainMenu() {
         levelSelect.transform.GetChild(0).gameObject.SetActive(false);
         mainPanel.SetActive(true);
+    }
+
+    public void LevelLoadTest() {
+        sessionController.StartGame(assetManager.level[0].GetComponent<Level>().fileName);
     }
 }

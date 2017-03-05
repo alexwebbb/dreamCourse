@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class MainUI : MonoBehaviour {
 
-    public Canvas canvas;
+    public GameObject levelListButton;
+    [Space(10)]
+    public GameObject canvas;
+
     public GameObject mainPanel;
     public GameObject levelSelect;
+    public GameObject levelList;
 
     SessionController sessionController;
     AssetManager assetManager;
@@ -18,6 +23,7 @@ public class MainUI : MonoBehaviour {
         sessionController = GetComponent<SessionController>();
         assetManager = GetComponent<AssetManager>();
 
+        InitializeLevelList();
     }
 
     // Update is called once per frame
@@ -43,7 +49,19 @@ public class MainUI : MonoBehaviour {
         mainPanel.SetActive(true);
     }
 
-    public void LevelLoadTest() {
-        sessionController.StartGame(assetManager.level[0].GetComponent<Level>().fileName);
+    public void LevelLoadTest(String filename) {
+        canvas.SetActive(false);
+        sessionController.StartGame(filename);
+    }
+
+    void InitializeLevelList() {
+        foreach(GameObject levelGameObject in assetManager.level) {
+            Level level = levelGameObject.GetComponent<Level>();
+
+            GameObject levelButton = Instantiate<GameObject>(levelListButton, levelList.transform);
+            levelButton.GetComponentInChildren<Text>().text = level.levelName;
+
+            levelButton.GetComponent<Button>().onClick.AddListener(() => LevelLoadTest(level.fileName));
+        }
     }
 }

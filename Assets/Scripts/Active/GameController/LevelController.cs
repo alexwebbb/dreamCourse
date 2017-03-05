@@ -38,6 +38,7 @@ public class LevelController : MonoBehaviour {
 
         // this gets called from session manager
 
+
         // reset all lists and variables to zero
 
         // load save data if there is any

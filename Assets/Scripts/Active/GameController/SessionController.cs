@@ -7,6 +7,7 @@ public class SessionController : MonoBehaviour {
 
     static SessionController Instance;
 
+    LevelController levelController;
     AssetManager assetManager;
 
 	void Start () {
@@ -25,9 +26,9 @@ public class SessionController : MonoBehaviour {
     public void StartGame (string fileName) {
 
         SceneManager.LoadScene(fileName);
-        
 
         // instantiate level controller
+        gameObject.AddComponent<LevelController>();
         // call initialize function on level controller
         // and pass it character objects
 

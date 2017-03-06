@@ -37,7 +37,7 @@ public class LevelController : MonoBehaviour {
     void Initialize(int _numberOfPlayers, List<GameObject> selectedCharacters) {
 
         // this gets called from session manager
-
+        // might actually have to do something with the SceneManager.sceneLoaded event to trigger this
 
         // reset all lists and variables to zero
 

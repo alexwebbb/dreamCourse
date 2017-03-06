@@ -9,5 +9,10 @@ public class Level : MonoBehaviour {
 
     public Vector3 levelOrigin { get { return transform.position; } }
 
+    void Start() {
+
+
+
+    }
 
 }

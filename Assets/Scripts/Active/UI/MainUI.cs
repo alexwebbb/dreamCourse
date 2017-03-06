@@ -52,33 +52,23 @@ public class MainUI : MonoBehaviour {
 
     public void LevelLoadTest(String filename) {
         canvas.SetActive(false);
-        sessionController.StartGame(filename);
-        // launchUI.SetActive(true);
-        // the following will NOT be done here, but rather in the level controller initialize function in production
-
-        Debug.Log(assetManager.character[0]);
-        Debug.Log(assetManager.level[0].transform.position);
-
-        GameObject poop = Instantiate<GameObject>(assetManager.character[0], assetManager.level[0].transform.position, Quaternion.identity);
-
-        Debug.Log(poop);
-        /*
-        Debug.Log(character);
-        CameraController camController = launchUI.GetComponentInChildren<CameraController>();
-        camController.player = character.transform.GetChild(0).GetChild(0).gameObject;
-        camController.cameraTransform = character.transform.GetChild(1);
-        */
+        launchUI.transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+        sessionController.StartGame(filename, assetManager.character);
+        
 
     }
 
     void InitializeLevelList() {
         foreach(GameObject levelGameObject in assetManager.level) {
-            Level level = levelGameObject.GetComponent<Level>();
+            if (levelGameObject != null) {
+                Level level = levelGameObject.GetComponent<Level>();
 
-            GameObject levelButton = Instantiate<GameObject>(levelListButton, levelList.transform);
-            levelButton.GetComponentInChildren<Text>().text = level.levelName;
+                GameObject levelButton = Instantiate<GameObject>(levelListButton);
+                levelButton.transform.SetParent(levelList.transform, false);
+                levelButton.GetComponentInChildren<Text>().text = level.levelName;
 
-            levelButton.GetComponent<Button>().onClick.AddListener(() => LevelLoadTest(level.fileName));
+                levelButton.GetComponent<Button>().onClick.AddListener(() => LevelLoadTest(level.fileName)); 
+            }
         }
     }
 }

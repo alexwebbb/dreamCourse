@@ -1,15 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour {
 
+    public event Action<GameObject> setActivePlayerEvent;
+
+    AssetManager assetManager;
     GameObject levelOrigin;
 
     Vector3 startPosition;
     int numberOfPlayers;
 
-    GameObject[] player;
+    GameObject[] player = new GameObject[2];
     List<Vector3> playerPositions;
 
     float time;
@@ -23,18 +28,24 @@ public class LevelController : MonoBehaviour {
     int[] score;
 
 
-	void Start () {
-		
-	}
-	
+    void Start() {
 
-	void Update () {
-		
-	}
+        assetManager = GetComponent<AssetManager>();
+
+    }
 
 
     // there should be a game mode enum here as well
-    void Initialize(int _numberOfPlayers, List<GameObject> selectedCharacters) {
+    public void Initialize(GameObject[] character) {
+
+        Debug.Log("Initialized");
+
+        levelOrigin = GameObject.FindGameObjectWithTag("LevelOrigin");
+
+        
+        player[0] = Instantiate<GameObject>(character[0], levelOrigin.transform, false);
+
+        if (setActivePlayerEvent != null) setActivePlayerEvent(player[0]);
 
         // this gets called from session manager
         // might actually have to do something with the SceneManager.sceneLoaded event to trigger this

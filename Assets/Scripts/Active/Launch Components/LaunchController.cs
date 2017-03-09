@@ -4,6 +4,8 @@ using System.Collections;
 
 public class LaunchController : MonoBehaviour {
 
+    // broadcast event for turn end
+    public event Action endLaunchEvent;
     // for grabbing the event parent
     LaunchUI launchUI;
 
@@ -53,7 +55,7 @@ public class LaunchController : MonoBehaviour {
         pointerCube = transform.GetChild(0).GetChild(0).GetChild(0);
 
         // event subscription section
-        // get the player object to subscribe
+        // get the launch UI to subscribe to it
         launchUI = FindObjectOfType<LaunchUI>();
         // subscribe to the launch toggle event
         launchUI.launchToggleEvent += ToggleLaunchMode;
@@ -182,6 +184,9 @@ public class LaunchController : MonoBehaviour {
 
         // turns off the boolean that allows the position reset to occur in the update process
         resetBool = false;
+
+        // call the event that signals to the rest of the system (namely the level controller) that the turn has ended.
+        if (endLaunchEvent != null) endLaunchEvent();
     }
 
     // these are called by events

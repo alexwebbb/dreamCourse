@@ -14,17 +14,20 @@ public class LevelController : MonoBehaviour {
     Vector3 startPosition;
     int numberOfPlayers;
 
-    GameObject[] player = new GameObject[2];
+    // first field is player one, second is player 2
+    List<GameObject> player;
     List<Vector3> playerPositions;
 
     float time;
 
-    int playerTurn;
+    int activePlayer;
+
+    bool firstTurn;
 
     // or maybe turnNumber
     int jumpCount = 0;
 
-    // first field is player one, second is player 2
+    
     int[] score;
 
 
@@ -36,16 +39,29 @@ public class LevelController : MonoBehaviour {
 
 
     // there should be a game mode enum here as well
-    public void Initialize(GameObject[] character) {
+    public void Initialize(GameObject[] character, int _numberOfPlayers) {
 
         Debug.Log("Initialized");
 
+        numberOfPlayers = _numberOfPlayers;
+
         levelOrigin = GameObject.FindGameObjectWithTag("LevelOrigin");
 
-        
-        player[0] = Instantiate<GameObject>(character[0], levelOrigin.transform, false);
+        for (int i = 0; i < numberOfPlayers; i++) {
 
+            player.Add(Instantiate<GameObject>(character[i], levelOrigin.transform, false));
+
+            if(i != 0) {
+                player[i].GetComponent<Character>().SetHidden(true);
+            }
+        }
+
+        // this might could be a seperate method, set active player
+        activePlayer = 0;
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[0]);
+
+        firstTurn = true;
+
 
         // this gets called from session manager
         // might actually have to do something with the SceneManager.sceneLoaded event to trigger this
@@ -64,6 +80,36 @@ public class LevelController : MonoBehaviour {
 
 
     void EndTurn() {
+
+        // this first part could eventually be exported to something like transfer camera. would want to rename active player to like active thing and have a separate current player variable.
+
+        // activate player whose turn it shall be
+        bool lastElement = false;
+
+        if (activePlayer < numberOfPlayers) {
+
+            // set the soon to be active player as visible if it has been hidden
+            if (firstTurn) player[activePlayer].GetComponent<Character>().SetHidden(false);
+
+            player[activePlayer + 1].GetComponent<Character>().SetAsActivePlayer(true);
+
+        } else {
+            // if it is the last element, jump to the beginning
+            player[0].GetComponent<Character>().SetAsActivePlayer(true);
+            lastElement = true;
+        }
+
+        // deactivate the player who called the turn end
+        player[activePlayer].GetComponent<Character>().SetAsActivePlayer(false);
+        
+        // if it is the last element in the list, set the index to zero, otherwise iterate
+        activePlayer = lastElement ? activePlayer + 1 : 0;
+
+        
+        // call to the rest of the system changing the current active player
+        if (setActivePlayerEvent != null) setActivePlayerEvent(player[activePlayer]);
+
+
 
         // end the current players turn. called from launch controller or player controller once reset position is called. returns landing position and adds it to the player positions list
     }

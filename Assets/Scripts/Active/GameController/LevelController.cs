@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour {
 
-    public event Action<GameObject> setActivePlayerEvent;
+    public event Action<Character> setActivePlayerEvent;
 
     AssetManager assetManager;
     GameObject levelOrigin;
@@ -15,7 +15,7 @@ public class LevelController : MonoBehaviour {
     int numberOfPlayers;
 
     // first field is player one, second is player 2
-    List<GameObject> player;
+    List<Character> player;
     List<Vector3> playerPositions;
 
     float time;
@@ -47,12 +47,19 @@ public class LevelController : MonoBehaviour {
 
         levelOrigin = GameObject.FindGameObjectWithTag("LevelOrigin");
 
+        // begin instantiating characters
+        GameObject instantiatedCharacter;
+
         for (int i = 0; i < numberOfPlayers; i++) {
 
-            player.Add(Instantiate<GameObject>(character[i], levelOrigin.transform, false));
+            instantiatedCharacter = Instantiate<GameObject>(character[i], levelOrigin.transform, false);
+            player.Add(instantiatedCharacter.GetComponent<Character>());
 
-            if(i != 0) {
-                player[i].GetComponent<Character>().SetHidden(true);
+            // subscribe to end launch event
+            player[i].GetLaunchController.endLaunchEvent += EndTurn;
+
+            if (i != 0) {
+                player[i].SetHidden(true);
             }
         }
 
@@ -89,18 +96,18 @@ public class LevelController : MonoBehaviour {
         if (activePlayer < numberOfPlayers) {
 
             // set the soon to be active player as visible if it has been hidden
-            if (firstTurn) player[activePlayer].GetComponent<Character>().SetHidden(false);
+            if (firstTurn) player[activePlayer].SetHidden(false);
 
-            player[activePlayer + 1].GetComponent<Character>().SetAsActivePlayer(true);
+            player[activePlayer + 1].SetAsActivePlayer(true);
 
         } else {
             // if it is the last element, jump to the beginning
-            player[0].GetComponent<Character>().SetAsActivePlayer(true);
+            player[0].SetAsActivePlayer(true);
             lastElement = true;
         }
 
         // deactivate the player who called the turn end
-        player[activePlayer].GetComponent<Character>().SetAsActivePlayer(false);
+        player[activePlayer].SetAsActivePlayer(false);
         
         // if it is the last element in the list, set the index to zero, otherwise iterate
         activePlayer = lastElement ? activePlayer + 1 : 0;

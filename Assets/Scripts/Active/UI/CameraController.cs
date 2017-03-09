@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour {
 
-    public GameObject activePlayer;
+    public Character activePlayer;
     public VirtualJoystick joystick1;
 
     LevelController levelController;
@@ -41,16 +41,19 @@ public class CameraController : MonoBehaviour {
         }
     }
 
-    void SetActivePlayer(GameObject _activePlayer) {
+    void SetActivePlayer(Character _activePlayer) {
         
         // take the active player sent by the level controller and assign it locally
         activePlayer = _activePlayer;
         Debug.Log(_activePlayer);
-        // get the player object which the camera follows
-        player = activePlayer.transform.GetChild(0).GetChild(0).gameObject;
 
+        // this should be replaced by a call to the character class
+        // get the player object which the camera follows
+        player = activePlayer.GetPlayer;
+
+        // character class call
         // get the camera transform which the camera sits inside of
-        cameraTransform = activePlayer.transform.GetChild(1);
+        cameraTransform = activePlayer.GetCameraTransform;
 
     }
 }

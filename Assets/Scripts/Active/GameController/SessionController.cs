@@ -46,6 +46,6 @@ public class SessionController : MonoBehaviour {
         Debug.Log(scene);
         Debug.Log(mode);
 
-        levelController.Initialize(characters, 1);
+        levelController.Initialize(characters, 2);
     }
 }

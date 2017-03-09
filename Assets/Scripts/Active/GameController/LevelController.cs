@@ -15,16 +15,15 @@ public class LevelController : MonoBehaviour {
     int numberOfPlayers;
 
     // first field is player one, second is player 2
-    List<Character> player;
-    List<Vector3> playerPositions;
+    List<Character> player = new List<Character>();
+    List<Vector3> playerPositions = new List<Vector3>();
 
     float time;
 
     int activePlayer;
 
     bool firstTurn;
-
-    // or maybe turnNumber
+    
     int jumpCount = 0;
 
     
@@ -36,7 +35,6 @@ public class LevelController : MonoBehaviour {
         assetManager = GetComponent<AssetManager>();
 
     }
-
 
     // there should be a game mode enum here as well
     public void Initialize(GameObject[] character, int _numberOfPlayers) {
@@ -52,9 +50,12 @@ public class LevelController : MonoBehaviour {
 
         for (int i = 0; i < numberOfPlayers; i++) {
 
+            // it is necessary to instantiate the game object first since that is what monobehavior scripts require
             instantiatedCharacter = Instantiate<GameObject>(character[i], levelOrigin.transform, false);
-            player.Add(instantiatedCharacter.GetComponent<Character>());
 
+            // don't worry, gameobject can still be called by using gameObject
+            player.Add(instantiatedCharacter.GetComponent<Character>());
+            
             // subscribe to end launch event
             player[i].GetLaunchController.endLaunchEvent += EndTurn;
 
@@ -71,18 +72,10 @@ public class LevelController : MonoBehaviour {
 
 
         // this gets called from session manager
-        // might actually have to do something with the SceneManager.sceneLoaded event to trigger this
-
+        
         // reset all lists and variables to zero
 
         // load save data if there is any
-        // set start position.....hmm maybe actually not. I should just create a start position gameobject with a tag
-        // set number of players
-        // instantiate player objects at start position
-        // deactivate all except player 1
-        // tie camera controller to player camera transform
-
-
     }
 
 
@@ -93,24 +86,32 @@ public class LevelController : MonoBehaviour {
         // activate player whose turn it shall be
         bool lastElement = false;
 
-        if (activePlayer < numberOfPlayers) {
+        if (activePlayer + 1 < numberOfPlayers) {
+
+            Debug.Log("active player " + activePlayer);
+            Debug.Log("number of players " + numberOfPlayers);
 
             // set the soon to be active player as visible if it has been hidden
-            if (firstTurn) player[activePlayer].SetHidden(false);
-
-            player[activePlayer + 1].SetAsActivePlayer(true);
+            if (firstTurn) {
+                player[activePlayer + 1].SetHidden(false);
+            } else {
+                player[activePlayer + 1].SetAsActivePlayer(true);
+            }
 
         } else {
             // if it is the last element, jump to the beginning
             player[0].SetAsActivePlayer(true);
             lastElement = true;
+            firstTurn = false;
         }
+
+        Debug.Log("last element " + lastElement);
 
         // deactivate the player who called the turn end
         player[activePlayer].SetAsActivePlayer(false);
         
         // if it is the last element in the list, set the index to zero, otherwise iterate
-        activePlayer = lastElement ? activePlayer + 1 : 0;
+        activePlayer = lastElement ? 0 : activePlayer + 1;
 
         
         // call to the rest of the system changing the current active player

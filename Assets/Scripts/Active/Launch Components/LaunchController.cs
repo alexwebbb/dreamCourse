@@ -53,29 +53,11 @@ public class LaunchController : MonoBehaviour {
 
         // grab the pointer cube that is used to direct the aim of the launcher. the launcher determines launch direction by using this cube and the player object
         pointerCube = transform.GetChild(0).GetChild(0).GetChild(0);
-
-        // event subscription section
-        // get the launch UI to subscribe to it
-        launchUI = FindObjectOfType<LaunchUI>();
-        // subscribe to the launch toggle event
-        launchUI.launchToggleEvent += ToggleLaunchMode;
-        // subscribe to initiate launch event
-        launchUI.initiateLaunchEvent += InitiateLaunchFromUI;
-        // subscribe to set force event
-        launchUI.setForceEvent += SetForce;
-        // subscribe to set medial spin event
-        launchUI.setMedialSpinEvent += SetMedialSpin;
-        // subscribe to set lateral spin
-        launchUI.setLateralSpinEvent += SetLateralSpin;
-    
     }
 
 
-    void Update() {
-
-        // same thing here, ui needs to handle this, needs to be a delegate
+    void FixedUpdate() {
         
-
         // this resets the position of the ball when it gets close enough to not moving
         if (resetBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
 
@@ -222,7 +204,27 @@ public class LaunchController : MonoBehaviour {
         }
     }
 
-    void OnDestroy() {
+    void Subscribe() {
+        // event subscription section
+        // get the launch UI to subscribe to it
+        launchUI = FindObjectOfType<LaunchUI>();
+        // subscribe to the launch toggle event
+        launchUI.launchToggleEvent += ToggleLaunchMode;
+        // subscribe to initiate launch event
+        launchUI.initiateLaunchEvent += InitiateLaunchFromUI;
+        // subscribe to set force event
+        launchUI.setForceEvent += SetForce;
+        // subscribe to set medial spin event
+        launchUI.setMedialSpinEvent += SetMedialSpin;
+        // subscribe to set lateral spin
+        launchUI.setLateralSpinEvent += SetLateralSpin;
+    }
+
+    void OnEnable() {
+        Subscribe();
+    }
+
+    void Unsubscribe() {
         // unsubscribe to the launch toggle event
         launchUI.launchToggleEvent -= ToggleLaunchMode;
         // unsubscribe to initiate launch event
@@ -233,5 +235,13 @@ public class LaunchController : MonoBehaviour {
         launchUI.setMedialSpinEvent -= SetMedialSpin;
         // unsubscribe to set lateral spin
         launchUI.setLateralSpinEvent -= SetLateralSpin;
+    }
+
+    void OnDestroy() {
+        Unsubscribe();
+    }
+
+    void OnDisable() {
+        Unsubscribe();
     }
 }

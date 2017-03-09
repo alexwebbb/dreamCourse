@@ -4,38 +4,65 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    public GameObject GetPlayer { get { return player; } }
-    public Transform GetCameraTransform { get { return cameraTransform; } }
-    public LaunchController GetLaunchController { get { return launchController; } }
-
-    GameObject playerContainer;
-    GameObject player;
-    GameObject playerLauncher;
-    LaunchController launchController;
-    Transform cameraTransform;
-    GameObject cameraContainer;
-
-    void Start() {
-
-        // be sure to change this if the filestructure for the character changes.... I would use a loop to find it, but this is so much lighter... SORRY
-        playerContainer = transform.GetChild(0).gameObject;
-        player = playerContainer.transform.GetChild(0).gameObject;
-        playerLauncher = playerContainer.transform.GetChild(1).gameObject;
-        launchController = playerLauncher.GetComponent<LaunchController>();
-        cameraTransform = transform.GetChild(1);
-        cameraContainer = cameraTransform.gameObject;
+    public GameObject GetPlayerContainer {
+        get {
+            if(playerContainer == null) playerContainer = transform.GetChild(0).gameObject;
+            return playerContainer;
+        }
     }
+
+    public GameObject GetPlayer {
+        get {
+            if (player == null) player = player = transform.GetChild(0).GetChild(0).gameObject;
+            return player;
+        }
+    }
+
+    public GameObject GetPlayerLauncher {
+        get {
+            if (playerLauncher == null) playerLauncher = GetPlayerContainer.transform.GetChild(1).gameObject;
+            return playerLauncher;
+        }
+    }
+
+    public LaunchController GetLaunchController {
+        get {
+            if(launchController == null) launchController = GetPlayerLauncher.GetComponent<LaunchController>();
+            return launchController;
+        }
+    }
+
+    public Transform GetCameraTransform {
+        get {
+            if(cameraTransform == null) cameraTransform = transform.GetChild(1);
+            return cameraTransform;
+        }
+    }
+
+    public GameObject GetCameraContainer {
+        get {
+            if(cameraContainer == null) cameraContainer = GetCameraTransform.gameObject;
+            return cameraContainer;
+        }
+    }
+
+    public GameObject playerContainer;
+    public GameObject player;
+    public GameObject playerLauncher;
+    public LaunchController launchController;
+    public Transform cameraTransform;
+    public GameObject cameraContainer;
 
 	public void SetAsActivePlayer(bool active) {
 
-        cameraContainer.SetActive(active);
-        playerLauncher.SetActive(active);
+        GetCameraContainer.SetActive(active);
+        GetPlayerLauncher.SetActive(active);
 
     }
 
     public void SetAsVisiblePlayer(bool visible) {
 
-        playerContainer.SetActive(visible);
+        GetPlayerContainer.SetActive(visible);
 
     }
 

@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour {
     public VirtualJoystick joystick1;
 
     LevelController levelController;
-    GameObject player;
+    public GameObject player;
     Transform cameraTransform;
     public float scalar = 0.1f;
     public float defaultHeight = 5;
@@ -44,14 +44,12 @@ public class CameraController : MonoBehaviour {
     void SetActivePlayer(Character _activePlayer) {
         
         // take the active player sent by the level controller and assign it locally
+        Debug.Log("Howdy from the cam control: active player " + _activePlayer);
         activePlayer = _activePlayer;
-        Debug.Log(_activePlayer);
 
-        // this should be replaced by a call to the character class
         // get the player object which the camera follows
         player = activePlayer.GetPlayer;
 
-        // character class call
         // get the camera transform which the camera sits inside of
         cameraTransform = activePlayer.GetCameraTransform;
 

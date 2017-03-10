@@ -37,7 +37,7 @@ public class LevelController : MonoBehaviour {
     }
 
     // there should be a game mode enum here as well
-    public void Initialize(GameObject[] character, int _numberOfPlayers) {
+    public void Initialize(List<GameObject> character, int _numberOfPlayers) {
 
         Debug.Log("Initialized");
 

@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
+    public string characterName = "default";
+
+    // private variable initialization
+    GameObject playerContainer;
+    GameObject player;
+    GameObject playerLauncher;
+    LaunchController launchController;
+    Transform cameraTransform;
+    GameObject cameraContainer;
+
+    // property accessors
     public GameObject GetPlayerContainer {
         get {
             if(playerContainer == null) playerContainer = transform.GetChild(0).gameObject;
@@ -46,13 +57,7 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public GameObject playerContainer;
-    public GameObject player;
-    public GameObject playerLauncher;
-    public LaunchController launchController;
-    public Transform cameraTransform;
-    public GameObject cameraContainer;
-
+    // utility methods
 	public void SetAsActivePlayer(bool active) {
 
         GetCameraContainer.SetActive(active);

@@ -38,13 +38,14 @@ public class MainUI : MonoBehaviour {
     AssetManager assetManager;
 
 	void Start () {
-
+        /*
         // load session controller, asset manager
         sessionController = GetComponentInParent<SessionController>();
         assetManager = GetComponentInParent<AssetManager>();
 
         InitializeLevelList();
         InitializeCharacterList();
+        */
     }
 
     // Update is called once per frame

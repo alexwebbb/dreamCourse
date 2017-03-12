@@ -34,14 +34,6 @@ public class MainMenu : MonoBehaviour {
 
     }
 
-
-    public void Unload() {
-
-        // hell, doesn't even seem like I need this one now
-
-    }
-
-
     void PullMenuStack() {
 
         foreach(Transform child in transform) {
@@ -54,5 +46,9 @@ public class MainMenu : MonoBehaviour {
         }
 
         menuStack.Reverse();
-    } 
+    }
+
+    void CreateDummyNewGame() {
+
+    }
 }

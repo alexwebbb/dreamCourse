@@ -4,6 +4,10 @@ using UnityEngine;
 
 public interface ISelectionMenu {
 
+    MainMenu GetMainMenu {
+        get;
+    }
+
     GameObject GetElements {
         get;
     }

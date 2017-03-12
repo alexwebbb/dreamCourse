@@ -24,7 +24,7 @@ public class Character : MonoBehaviour {
 
     public GameObject GetPlayer {
         get {
-            if (player == null) player = player = transform.GetChild(0).GetChild(0).gameObject;
+            if (player == null) player = GetPlayerContainer.transform.GetChild(0).gameObject;
             return player;
         }
     }

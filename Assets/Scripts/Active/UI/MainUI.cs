@@ -40,8 +40,8 @@ public class MainUI : MonoBehaviour {
 	void Start () {
 
         // load session controller, asset manager
-        sessionController = GetComponent<SessionController>();
-        assetManager = GetComponent<AssetManager>();
+        sessionController = GetComponentInParent<SessionController>();
+        assetManager = GetComponentInParent<AssetManager>();
 
         InitializeLevelList();
         InitializeCharacterList();
@@ -100,6 +100,9 @@ public class MainUI : MonoBehaviour {
     // these need to be set up so they call a tertiary function the makes them not interactable
     public void OnePlayer () { numberOfPlayers = 1; }
     public void TwoPlayer () { numberOfPlayers = 2; }
+
+
+    // These should be implemented using generics
 
     void InitializeLevelList() {
         foreach(GameObject levelGameObject in assetManager.level) {

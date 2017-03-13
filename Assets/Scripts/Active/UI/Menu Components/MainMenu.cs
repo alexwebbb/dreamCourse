@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour {
 
+    // these two for testing
+    public NewGame dummyNewGame;
+    public List<GameObject> menuCallList;
 
+    // not test
     List<GameObject> menuStack = new List<GameObject>();
-
 
     void Start() {
         PullMenuStack();
@@ -48,7 +51,16 @@ public class MainMenu : MonoBehaviour {
         menuStack.Reverse();
     }
 
-    void CreateDummyNewGame() {
+    // test section
 
+    public void CreateDummyNewGame() {
+
+        if(dummyNewGame.IsCallList == false) dummyNewGame.SetCallList = new Stack<GameObject>(menuCallList);
+        Load(dummyNewGame.NextMenu());
+    }
+
+    public void StepBackTest() {
+
+        Load(dummyNewGame.PreviousMenu());
     }
 }

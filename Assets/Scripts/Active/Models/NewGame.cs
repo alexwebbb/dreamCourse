@@ -8,26 +8,38 @@ public class NewGame : MonoBehaviour {
     // int callListCount;
 
     // list of userinterface components ... call list ... handled by properties
-    // List<ISelectionMenu> callList = new List<ISelectionMenu>();
+    // List<GameObject> callList = new List<GameObject>();
 
     // game mode will be provided with the call list
 
-    Stack<ISelectionMenu> callListPre = new Stack<ISelectionMenu>();
-    Stack<ISelectionMenu> callListPost = new Stack<ISelectionMenu>();
+    bool callListSet = false;
+    public bool IsCallList { get { return callListSet; } }
 
-    public Stack<ISelectionMenu> SetCallList { set { callListPre = value; } }
+    Stack<GameObject> callListPre = new Stack<GameObject>();
+    GameObject callListCurrent;
+    Stack<GameObject> callListPost = new Stack<GameObject>();
 
-    public ISelectionMenu NextMenu() {
+    public Stack<GameObject> SetCallList {
+        set {
+            callListPre = value;
+            callListSet = true;
+            callListCurrent = callListPre.Pop();
+        }
+    }
 
-        callListPost.Push(callListPre.Peek());
-        return callListPre.Pop();
+    public GameObject NextMenu() {
+
+        callListPost.Push(callListCurrent);
+        callListCurrent = callListPre.Pop();
+        return callListCurrent;
 
     }
 
-    public ISelectionMenu PreviousMenu() {
+    public GameObject PreviousMenu() {
 
-        callListPre.Push(callListPost.Peek());
-        return callListPost.Pop();
+        callListPre.Push(callListCurrent);
+        callListCurrent = callListPost.Pop();
+        return callListCurrent;
 
     }
 

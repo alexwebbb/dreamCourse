@@ -4,39 +4,22 @@ using UnityEngine;
 
 public class UserInterface : MonoBehaviour {
 
-    public SessionController GetSessionController {
-        get {
-            if (sessionController == null) sessionController = transform.parent.GetComponent<SessionController>();
-            return sessionController;
-        }
-    }
-
-    public GameObject GetMainMenu {
-        get {
-            if (mainMenu == null) mainMenu = transform.FindChild("Main Menu").gameObject;
-            return mainMenu;
-        }
-    }
-
-    public GameObject GetLaunchUI {
-        get {
-            if (launchUI == null) launchUI = transform.FindChild("Launch UI").gameObject;
-            return launchUI;
-        }
-    }
-
     SessionController sessionController;
     GameObject mainMenu;
     GameObject launchUI;
 
-
+    void Start() {
+        sessionController = transform.parent.GetComponent<SessionController>();
+        mainMenu = transform.FindChild("Main Menu").gameObject;
+        launchUI = transform.FindChild("Launch UI").gameObject;
+    }
 
 
     public void LoadLevel(NewGame newGame) {
 
-        GetSessionController.StartGame(newGame);
-        GetMainMenu.SetActive(false);
-        GetLaunchUI.SetActive(true);
+        sessionController.StartGame(newGame);
+        mainMenu.SetActive(false);
+        launchUI.SetActive(true);
     }
 
 }

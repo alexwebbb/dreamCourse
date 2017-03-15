@@ -10,18 +10,8 @@ public class MainMenu : MonoBehaviour {
 
     // not test
 
-    public UserInterface GetUserInterface {
-        get {
-            if (userInterface == null) userInterface = transform.parent.GetComponent<UserInterface>();
-            return userInterface;
-        }
-    }
-
     UserInterface userInterface;
     List<GameObject> menuStack = new List<GameObject>();
-
-
-
 
     public void Next(NewGame _newgame) {
 
@@ -40,11 +30,9 @@ public class MainMenu : MonoBehaviour {
 
     }
 
-
-
-
-
     void Start() {
+        userInterface = transform.parent.GetComponent<UserInterface>();
+
         PullMenuStack();
         Load(menuStack[0]);
     }
@@ -100,7 +88,7 @@ public class MainMenu : MonoBehaviour {
 
     public void Ready(NewGame _newGame) {
 
-        GetUserInterface.LoadLevel(_newGame);
+        userInterface.LoadLevel(_newGame);
 
     }
 }

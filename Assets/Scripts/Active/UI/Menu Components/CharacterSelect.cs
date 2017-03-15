@@ -7,13 +7,6 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
 
     public GameObject characterListButton;
 
-    public MainMenu GetMainMenu {
-        get {
-            if (mainMenu == null) mainMenu = transform.GetComponentInParent<MainMenu>();
-            return mainMenu;
-        }
-    }
-
     public GameObject GetElements {
         get {
             if (elements == null) elements = transform.FindChild("Elements").gameObject;
@@ -21,24 +14,11 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
         }
     }
 
-    public AssetManager GetAssetManager {
-        get {
-            if (assetManager == null) assetManager = transform.GetComponentInParent<AssetManager>();
-            return assetManager;
-        }
-    }
-
-    public Transform GetCharacterList {
-        get {
-            if (characterList == null) characterList = transform.Find("Elements/Character List Mask/Character List");
-            return characterList;
-        }
-    }
 
     public int SetNumberOfPlayers {
         set {
             newGame.numberOfPlayers = value;
-            GetCharacterList.GetComponent<CanvasGroup>().interactable = true;
+            characterList.GetComponent<CanvasGroup>().interactable = true;
         }
     }
 
@@ -51,6 +31,10 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
 
 
     void Start() {
+        mainMenu = transform.GetComponentInParent<MainMenu>();
+        assetManager = transform.GetComponentInParent<AssetManager>();
+        characterList = transform.Find("Elements/Character List Mask/Character List");
+
         InitializeCharacterList();
     }
 
@@ -68,12 +52,12 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
 
 
     void InitializeCharacterList() {
-        foreach (GameObject characterGameObject in GetAssetManager.character) {
+        foreach (GameObject characterGameObject in assetManager.character) {
             if (characterGameObject != null) {
                 Character character = characterGameObject.GetComponent<Character>();
 
                 GameObject characterButton = Instantiate<GameObject>(characterListButton);
-                characterButton.transform.SetParent(GetCharacterList, false);
+                characterButton.transform.SetParent(characterList, false);
                 characterButton.GetComponentInChildren<Text>().text = character.characterName;
                 Button characterButtonComponent = characterButton.GetComponent<Button>();
 
@@ -93,7 +77,7 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
 
             if (newGame.GetCharacterSelection.Count >= newGame.GetNumberOfPlayers) {
                 Debug.Log("Load");
-                GetMainMenu.Next(newGame);
+                mainMenu.Next(newGame);
             }
         }
     }

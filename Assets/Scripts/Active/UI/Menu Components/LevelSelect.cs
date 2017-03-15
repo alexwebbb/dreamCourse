@@ -7,31 +7,10 @@ public class LevelSelect : MonoBehaviour, ISelectionMenu {
 
     public GameObject levelListButton;
 
-    public MainMenu GetMainMenu {
-        get {
-            if (mainMenu == null) mainMenu = transform.GetComponentInParent<MainMenu>();
-            return mainMenu;
-        }
-    }
-
     public GameObject GetElements {
         get {
             if (elements == null) elements = transform.FindChild("Elements").gameObject;
             return elements;
-        }
-    }
-
-    public AssetManager GetAssetManager {
-        get {
-            if (assetManager == null) assetManager = transform.GetComponentInParent<AssetManager>();
-            return assetManager;
-        }
-    }
-
-    public Transform GetLevelList {
-        get {
-            if (levelList == null) levelList = transform.Find("Elements/Level List Mask/Level List");
-            return levelList;
         }
     }
 
@@ -42,9 +21,12 @@ public class LevelSelect : MonoBehaviour, ISelectionMenu {
     public NewGame newGame;
 
     void Start() {
+        mainMenu = transform.GetComponentInParent<MainMenu>();
+        assetManager = transform.GetComponentInParent<AssetManager>();
+        levelList = transform.Find("Elements/Level List Mask/Level List");
+
         // calls the initializer for the level buttons
         InitializeLevelList();
-
     }
 
 
@@ -64,12 +46,12 @@ public class LevelSelect : MonoBehaviour, ISelectionMenu {
 
 
     void InitializeLevelList() {
-        foreach (GameObject levelGameObject in GetAssetManager.level) {
+        foreach (GameObject levelGameObject in assetManager.level) {
             if (levelGameObject != null) {
                 Level level = levelGameObject.GetComponent<Level>();
 
                 GameObject levelButton = Instantiate<GameObject>(levelListButton);
-                levelButton.transform.SetParent(GetLevelList, false);
+                levelButton.transform.SetParent(levelList, false);
                 levelButton.GetComponentInChildren<Text>().text = level.levelName;
                 Button levelButtonComponent = levelButton.GetComponent<Button>();
 
@@ -89,7 +71,7 @@ public class LevelSelect : MonoBehaviour, ISelectionMenu {
             if (newGame.GetLevelSelection.Count >= newGame.GetNumberOfLevels) {
                 Debug.Log("Load");
 
-                GetMainMenu.Next(newGame);
+                mainMenu.Next(newGame);
             }
         }
     }

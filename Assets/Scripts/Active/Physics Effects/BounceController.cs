@@ -30,9 +30,11 @@ public class BounceController : MonoBehaviour {
         // something like if(bounceCount > 0) 
 
         // caputures the current bounce position and the very last one. used to determine the bounce direction
-        bouncePositions[1] = bouncePositions[0];
-        bouncePositions[0] = rb.position;
+        if (gameObject != null) {
+            bouncePositions[1] = bouncePositions[0];
+            bouncePositions[0] = rb.position;
 
+        }
     }
 
     void OnCollisionExit(Collision collision) {

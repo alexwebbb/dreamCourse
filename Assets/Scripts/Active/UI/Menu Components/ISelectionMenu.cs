@@ -20,12 +20,19 @@ public interface ISelectionMenu {
 
     // initialize function, sets current UI status (should be an idempotent action that sets the active status of all game objects involved in the scene. might be an external generic command, where the current gameobject is submitted) might rename this to load / unload. Also loads all internal UI elements (call generic button generate function)
 
+
+
     void Initialize(NewGame newGame);
     // assigns the newgame property to a local variable
 
+    void ResetMenu();
+    /*
+     * most will have this, but it will not be public
+     * 
     void Next(NewGame newgame);
-    // calls the Load function from main menu on the next menu function
+    // calls the Load function from main menu on the next menu function of newGame
 
     void Back(NewGame newgame);
     // call the Load Function from main menu on the back function. if necessary, clears data
+    */
 }

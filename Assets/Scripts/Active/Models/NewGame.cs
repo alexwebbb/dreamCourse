@@ -27,6 +27,10 @@ public class NewGame : MonoBehaviour {
         }
     }
 
+    public ISelectionMenu GetCurrentMenu {
+        get { return callListCurrent.GetComponent<ISelectionMenu>(); }
+    }
+
     public GameObject NextMenu() {
 
         callListPost.Push(callListCurrent);
@@ -43,13 +47,14 @@ public class NewGame : MonoBehaviour {
 
     }
 
+    [Header("Don't leave this stuff public")]
 
     // character slection stuff
 
-    int numberOfPlayers;
+    public int numberOfPlayers;
 
     public int GetNumberOfPlayers { get { return numberOfPlayers; } }
-    public int SetNumberOfPlayers { set { numberOfPlayers = value; } }    
+    public int SetNumberOfPlayers { set { numberOfPlayers = value; } }
 
     List<Character> characterSelection = new List<Character>();
 
@@ -62,9 +67,14 @@ public class NewGame : MonoBehaviour {
     public int GetNumberOfLevels { get { return numberOfLevels; } }
     public int SetNumberOfLevels { set { numberOfLevels = value; } }
 
-    List<Level> levelSelection = new List<Level>();
+    public List<Level> levelSelection = new List<Level>();
 
     public List<Level> GetLevelSelection { get { return levelSelection; } }
+
+    public void ClearLevelSelection() {
+
+        levelSelection.Clear();
+    }
 
     // confirmation prompt. function that checks if the necessary values are null or not.
 

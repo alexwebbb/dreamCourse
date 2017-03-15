@@ -9,15 +9,47 @@ public class MainMenu : MonoBehaviour {
     public List<GameObject> menuCallList;
 
     // not test
+
+    public UserInterface GetUserInterface {
+        get {
+            if (userInterface == null) userInterface = transform.parent.GetComponent<UserInterface>();
+            return userInterface;
+        }
+    }
+
+    UserInterface userInterface;
     List<GameObject> menuStack = new List<GameObject>();
+
+
+
+
+    public void Next(NewGame _newgame) {
+
+        GameObject nextMenu = _newgame.NextMenu();
+        Load(nextMenu);
+        nextMenu.GetComponent<ISelectionMenu>().Initialize(_newgame);
+
+    }
+
+    public void Back(NewGame _newgame) {
+
+        _newgame.GetCurrentMenu.ResetMenu();
+        GameObject prevMenu = _newgame.PreviousMenu();
+        Load(prevMenu);
+        prevMenu.GetComponent<ISelectionMenu>().Initialize(_newgame);
+
+    }
+
+
+
+
 
     void Start() {
         PullMenuStack();
         Load(menuStack[0]);
     }
 
-
-    public void Load(GameObject thisMenu) {
+    void Load(GameObject thisMenu) {
 
         bool loadBool = false;
 
@@ -50,17 +82,25 @@ public class MainMenu : MonoBehaviour {
 
         menuStack.Reverse();
     }
+    
 
     // test section
 
     public void CreateDummyNewGame() {
 
         if(dummyNewGame.IsCallList == false) dummyNewGame.SetCallList = new Stack<GameObject>(menuCallList);
-        Load(dummyNewGame.NextMenu());
+        Next(dummyNewGame);
     }
 
     public void StepBackTest() {
 
-        Load(dummyNewGame.PreviousMenu());
+        Back(dummyNewGame);
+
+    }
+
+    public void Ready(NewGame _newGame) {
+
+        GetUserInterface.LoadLevel(_newGame);
+
     }
 }

@@ -37,7 +37,7 @@ public class LevelController : MonoBehaviour {
     }
 
     // there should be a game mode enum here as well
-    public void Initialize(List<GameObject> character, int _numberOfPlayers) {
+    public void Initialize(List<Character> character, int _numberOfPlayers) {
 
         Debug.Log("Initialized");
 
@@ -51,7 +51,7 @@ public class LevelController : MonoBehaviour {
         for (int i = 0; i < numberOfPlayers; i++) {
 
             // it is necessary to instantiate the game object first since that is what monobehavior scripts require
-            instantiatedCharacter = Instantiate<GameObject>(character[i], levelOrigin.transform, false);
+            instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, levelOrigin.transform, false);
 
             // don't worry, gameobject can still be called by using gameObject
             player.Add(instantiatedCharacter.GetComponent<Character>());

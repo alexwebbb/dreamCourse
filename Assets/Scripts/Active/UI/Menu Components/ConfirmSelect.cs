@@ -7,6 +7,9 @@ public class ConfirmSelect : MonoBehaviour, ISelectionMenu {
     MainMenu mainMenu;
     GameObject elements;
 
+    // supposed to be private
+    public NewGame newGame;
+
     public MainMenu GetMainMenu {
         get {
             if (mainMenu == null) mainMenu = transform.GetComponentInParent<MainMenu>();
@@ -21,13 +24,20 @@ public class ConfirmSelect : MonoBehaviour, ISelectionMenu {
         }
     }
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Called when loading and unloading the menu, required by the interface
+
+    public void Initialize(NewGame _newGame) {
+        // set reference to new game object
+        newGame = _newGame;
+    }
+
+    public void ResetMenu() {
+        
+    }
+
+    public void Confirmed() {
+        GetMainMenu.Ready(newGame);
+    }
+
 }

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class LevelSelect : MonoBehaviour, ISelectionMenu {
 
     public GameObject levelListButton;
-    public GameObject levelList;
 
     public MainMenu GetMainMenu {
         get {
@@ -29,14 +28,40 @@ public class LevelSelect : MonoBehaviour, ISelectionMenu {
         }
     }
 
+    public Transform GetLevelList {
+        get {
+            if (levelList == null) levelList = transform.Find("Elements/Level List Mask/Level List");
+            return levelList;
+        }
+    }
+
     MainMenu mainMenu;
     GameObject elements;
     AssetManager assetManager;
-    NewGame newGame;
+    Transform levelList;
+    public NewGame newGame;
 
     void Start() {
+        // calls the initializer for the level buttons
         InitializeLevelList();
+
     }
+
+
+    // Called when loading and unloading the menu, required by the interface
+
+    public void Initialize(NewGame _newGame) {
+        // set reference to new game object
+        newGame = _newGame;
+    }
+
+    public void ResetMenu() {
+        // clears level list on newgame
+        newGame.ClearLevelSelection();
+    }
+
+
+
 
     void InitializeLevelList() {
         foreach (GameObject levelGameObject in GetAssetManager.level) {
@@ -44,7 +69,7 @@ public class LevelSelect : MonoBehaviour, ISelectionMenu {
                 Level level = levelGameObject.GetComponent<Level>();
 
                 GameObject levelButton = Instantiate<GameObject>(levelListButton);
-                levelButton.transform.SetParent(levelList.transform, false);
+                levelButton.transform.SetParent(GetLevelList, false);
                 levelButton.GetComponentInChildren<Text>().text = level.levelName;
                 Button levelButtonComponent = levelButton.GetComponent<Button>();
 
@@ -63,6 +88,8 @@ public class LevelSelect : MonoBehaviour, ISelectionMenu {
 
             if (newGame.GetLevelSelection.Count >= newGame.GetNumberOfLevels) {
                 Debug.Log("Load");
+
+                GetMainMenu.Next(newGame);
             }
         }
     }

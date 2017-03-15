@@ -21,13 +21,18 @@ public class MainSelect : MonoBehaviour, ISelectionMenu {
         }
     }
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Called when loading and unloading the menu, required by the interface
+
+    public void Initialize(NewGame _newGame) {
+        
+
+    }
+
+    public void ResetMenu() {
+
+
+    }
+
+
 }

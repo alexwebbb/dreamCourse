@@ -28,18 +28,44 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
         }
     }
 
-    public GameObject GetCharacterList {
+    public Transform GetCharacterList {
         get {
-            if (characterList == null) characterList = transform.FindChild("Character List").gameObject;
+            if (characterList == null) characterList = transform.Find("Elements/Character List Mask/Character List");
             return characterList;
+        }
+    }
+
+    public int SetNumberOfPlayers {
+        set {
+            newGame.numberOfPlayers = value;
+            GetCharacterList.GetComponent<CanvasGroup>().interactable = true;
         }
     }
 
     MainMenu mainMenu;
     GameObject elements;
     AssetManager assetManager;
-    GameObject characterList;
+    Transform characterList;
     NewGame newGame;
+
+
+
+    void Start() {
+        InitializeCharacterList();
+    }
+
+
+    // Called when loading and unloading the menu, required by the interface
+
+    public void Initialize(NewGame _newGame) {
+        // set reference to new game object
+        newGame = _newGame;
+    }
+
+    public void ResetMenu() {
+        
+    }
+
 
     void InitializeCharacterList() {
         foreach (GameObject characterGameObject in GetAssetManager.character) {
@@ -47,7 +73,7 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
                 Character character = characterGameObject.GetComponent<Character>();
 
                 GameObject characterButton = Instantiate<GameObject>(characterListButton);
-                characterButton.transform.SetParent(characterList.transform, false);
+                characterButton.transform.SetParent(GetCharacterList, false);
                 characterButton.GetComponentInChildren<Text>().text = character.characterName;
                 Button characterButtonComponent = characterButton.GetComponent<Button>();
 
@@ -67,6 +93,7 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
 
             if (newGame.GetCharacterSelection.Count >= newGame.GetNumberOfPlayers) {
                 Debug.Log("Load");
+                GetMainMenu.Next(newGame);
             }
         }
     }

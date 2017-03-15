@@ -10,7 +10,7 @@ public class SessionController : MonoBehaviour {
     LevelController levelController;
     AssetManager assetManager;
 
-    List<GameObject> characters;
+    List<Character> characters;
     int numberOfPlayers;
 
     void Start() {
@@ -31,14 +31,14 @@ public class SessionController : MonoBehaviour {
         levelController = GetComponent<LevelController>();
     }
 
-    public void StartGame (string fileName, List<GameObject> _characters, int _numberOfPlayers) {
+    public void StartGame (NewGame newGame) {
 
         // load the requested scene
-        SceneManager.LoadScene(fileName);
+        SceneManager.LoadScene(newGame.GetLevelSelection[0].fileName);
 
         // pass characters array and number of players
-        characters = _characters;
-        numberOfPlayers = _numberOfPlayers;
+        characters = newGame.GetCharacterSelection;
+        numberOfPlayers = newGame.GetNumberOfPlayers;
 
         // on scene load will now run
     }

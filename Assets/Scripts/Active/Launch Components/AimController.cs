@@ -35,9 +35,9 @@ public class AimController : MonoBehaviour {
     }
 
     void OnDestroy() {
-        // unsubscribe to the launch toggle event
+        // unsubscribe to the horizontal rotate event
         aimUI.rotateHorizontalEvent -= RotateHorizontal;
-        // unsubscribe to initiate launch event
+        // unsubscribe to vertical rotate event
         aimUI.rotateVerticalEvent -= RotateVertical;
     }
 }

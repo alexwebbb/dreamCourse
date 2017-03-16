@@ -108,7 +108,7 @@ public class LevelController : MonoBehaviour {
         Debug.Log("last element " + lastElement);
 
         // deactivate the player who called the turn end
-        player[activePlayer].SetAsActivePlayer(false);
+        if(numberOfPlayers != 1) player[activePlayer].SetAsActivePlayer(false);
         
         // if it is the last element in the list, set the index to zero, otherwise iterate
         activePlayer = lastElement ? 0 : activePlayer + 1;

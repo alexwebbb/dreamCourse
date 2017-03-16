@@ -76,7 +76,13 @@ public class MainMenu : MonoBehaviour {
 
     public void CreateDummyNewGame() {
 
-        if(dummyNewGame.IsCallList == false) dummyNewGame.SetCallList = new Stack<GameObject>(menuCallList);
+        
+        if(dummyNewGame.IsCallList == false) {
+            List<GameObject> temp = menuCallList;
+            temp.Reverse();
+            dummyNewGame.SetCallList = new Stack<GameObject>(temp);
+        }
+
         Next(dummyNewGame);
     }
 

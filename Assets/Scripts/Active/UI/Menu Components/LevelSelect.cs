@@ -3,26 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelSelect : MonoBehaviour, ISelectionMenu {
+public class LevelSelect : MenuComponent, ISelectionMenu {
 
     public GameObject levelListButton;
 
-    public GameObject GetElements {
-        get {
-            if (elements == null) elements = transform.FindChild("Elements").gameObject;
-            return elements;
-        }
-    }
-
-    MainMenu mainMenu;
-    GameObject elements;
-    AssetManager assetManager;
     Transform levelList;
+    //should be private
     public NewGame newGame;
 
-    void Start() {
-        mainMenu = transform.GetComponentInParent<MainMenu>();
-        assetManager = transform.GetComponentInParent<AssetManager>();
+    public override void Start() {
+        base.Start();
         levelList = transform.Find("Elements/Level List Mask/Level List");
 
         // calls the initializer for the level buttons

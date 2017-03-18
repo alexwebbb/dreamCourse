@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterSelect : MonoBehaviour, ISelectionMenu {
+public class CharacterSelect : MenuComponent, ISelectionMenu {
 
     public GameObject characterListButton;
 
-    public GameObject GetElements {
-        get {
-            if (elements == null) elements = transform.FindChild("Elements").gameObject;
-            return elements;
-        }
-    }
-
+    GameObject elements;
+    Transform characterList;
+    NewGame newGame;
 
     public int SetNumberOfPlayers {
         set {
@@ -22,17 +18,8 @@ public class CharacterSelect : MonoBehaviour, ISelectionMenu {
         }
     }
 
-    MainMenu mainMenu;
-    GameObject elements;
-    AssetManager assetManager;
-    Transform characterList;
-    NewGame newGame;
-
-
-
-    void Start() {
-        mainMenu = transform.GetComponentInParent<MainMenu>();
-        assetManager = transform.GetComponentInParent<AssetManager>();
+    public override void Start() {
+        base.Start();
         characterList = transform.Find("Elements/Character List Mask/Character List");
 
         InitializeCharacterList();

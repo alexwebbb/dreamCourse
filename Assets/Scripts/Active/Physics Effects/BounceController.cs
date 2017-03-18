@@ -8,20 +8,58 @@ public class BounceController : MonoBehaviour {
     public int bounceCount;
 
     Rigidbody rb;
-    LaunchController launchCon;
+    ConstantForce cf;
+    LaunchController launcher;
     Vector3[] bouncePositions;
 
-	void Start () {
+    float dragDefault;
+    Vector3 cfDefault;
 
-        // get the rigidbody of the spinning object
-        rb = GetComponent<Rigidbody>();
+    public Rigidbody GetRigidbody {
+        get {
+            if (rb == null) rb = GetComponent<Rigidbody>();
+            return rb;
+        }
+    }
 
+    public ConstantForce GetConstantForce {
+        get {
+            if (cf == null) cf = GetComponent<ConstantForce>();
+            return cf;
+        }
+    }
+
+    public LaunchController SetLauncher {
+        set {
+            if (launcher == null) {
+                launcher = value;
+
+                // cache and set the properties of rb. necessary if environmental effects change these. magnus force?
+                GetRigidbody.angularDrag = launcher.angleDrag;
+                GetRigidbody.drag = dragDefault = launcher.drag;
+
+                // experimental --- changing the center of mass
+                GetRigidbody.centerOfMass = launcher.centerOfMass;
+
+                // if a character spec is added for constant force, should be added to launch controller
+                GetConstantForce.force = cfDefault = Vector3.zero; 
+            }
+        }
+    }
+
+    // if you want to add support for overlapping effects, just replace the reset functions with remove properties
+    public float AddDrag { set { GetRigidbody.drag = dragDefault + value; } }
+    public void ResetDrag() { GetRigidbody.drag = dragDefault; }
+
+    public Vector3 AddConstantForce { set { GetConstantForce.force = cfDefault + value; } }
+    public void ResetConstantForce() { GetConstantForce.force = cfDefault; }
+
+    void Start () {
         // find the launcher for the object and capture the controller. this would need to change in a multiplayer context 
-        launchCon = GameObject.FindGameObjectWithTag("Launcher").GetComponent<LaunchController>();
+        launcher = GameObject.FindGameObjectWithTag("Launcher").GetComponent<LaunchController>();
 
         // initialize the bounce positions array
         bouncePositions = new Vector3[2];
-
 	}
     
     void OnCollisionEnter(Collision collision) {
@@ -47,16 +85,16 @@ public class BounceController : MonoBehaviour {
             Vector3.Normalize(spinDirection);
 
             // this is adds to the vertical force of the bounce. SHOULD work even when hitting things from underneath
-            rb.AddForce(Vector3.up * rb.velocity.y * launchCon.bouncePercent, ForceMode.VelocityChange);
+            rb.AddForce(Vector3.up * rb.velocity.y * launcher.bouncePercent, ForceMode.VelocityChange);
 
             // because unity angular velocity is very finicky and doesn't tell you direction of spin, the power of the spin correction is determined by the original spin power that is entered into the launch controller
-            if (launchCon.spinForce.x > 0 || launchCon.spinForce.x < 0) {
+            if (launcher.spinForce.x > 0 || launcher.spinForce.x < 0) {
 
                 // force is applied. make sure to always use velociy for the force mode!
-                rb.AddForce(spinDirection * launchCon.spinForce.x * launchCon.spinForceFactor, ForceMode.VelocityChange);
+                rb.AddForce(spinDirection * launcher.spinForce.x * launcher.spinForceFactor, ForceMode.VelocityChange);
 
                 // torque is applied. keeps the object spinning in the correct direction visibly.
-                rb.AddRelativeTorque(launchCon.spinForce, ForceMode.VelocityChange);
+                rb.AddRelativeTorque(launcher.spinForce, ForceMode.VelocityChange);
                 
             } 
         }

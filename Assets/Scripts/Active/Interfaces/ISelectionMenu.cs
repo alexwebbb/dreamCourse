@@ -6,8 +6,8 @@ public interface ISelectionMenu {
 
     GameObject GetElements { get; }
 
-    void Initialize(NewGame newGame);
     // assigns the newgame property to a local variable
+    void Initialize(NewGame newGame);
 
     void ResetMenu();
 

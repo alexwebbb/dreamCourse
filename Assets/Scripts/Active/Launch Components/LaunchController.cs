@@ -118,36 +118,33 @@ public class LaunchController : MonoBehaviour {
     void Launch(bool traceBool) {
 
         // this ternary operator uses the trace bool to determine whether to launch a tracer object or the player object
-        GameObject testBall = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation) : playerObject;
+        GameObject launchingObject = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation) : playerObject;
 
+        /*
         // weird fix for launching inside water bug and other issues
         if(!traceBool) {
-            testBall.SetActive(false);
-            testBall.SetActive(true);
+            launchingObject.SetActive(false);
+            launchingObject.SetActive(true);
         }
+        */
+
+        // get the launching object's bounce controller so that it can invoke the set launcher property
+        BounceController bc = launchingObject.GetComponent<BounceController>();
+        // set launcher checks to see if the launch controller has been set (ie the player object) and sets initial variables
+        bc.SetLauncher = this;
 
         // grabs the rigidbody of the object that is produced by the prior operation
-        Rigidbody testballRB = testBall.GetComponent<Rigidbody>();
-
-        // sets properties for the object, so you don't have to set properties in two different places. this section will likely be expanded. magnus force is a strong candidate
-        testballRB.angularDrag = angleDrag;
-        testballRB.drag = drag;
-
-        // experimental --- changing the center of mass 
-
-        testballRB.centerOfMass = centerOfMass;
-
-        
+        Rigidbody launchingRB = bc.GetRigidbody;
 
         // the object which has been grabbed is pointed at the cube
-        testballRB.transform.LookAt(pointerCube);
+        launchingRB.transform.LookAt(pointerCube);
 
         // launch forces are applied
-        testballRB.AddRelativeForce(Vector3.forward * force, ForceMode.VelocityChange);
-        testballRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
+        launchingRB.AddRelativeForce(Vector3.forward * force, ForceMode.VelocityChange);
+        launchingRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
 
         // sets the decay time for the tracer objects
-        if (traceBool) Destroy(testBall, lifetime);
+        if (traceBool) Destroy(launchingObject, lifetime);
     }
 
     void PositionReset() {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class mainSelect : MonoBehaviour {
+public class Goal : LevelComponent {
 
 	// Use this for initialization
 	void Start () {

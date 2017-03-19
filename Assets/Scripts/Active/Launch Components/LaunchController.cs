@@ -71,12 +71,10 @@ public class LaunchController : MonoBehaviour {
             if (restCounter > restLimit) {
                 
                 // the player object is reset and the rest counter is reset
-                PositionReset();
+                PositionReset(true);
                 restCounter = 0;
             }
         }
-           
-
     }
 
     IEnumerator BallLooper() {
@@ -87,7 +85,8 @@ public class LaunchController : MonoBehaviour {
             // launch player, end coroutine
             if (playerLaunchBool) {
 
-                // unlocks the player object constraints 
+                // may still keep this in case of player effects that freeze position, like porcupine
+                // unlocks the player object constraints
                 playerObjectRB.constraints = RigidbodyConstraints.None;
 
                 // launches the player.... the boolean represents whether the tracer will be used or not... false indicates the player
@@ -142,7 +141,7 @@ public class LaunchController : MonoBehaviour {
         if (traceBool) Destroy(launchingObject, lifetime);
     }
 
-    void PositionReset() {
+    void PositionReset(bool turnEnd) {
 
         // stops movement
         playerObjectRB.angularVelocity = playerObjectRB.velocity = Vector3.zero;
@@ -150,17 +149,16 @@ public class LaunchController : MonoBehaviour {
         // resets localRotation
         playerObject.transform.localRotation = Quaternion.Euler(-90, 0, 0);
 
-        // locks the player object in place
-        playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
-
         // pops the launcher over to the position of the player
         transform.position = playerObject.transform.position;
 
-        // turns off the boolean that allows the position reset to occur in the update process
-        resetBool = false;
+        if (turnEnd) {
+            // turns off the boolean that allows the position reset to occur in the update process
+            resetBool = false;
 
-        // call the event that signals to the rest of the system (namely the level controller) that the turn has ended.
-        if (endLaunchEvent != null) endLaunchEvent();
+            // call the event that signals to the rest of the system (namely the level controller) that the turn has ended.
+            if (endLaunchEvent != null) endLaunchEvent(); 
+        }
     }
 
     // these are called by events
@@ -214,6 +212,8 @@ public class LaunchController : MonoBehaviour {
 
     void OnEnable() {
         Subscribe();
+        // resets position at the beginning of turn
+        PositionReset(false);
     }
 
     void Unsubscribe() {

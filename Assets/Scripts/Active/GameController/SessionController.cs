@@ -38,10 +38,13 @@ public class SessionController : MonoBehaviour {
     public void StartGame (NewGame newGame) {
 
         // pass characters array and number of players
-        levels = newGame.GetLevelSelection;
         characters = newGame.GetCharacterSelection;
         numberOfPlayers = newGame.GetNumberOfPlayers;
+
+        // optional elements, probably will be replaced w/ game object later
+        levels = newGame.GetLevelSelection;
         currentLevel = 0;
+
         // load the requested scene
         SceneManager.LoadScene(levels[currentLevel].fileName);
 
@@ -53,6 +56,6 @@ public class SessionController : MonoBehaviour {
         Debug.Log(scene);
         Debug.Log(mode);
 
-        levelController.Initialize(levels, currentLevel, characters, numberOfPlayers);
+        levelController.Initialize(characters, numberOfPlayers);
     }
 }

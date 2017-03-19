@@ -9,12 +9,12 @@ public class LevelController : MonoBehaviour {
 
     public event Action<Character> setActivePlayerEvent;
 
-    int currentLevel;
+    Level currentLevel;
+
     int numberOfPlayers;
     int scoreablePoints;
 
     // first field is player one, second is player 2
-    List<Level> level = new List<Level>();
     List<Character> player = new List<Character>();
     Dictionary<Character, List<Goal>> score = new Dictionary<Character, List<Goal>>();
     
@@ -37,13 +37,12 @@ public class LevelController : MonoBehaviour {
     public void RegisterGoal() { scoreablePoints += 1; }
 
     // there should be a game mode enum here as well
-    public void Initialize(List<Level> _level, int _currentLevel, List<Character> character, int _numberOfPlayers) {
-
-        level = _level;
-        currentLevel = _currentLevel;
+    public void Initialize(List<Character> character, int _numberOfPlayers) {
+        
         numberOfPlayers = _numberOfPlayers;
 
-        GameObject levelOrigin = GameObject.FindGameObjectWithTag("LevelOrigin");
+        // set current level so that calls to custom level object can be made
+        currentLevel = GameObject.FindGameObjectWithTag("LevelOrigin").GetComponent<Level>();
 
         // begin instantiating characters
         GameObject instantiatedCharacter;
@@ -51,7 +50,7 @@ public class LevelController : MonoBehaviour {
         for (int i = 0; i < numberOfPlayers; i++) {
 
             // it is necessary to instantiate the game object first since that is what monobehavior scripts require
-            instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, levelOrigin.transform, false);
+            instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.transform, false);
 
             // don't worry, gameobject can still be called by using gameObject
             player.Add(instantiatedCharacter.GetComponent<Character>());

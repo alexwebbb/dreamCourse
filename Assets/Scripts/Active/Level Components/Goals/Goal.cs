@@ -28,10 +28,10 @@ public class Goal : LevelComponent {
 
     private void OnTriggerEnter(Collider other) {
         BounceController bc = other.GetComponent<BounceController>();
-        if(bc != null) {
+        if(bc != null && bc.GetCharacter != currentOwner) {
             lastOwner = currentOwner;
             currentOwner = bc.GetCharacter;
-
+            // haha make sure the add point call comes AFTER the assignment of current owner
             GetLevelController.AddPoint(bc.GetCharacter, this);
         }
     }

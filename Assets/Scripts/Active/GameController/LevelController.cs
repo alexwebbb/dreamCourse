@@ -128,8 +128,8 @@ public class LevelController : MonoBehaviour {
         // if the goal is changing hands, remove the point from the previous owner
         if (goal.GetLastOwner != null && scorer != goal.GetLastOwner) { score[goal.GetLastOwner].Remove(goal); }
         // just a fun little check of the score
-        Debug.Log(score[player[0]].Count);
-        Debug.Log(score[player[1]].Count);
+        Debug.Log("player 1: " + score[player[0]].Count);
+        Debug.Log("player 2: " + score[player[1]].Count);
     }
 
     void ExportLevelSession() {

@@ -10,8 +10,12 @@ public class SessionController : MonoBehaviour {
     LevelController levelController;
     AssetManager assetManager;
 
+    List<Level> levels;
+    int currentLevel;
     List<Character> characters;
     int numberOfPlayers;
+
+    NewGame newGame;
 
     void Start() {
 
@@ -33,12 +37,13 @@ public class SessionController : MonoBehaviour {
 
     public void StartGame (NewGame newGame) {
 
-        // load the requested scene
-        SceneManager.LoadScene(newGame.GetLevelSelection[0].fileName);
-
         // pass characters array and number of players
+        levels = newGame.GetLevelSelection;
         characters = newGame.GetCharacterSelection;
         numberOfPlayers = newGame.GetNumberOfPlayers;
+        currentLevel = 0;
+        // load the requested scene
+        SceneManager.LoadScene(levels[currentLevel].fileName);
 
         // on scene load will now run
     }
@@ -48,6 +53,6 @@ public class SessionController : MonoBehaviour {
         Debug.Log(scene);
         Debug.Log(mode);
 
-        levelController.Initialize(characters, numberOfPlayers);
+        levelController.Initialize(levels, currentLevel, characters, numberOfPlayers);
     }
 }

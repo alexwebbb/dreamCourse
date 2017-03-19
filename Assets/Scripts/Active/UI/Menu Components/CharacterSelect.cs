@@ -10,9 +10,9 @@ public class CharacterSelect : MenuComponent, ISelectionMenu {
     Transform characterList;
     NewGame newGame;
 
-    public int SetNumberOfPlayers {
+    public int SetNumberOfPlayersButton {
         set {
-            newGame.numberOfPlayers = value;
+            newGame.SetNumberOfPlayers = value;
             characterList.GetComponent<CanvasGroup>().interactable = true;
         }
     }

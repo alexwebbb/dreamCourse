@@ -23,7 +23,11 @@ public class Goal : LevelComponent {
     public Character GetLastOwner { get { return lastOwner; } }
 
     private void Start() {
+        // cache the default color of the goal
         defaultColor = GetRenderer.material.color;
+
+        // register this goal with the level controller
+        GetLevelController.RegisterGoal();
     }
 
     private void OnTriggerEnter(Collider other) {

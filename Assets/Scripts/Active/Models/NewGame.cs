@@ -47,11 +47,11 @@ public class NewGame : MonoBehaviour {
 
     }
 
-    [Header("Don't leave this stuff public")]
+    // [Header("Don't leave this stuff public")]
 
     // character slection stuff
 
-    public int numberOfPlayers;
+    int numberOfPlayers;
 
     public int GetNumberOfPlayers { get { return numberOfPlayers; } }
     public int SetNumberOfPlayers { set { numberOfPlayers = value; } }
@@ -67,7 +67,7 @@ public class NewGame : MonoBehaviour {
     public int GetNumberOfLevels { get { return numberOfLevels; } }
     public int SetNumberOfLevels { set { numberOfLevels = value; } }
 
-    public List<Level> levelSelection = new List<Level>();
+    List<Level> levelSelection = new List<Level>();
 
     public List<Level> GetLevelSelection { get { return levelSelection; } }
 

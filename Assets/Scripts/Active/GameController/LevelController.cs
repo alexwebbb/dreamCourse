@@ -9,38 +9,41 @@ public class LevelController : MonoBehaviour {
 
     public event Action<Character> setActivePlayerEvent;
 
-    AssetManager assetManager;
-    GameObject levelOrigin;
-
-    Vector3 startPosition;
+    int currentLevel;
     int numberOfPlayers;
+    int scoreablePoints;
 
     // first field is player one, second is player 2
+    List<Level> level = new List<Level>();
     List<Character> player = new List<Character>();
-    List<Vector3> playerPositions = new List<Vector3>();
     Dictionary<Character, List<Goal>> score = new Dictionary<Character, List<Goal>>();
-
-    float time;
-
-    int activePlayer;
-
-    bool firstTurn;
     
-    int jumpCount = 0;
+    // this will most likely also need to be a dictionary
+    // List<Vector3> playerPositions = new List<Vector3>();
+    
+    int activePlayer;
+    int turnNumber;
 
-
-    void Start() {
-
-        assetManager = GetComponent<AssetManager>();
-
+    public int GetTotalScored {
+        get {
+            int totalScored = 0;
+            for (int i = 0; i < numberOfPlayers; i++) {
+                totalScored += score[player[i]].Count;
+            }
+            return totalScored;
+        }
     }
 
-    // there should be a game mode enum here as well
-    public void Initialize(List<Character> character, int _numberOfPlayers) {
+    public void RegisterGoal() { scoreablePoints += 1; }
 
+    // there should be a game mode enum here as well
+    public void Initialize(List<Level> _level, int _currentLevel, List<Character> character, int _numberOfPlayers) {
+
+        level = _level;
+        currentLevel = _currentLevel;
         numberOfPlayers = _numberOfPlayers;
 
-        levelOrigin = GameObject.FindGameObjectWithTag("LevelOrigin");
+        GameObject levelOrigin = GameObject.FindGameObjectWithTag("LevelOrigin");
 
         // begin instantiating characters
         GameObject instantiatedCharacter;
@@ -67,8 +70,8 @@ public class LevelController : MonoBehaviour {
         // this might could be a seperate method, set active player
         activePlayer = 0;
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[0]);
-
-        firstTurn = true;
+        // reset turn number
+        turnNumber = 0;
 
 
         // this gets called from session manager
@@ -89,7 +92,7 @@ public class LevelController : MonoBehaviour {
         if (activePlayer + 1 < numberOfPlayers) {
 
             // set the soon to be active player as visible if it has been hidden
-            if (firstTurn) {
+            if (turnNumber == 0) {
                 player[activePlayer + 1].SetHidden(false);
             } else {
                 player[activePlayer + 1].SetAsActivePlayer(true);
@@ -99,7 +102,7 @@ public class LevelController : MonoBehaviour {
             // if it is the last element, jump to the beginning
             player[0].SetAsActivePlayer(true);
             lastElement = true;
-            firstTurn = false;
+            turnNumber += 1;
         }
 
         // deactivate the player who called the turn end
@@ -117,9 +120,6 @@ public class LevelController : MonoBehaviour {
         // end the current players turn. called from launch controller or player controller once reset position is called. returns landing position and adds it to the player positions list
     }
 
-
-
-
     public void AddPoint(Character scorer, Goal goal) {
         // add a point to the score. called from goal gameobjects
         if(!score[scorer].Contains(goal)) score[scorer].Add(goal);
@@ -128,6 +128,8 @@ public class LevelController : MonoBehaviour {
         // if the goal is changing hands, remove the point from the previous owner
         if (goal.GetLastOwner != null && scorer != goal.GetLastOwner) { score[goal.GetLastOwner].Remove(goal); }
         // just a fun little check of the score
+        Debug.Log("Scoreable Points: " + scoreablePoints);
+        Debug.Log("Total Points Scored: " + GetTotalScored);
         Debug.Log("player 1: " + score[player[0]].Count);
         Debug.Log("player 2: " + score[player[1]].Count);
     }

@@ -13,14 +13,6 @@ public class AimController : MonoBehaviour {
 
         // a seperate transform is used for the vertical access to avoid gimble lock
         verticalAxis = transform.GetChild(0);
-
-        // event subscription section
-        // get the player object to subscribe
-        aimUI = FindObjectOfType<AimUI>();
-        // subscribe to the launch toggle event
-        aimUI.rotateHorizontalEvent += RotateHorizontal;
-        // subscribe to initiate launch event
-        aimUI.rotateVerticalEvent += RotateVertical;
     }
 	
 
@@ -34,10 +26,28 @@ public class AimController : MonoBehaviour {
         if (up && verticalAxis.eulerAngles.z < 70f) verticalAxis.Rotate(direction);
     }
 
-    void OnDestroy() {
+    private void OnEnable() {
+        // event subscription section
+        // get the player object to subscribe
+        if(aimUI == null) aimUI = FindObjectOfType<AimUI>();
+        // subscribe to the launch toggle event
+        aimUI.rotateHorizontalEvent += RotateHorizontal;
+        // subscribe to initiate launch event
+        aimUI.rotateVerticalEvent += RotateVertical;
+    }
+
+    void Unsubscribe() {
         // unsubscribe to the horizontal rotate event
         aimUI.rotateHorizontalEvent -= RotateHorizontal;
         // unsubscribe to vertical rotate event
         aimUI.rotateVerticalEvent -= RotateVertical;
+    }
+
+    private void OnDisable() {
+        Unsubscribe();
+    }
+
+    private void OnDestroy() {
+        Unsubscribe();
     }
 }

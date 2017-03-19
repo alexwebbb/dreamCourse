@@ -7,6 +7,6 @@ public class Level : MonoBehaviour {
     public string levelName;
     public string fileName;
 
-    public Vector3 levelOrigin { get { return transform.position; } }
+    // public Transform GetLevelOrigin { get { return transform; } }
 
 }

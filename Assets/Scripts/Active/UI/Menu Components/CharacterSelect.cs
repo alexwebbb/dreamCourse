@@ -7,7 +7,6 @@ public class CharacterSelect : MenuComponent, ISelectionMenu {
 
     public GameObject characterListButton;
 
-    GameObject elements;
     Transform characterList;
     NewGame newGame;
 
@@ -63,7 +62,7 @@ public class CharacterSelect : MenuComponent, ISelectionMenu {
             button.GetComponent<Image>().color = Color.green;
 
             if (newGame.GetCharacterSelection.Count >= newGame.GetNumberOfPlayers) {
-                Debug.Log("Load");
+                // load the game!
                 mainMenu.Next(newGame);
             }
         }

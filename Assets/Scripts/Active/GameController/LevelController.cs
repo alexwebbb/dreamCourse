@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,6 +18,7 @@ public class LevelController : MonoBehaviour {
     // first field is player one, second is player 2
     List<Character> player = new List<Character>();
     List<Vector3> playerPositions = new List<Vector3>();
+    Dictionary<Character, List<Goal>> score = new Dictionary<Character, List<Goal>>();
 
     float time;
 
@@ -25,9 +27,6 @@ public class LevelController : MonoBehaviour {
     bool firstTurn;
     
     int jumpCount = 0;
-
-    
-    int[] score;
 
 
     void Start() {
@@ -38,8 +37,6 @@ public class LevelController : MonoBehaviour {
 
     // there should be a game mode enum here as well
     public void Initialize(List<Character> character, int _numberOfPlayers) {
-
-        Debug.Log("Initialized");
 
         numberOfPlayers = _numberOfPlayers;
 
@@ -55,7 +52,10 @@ public class LevelController : MonoBehaviour {
 
             // don't worry, gameobject can still be called by using gameObject
             player.Add(instantiatedCharacter.GetComponent<Character>());
-            
+
+            // create score list for each character
+            score.Add(player.Last(), new List<Goal>());
+
             // subscribe to end launch event
             player[i].GetLaunchController.endLaunchEvent += EndTurn;
 
@@ -88,9 +88,6 @@ public class LevelController : MonoBehaviour {
 
         if (activePlayer + 1 < numberOfPlayers) {
 
-            Debug.Log("active player " + activePlayer);
-            Debug.Log("number of players " + numberOfPlayers);
-
             // set the soon to be active player as visible if it has been hidden
             if (firstTurn) {
                 player[activePlayer + 1].SetHidden(false);
@@ -104,8 +101,6 @@ public class LevelController : MonoBehaviour {
             lastElement = true;
             firstTurn = false;
         }
-
-        Debug.Log("last element " + lastElement);
 
         // deactivate the player who called the turn end
         if(numberOfPlayers != 1) player[activePlayer].SetAsActivePlayer(false);
@@ -122,8 +117,19 @@ public class LevelController : MonoBehaviour {
         // end the current players turn. called from launch controller or player controller once reset position is called. returns landing position and adds it to the player positions list
     }
 
-    void AddPoint() {
+
+
+
+    public void AddPoint(Character scorer, Goal goal) {
         // add a point to the score. called from goal gameobjects
+        if(!score[scorer].Contains(goal)) score[scorer].Add(goal);
+        // change the color of the goal object
+        goal.SetColor = scorer.captureColor;
+        // if the goal is changing hands, remove the point from the previous owner
+        if (goal.GetLastOwner != null && scorer != goal.GetLastOwner) { score[goal.GetLastOwner].Remove(goal); }
+        // just a fun little check of the score
+        Debug.Log(score[player[0]].Count);
+        Debug.Log(score[player[1]].Count);
     }
 
     void ExportLevelSession() {

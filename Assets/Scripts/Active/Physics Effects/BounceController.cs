@@ -10,6 +10,7 @@ public class BounceController : MonoBehaviour {
     Rigidbody rb;
     ConstantForce cf;
     LaunchController launcher;
+    Character character;
     Vector3[] bouncePositions;
 
     float dragDefault;
@@ -29,21 +30,26 @@ public class BounceController : MonoBehaviour {
         }
     }
 
+    public Character GetCharacter {
+        get {
+            if (character == null) character = GetComponentInParent<Character>();
+            return character;
+        }
+    }
+
     public LaunchController SetLauncher {
         set {
-            if (launcher == null) {
-                launcher = value;
+            if (launcher == null) launcher = value;
 
-                // cache and set the properties of rb. necessary if environmental effects change these. magnus force?
-                GetRigidbody.angularDrag = launcher.angleDrag;
-                GetRigidbody.drag = dragDefault = launcher.drag;
+            // cache and set the properties of rb. necessary if environmental effects change these. magnus force?
+            GetRigidbody.angularDrag = launcher.angleDrag;
+            GetRigidbody.drag = dragDefault = launcher.drag;
 
-                // experimental --- changing the center of mass
-                GetRigidbody.centerOfMass = launcher.centerOfMass;
+            // experimental --- changing the center of mass
+            GetRigidbody.centerOfMass = launcher.centerOfMass;
 
-                // if a character spec is added for constant force, should be added to launch controller
-                GetConstantForce.force = cfDefault = Vector3.zero; 
-            }
+            // if a character spec is added for constant force, should be added to launch controller
+            GetConstantForce.force = cfDefault = Vector3.zero;
         }
     }
 
@@ -55,9 +61,6 @@ public class BounceController : MonoBehaviour {
     public void ResetConstantForce() { GetConstantForce.force = cfDefault; }
 
     void Start () {
-        // find the launcher for the object and capture the controller. this would need to change in a multiplayer context 
-        launcher = GameObject.FindGameObjectWithTag("Launcher").GetComponent<LaunchController>();
-
         // initialize the bounce positions array
         bouncePositions = new Vector3[2];
 	}

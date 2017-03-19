@@ -5,14 +5,8 @@ using UnityEngine;
 public abstract class LevelComponent : MonoBehaviour {
 
     LevelController levelController;
-    GameObject element;
 
-    public GameObject GetElement {
-        get {
-            if (element == null) element = transform.GetChild(0).gameObject;
-            return element;
-        }
-    }
+    public LevelController GetLevelController { get { return levelController; } }
 
     void Awake() {
         levelController = FindObjectOfType<LevelController>();

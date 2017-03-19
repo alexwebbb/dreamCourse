@@ -119,20 +119,15 @@ public class LaunchController : MonoBehaviour {
 
         // this ternary operator uses the trace bool to determine whether to launch a tracer object or the player object
         GameObject launchingObject = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation) : playerObject;
-
-        /*
-        // weird fix for launching inside water bug and other issues
-        if(!traceBool) {
-            launchingObject.SetActive(false);
-            launchingObject.SetActive(true);
-        }
-        */
-
+        
         // get the launching object's bounce controller so that it can invoke the set launcher property
         BounceController bc = launchingObject.GetComponent<BounceController>();
         // set launcher checks to see if the launch controller has been set (ie the player object) and sets initial variables
         bc.SetLauncher = this;
 
+        // weird fix for launching inside water bug and other issues
+        if(!traceBool) { launchingObject.SetActive(false); launchingObject.SetActive(true);}
+        
         // grabs the rigidbody of the object that is produced by the prior operation
         Rigidbody launchingRB = bc.GetRigidbody;
 

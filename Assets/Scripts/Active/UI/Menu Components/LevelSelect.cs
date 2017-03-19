@@ -59,8 +59,7 @@ public class LevelSelect : MenuComponent, ISelectionMenu {
             button.GetComponent<Image>().color = Color.green;
 
             if (newGame.GetLevelSelection.Count >= newGame.GetNumberOfLevels) {
-                Debug.Log("Load");
-
+                // load the level
                 mainMenu.Next(newGame);
             }
         }

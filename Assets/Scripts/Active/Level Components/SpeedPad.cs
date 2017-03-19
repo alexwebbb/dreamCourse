@@ -8,7 +8,6 @@ public class SpeedPad : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision) {
 
-        Rigidbody rb = collision.gameObject.GetComponent<Rigidbody>();
-        rb.AddForce(transform.forward * power, ForceMode.VelocityChange);
+        collision.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * power, ForceMode.VelocityChange);
     }
 }

@@ -8,7 +8,7 @@ public class BoundingBox : LevelComponent {
     private void OnTriggerExit(Collider other) {
         BounceController bc = other.GetComponent<BounceController>();
         if (bc != null) {
-            GetLevelController.ResetCharacterPosition(bc.GetCharacter);
+            GetLevelController.ReturnOutOfBoundsCharacterToLastPosition(bc.GetCharacter);
         }
     }
 }

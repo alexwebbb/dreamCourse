@@ -88,7 +88,7 @@ public class LevelController : MonoBehaviour {
     void EndTurn() {
 
         // this first part could eventually be exported to something like transfer camera. would want to rename active player to like active thing and have a separate current player variable.
-        playerLastPosition[player[activePlayer]] = player[activePlayer].GetPlayer.transform.position;
+        SleepCharacterPosition(player[activePlayer]);
 
         // activate player whose turn it shall be
         bool lastElement = false;
@@ -107,7 +107,13 @@ public class LevelController : MonoBehaviour {
 
         } else {
             // if it is the last element, jump to the beginning
-            player[0].SetAsActivePlayer(true);
+            if (player[0].IsDead) {
+                player[0].SetHidden(false);
+                player[0].IsDead = false;
+            } else {
+                player[0].SetAsActivePlayer(true);
+            }
+
             lastElement = true;
             turnNumber += 1;
         }
@@ -118,6 +124,8 @@ public class LevelController : MonoBehaviour {
         // if it is the last element in the list, set the index to zero, otherwise iterate
         activePlayer = lastElement ? 0 : activePlayer + 1;
 
+        // call the position reset on the now active player
+        SleepCharacterPosition(player[activePlayer]);
         
         // call to the rest of the system changing the current active player
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[activePlayer]);
@@ -137,9 +145,9 @@ public class LevelController : MonoBehaviour {
         Debug.Log("player 2: " + score[player[1]].Count);
     }
 
-    public void ResetCharacterPosition(Character rc) {
+    public void ReturnOutOfBoundsCharacterToLastPosition(Character rc) {
 
-        // rc stands for "returning character". u can't use player reset from launch controller for this, in case someone falls off the edge when it isn't their turn
+        // rc stands for "returned character". 
 
         // stops movement
         rc.GetPlayerRigidbody.angularVelocity = rc.GetPlayerRigidbody.velocity = Vector3.zero;
@@ -155,6 +163,27 @@ public class LevelController : MonoBehaviour {
 
         // character is now dead! they fell off
         rc.IsDead = true;
+
+        // manually call the end of the turn
+        EndTurn();
+    }
+
+    void SleepCharacterPosition(Character rc) {
+
+        // this resets the bounce counter that is attached to the player
+        rc.GetPlayerBounceController.bounceCount = 0;
+
+        // stops movement
+        rc.GetPlayerRigidbody.angularVelocity = rc.GetPlayerRigidbody.velocity = Vector3.zero;
+
+        // resets localRotation
+        rc.GetPlayer.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+
+        // pops the launcher over to the position of the player
+        rc.GetLaunchController.transform.position = rc.GetPlayer.transform.position;
+
+        // update the last position dictionary
+        playerLastPosition[rc] = rc.GetPlayer.transform.position;
     }
 
     void ExportLevelSession() {

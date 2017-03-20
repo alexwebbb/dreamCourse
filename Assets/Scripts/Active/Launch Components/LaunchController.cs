@@ -9,7 +9,6 @@ public class LaunchController : MonoBehaviour {
     // for grabbing the event parent
     LaunchUI launchUI;
 
-
     public GameObject tracerObject;
     public GameObject playerObject;
 
@@ -38,7 +37,7 @@ public class LaunchController : MonoBehaviour {
 
     bool launchModeBool;
     bool playerLaunchBool;
-    bool resetBool;
+    bool restBool;
 
     // experimental section
     [Header("Experimental Section")]
@@ -58,19 +57,28 @@ public class LaunchController : MonoBehaviour {
     void FixedUpdate() {
         
         // this resets the position of the ball when it gets close enough to not moving
-        if (resetBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
+        if (restBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
 
             // this increments the rest counter each time the condition above is satisfied... thus you can set it to whatever amount of time you want the ball to be in a resting state before it resets. this is important for when it is balanced on edges and it might take a second for it to fall off
             restCounter++;
 
             // this is where the rest limit is checked
             if (restCounter > restLimit) {
-                
-                // the player object is reset and the rest counter is reset
-                PositionReset(true);
-                restCounter = 0;
+
+                // call the event that signals to the rest of the system (namely the level controller) that the turn has ended. this will trigger the position reset
+                if (endLaunchEvent != null) endLaunchEvent();
             }
         }
+    }
+
+    void ClearSleepCheck() {
+        // these are the variables used in the fixed update to allow the launch controller to sleep the ball. it is necessary to clear these before ending the turn. this gets called on disable and end turn involves disabling this sooo...
+
+        // turns off the boolean that allows the position reset to occur in the update process
+        restBool = false;
+
+        // rest counter is reset
+        restCounter = 0;
     }
 
     IEnumerator BallLooper() {
@@ -92,7 +100,7 @@ public class LaunchController : MonoBehaviour {
                 playerLaunchBool = false;
                 
                 // a condition for the position reset
-                resetBool = true;
+                restBool = true;
 
                 // stops the coroutine
                 launchModeBool = false;
@@ -137,29 +145,6 @@ public class LaunchController : MonoBehaviour {
         if (traceBool) Destroy(launchingObject, lifetime);
     }
 
-    void PositionReset(bool turnEnd) {
-
-        // this resets the bounce counter that is attached to the player
-        playerObject.GetComponent<BounceController>().bounceCount = 0;
-
-        // stops movement
-        playerObjectRB.angularVelocity = playerObjectRB.velocity = Vector3.zero;
-
-        // resets localRotation
-        playerObject.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-
-        // pops the launcher over to the position of the player
-        transform.position = playerObject.transform.position;
-
-        if (turnEnd) {
-            // turns off the boolean that allows the position reset to occur in the update process
-            resetBool = false;
-
-            // call the event that signals to the rest of the system (namely the level controller) that the turn has ended.
-            if (endLaunchEvent != null) endLaunchEvent(); 
-        }
-    }
-
     // these are called by events
     // these are all simple functions for controlling the variables used in launch ingame
 
@@ -178,7 +163,7 @@ public class LaunchController : MonoBehaviour {
     // Functions called by the UI
     void ToggleLaunchMode() {
         // this begins the ball looper routine when L is pressed if it is not running, and ends it if it is
-        if (!launchModeBool && !resetBool) {
+        if (!launchModeBool && !restBool) {
             StartCoroutine("BallLooper");
         } else {
             playerLaunchBool = false;
@@ -212,7 +197,6 @@ public class LaunchController : MonoBehaviour {
     void OnEnable() {
         Subscribe();
         // resets position at the beginning of turn
-        PositionReset(false);
     }
 
     void Unsubscribe() {
@@ -234,5 +218,6 @@ public class LaunchController : MonoBehaviour {
 
     void OnDisable() {
         Unsubscribe();
+        ClearSleepCheck();
     }
 }

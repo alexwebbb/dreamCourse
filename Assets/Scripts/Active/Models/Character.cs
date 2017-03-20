@@ -11,6 +11,7 @@ public class Character : MonoBehaviour {
     GameObject playerContainer;
     GameObject player;
     Rigidbody playerRB;
+    BounceController playerBC;
     GameObject playerLauncher;
     LaunchController launchController;
     Transform cameraTransform;
@@ -40,6 +41,13 @@ public class Character : MonoBehaviour {
         get {
             if (playerRB == null) playerRB = GetPlayer.GetComponent<Rigidbody>();
             return playerRB;
+        }
+    }
+
+    public BounceController GetPlayerBounceController {
+        get {
+            if (playerBC == null) playerBC = GetPlayer.GetComponent<BounceController>();
+            return playerBC;
         }
     }
 

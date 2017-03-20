@@ -11,7 +11,7 @@ public class BounceController : MonoBehaviour {
     ConstantForce cf;
     LaunchController launcher;
     Character character;
-    Vector3[] bouncePositions;
+    Vector3[] bouncePositions = new Vector3[2];
 
     float dragDefault;
     Vector3 cfDefault;

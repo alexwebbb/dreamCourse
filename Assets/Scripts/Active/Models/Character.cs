@@ -10,10 +10,16 @@ public class Character : MonoBehaviour {
     // private variable initialization
     GameObject playerContainer;
     GameObject player;
+    Rigidbody playerRB;
     GameObject playerLauncher;
     LaunchController launchController;
     Transform cameraTransform;
     GameObject cameraContainer;
+    bool dead;
+
+    // utility properties
+
+    public bool IsDead { get; set; }
 
     // property accessors
     public GameObject GetPlayerContainer {
@@ -27,6 +33,13 @@ public class Character : MonoBehaviour {
         get {
             if (player == null) player = GetPlayerContainer.transform.GetChild(0).gameObject;
             return player;
+        }
+    }
+
+    public Rigidbody GetPlayerRigidbody {
+        get {
+            if (playerRB == null) playerRB = GetPlayer.GetComponent<Rigidbody>();
+            return playerRB;
         }
     }
 
@@ -57,6 +70,7 @@ public class Character : MonoBehaviour {
             return cameraContainer;
         }
     }
+
 
     // utility methods
 	public void SetAsActivePlayer(bool active) {

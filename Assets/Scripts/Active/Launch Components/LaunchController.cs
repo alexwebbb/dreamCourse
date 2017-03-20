@@ -31,7 +31,6 @@ public class LaunchController : MonoBehaviour {
     public float rollLimit = 5f;
     public float velocitySleep = 5f;
 
-
     Rigidbody playerObjectRB;
 
     int restCounter = 0;
@@ -46,7 +45,7 @@ public class LaunchController : MonoBehaviour {
     public Vector3 centerOfMass;
 
 
-    void Start() {
+    void Awake() {
 
         // grab the players rigidbody for launching purposes
         playerObjectRB = playerObject.GetComponent<Rigidbody>();
@@ -63,9 +62,6 @@ public class LaunchController : MonoBehaviour {
 
             // this increments the rest counter each time the condition above is satisfied... thus you can set it to whatever amount of time you want the ball to be in a resting state before it resets. this is important for when it is balanced on edges and it might take a second for it to fall off
             restCounter++;
-
-            // this resets the bounce counter that is attached to the player
-            playerObject.GetComponent<BounceController>().bounceCount = 0;
 
             // this is where the rest limit is checked
             if (restCounter > restLimit) {
@@ -142,6 +138,9 @@ public class LaunchController : MonoBehaviour {
     }
 
     void PositionReset(bool turnEnd) {
+
+        // this resets the bounce counter that is attached to the player
+        playerObject.GetComponent<BounceController>().bounceCount = 0;
 
         // stops movement
         playerObjectRB.angularVelocity = playerObjectRB.velocity = Vector3.zero;

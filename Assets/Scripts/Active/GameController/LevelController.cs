@@ -18,8 +18,8 @@ public class LevelController : MonoBehaviour {
     List<Character> player = new List<Character>();
     Dictionary<Character, List<Goal>> score = new Dictionary<Character, List<Goal>>();
     
-    // this will most likely also need to be a dictionary
-    // List<Vector3> playerPositions = new List<Vector3>();
+    // this will most likely also need to be a dictionary of lists eventually
+    Dictionary<Character, Vector3> playerLastPosition = new Dictionary<Character, Vector3>();
     
     int activePlayer;
     int turnNumber;
@@ -52,11 +52,15 @@ public class LevelController : MonoBehaviour {
             // it is necessary to instantiate the game object first since that is what monobehavior scripts require
             instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.transform, false);
 
+            Character thisCharacter = instantiatedCharacter.GetComponent<Character>();
             // don't worry, gameobject can still be called by using gameObject
-            player.Add(instantiatedCharacter.GetComponent<Character>());
+            player.Add(thisCharacter);
 
             // create score list for each character
-            score.Add(player.Last(), new List<Goal>());
+            score.Add(thisCharacter, new List<Goal>());
+
+            // initialize last position for each character
+            playerLastPosition.Add(thisCharacter, currentLevel.transform.position);
 
             // subscribe to end launch event
             player[i].GetLaunchController.endLaunchEvent += EndTurn;
@@ -66,7 +70,7 @@ public class LevelController : MonoBehaviour {
             }
         }
 
-        // this might could be a seperate method, set active player
+        
         activePlayer = 0;
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[0]);
         // reset turn number
@@ -84,6 +88,8 @@ public class LevelController : MonoBehaviour {
     void EndTurn() {
 
         // this first part could eventually be exported to something like transfer camera. would want to rename active player to like active thing and have a separate current player variable.
+
+        playerLastPosition[player[activePlayer]] = player[activePlayer].GetPlayer.transform.position;
 
         // activate player whose turn it shall be
         bool lastElement = false;
@@ -131,6 +137,11 @@ public class LevelController : MonoBehaviour {
         Debug.Log("Total Points Scored: " + GetTotalScored);
         Debug.Log("player 1: " + score[player[0]].Count);
         Debug.Log("player 2: " + score[player[1]].Count);
+    }
+
+    public void ResetCharacterPosition(Character returningCharacter) {
+        returningCharacter.GetPlayer.transform.position = playerLastPosition[returningCharacter];
+   
     }
 
     void ExportLevelSession() {

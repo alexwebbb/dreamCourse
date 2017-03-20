@@ -65,6 +65,9 @@ public class LaunchController : MonoBehaviour {
             // this is where the rest limit is checked
             if (restCounter > restLimit) {
 
+                // clear the variables for sleeping before calling the next turn... this is here for single player mode, it is also called on disable which activates in multiplayer mode
+                ClearSleepCheck();
+
                 // call the event that signals to the rest of the system (namely the level controller) that the turn has ended. this will trigger the position reset
                 if (endLaunchEvent != null) endLaunchEvent();
             }
@@ -106,12 +109,11 @@ public class LaunchController : MonoBehaviour {
                 launchModeBool = false;
                 
             } else {
-                
+                   
                 // launch tracer
                 Launch(true);
             }
-
-            //
+            // this sets the space between the tracer objects
             yield return new WaitForSeconds(ballGap);
         }
 
@@ -217,7 +219,9 @@ public class LaunchController : MonoBehaviour {
     }
 
     void OnDisable() {
+        // unsubscribe the events so it doesn't call an error while inactive
         Unsubscribe();
+        // clear the variables used for sleeping the player object
         ClearSleepCheck();
     }
 }

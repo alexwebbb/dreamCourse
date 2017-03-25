@@ -62,19 +62,14 @@ public class NewGame : MonoBehaviour {
 
     // level select stuff
 
-    int numberOfLevels; // like golf, maybe there are like prefab loadouts for cups and courses
+    int numberOfLevels = 1; // like golf, maybe there are like prefab loadouts for cups and courses
 
     public int GetNumberOfLevels { get { return numberOfLevels; } }
     public int SetNumberOfLevels { set { numberOfLevels = value; } }
 
-    List<Level> levelSelection = new List<Level>();
+    public List<Level> levelSelection = new List<Level>();
 
     public List<Level> GetLevelSelection { get { return levelSelection; } }
-
-    public void ClearLevelSelection() {
-
-        levelSelection.Clear();
-    }
 
     // confirmation prompt. function that checks if the necessary values are null or not.
 

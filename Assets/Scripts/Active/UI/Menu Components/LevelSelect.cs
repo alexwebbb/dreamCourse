@@ -6,10 +6,13 @@ using UnityEngine.UI;
 public class LevelSelect : MenuComponent, ISelectionMenu {
 
     public GameObject levelListButton;
+    public Color deselectedColor = Color.white;
+    public Color selectedColor = Color.green;
 
     Transform levelList;
     //should be private
     public NewGame newGame;
+    List<Button> levelButtons = new List<Button>();
 
     public override void Start() {
         base.Start();
@@ -29,10 +32,8 @@ public class LevelSelect : MenuComponent, ISelectionMenu {
 
     public void ResetMenu() {
         // clears level list on newgame
-        newGame.ClearLevelSelection();
+        ClearSelectedLevels();
     }
-
-
 
 
     void InitializeLevelList() {
@@ -44,24 +45,38 @@ public class LevelSelect : MenuComponent, ISelectionMenu {
                 levelButton.transform.SetParent(levelList, false);
                 levelButton.GetComponentInChildren<Text>().text = level.levelName;
                 Button levelButtonComponent = levelButton.GetComponent<Button>();
-
+                // add listener for click event on buttons
                 levelButtonComponent.onClick.AddListener(() => LevelSelected(level, levelButtonComponent));
+                // add buttons to a list
+
             }
         }
     }
 
     void LevelSelected(Level _selectedLevel, Button button) {
+        Debug.Log(newGame.GetLevelSelection.Contains(_selectedLevel));
         if (newGame.GetLevelSelection.Contains(_selectedLevel)) {
             newGame.GetLevelSelection.Remove(_selectedLevel);
-            button.GetComponent<Image>().color = Color.white;
-        } else {
+            button.GetComponent<Image>().color = deselectedColor;
+        } else if(newGame.GetLevelSelection.Count < newGame.GetNumberOfLevels) {
             newGame.GetLevelSelection.Add(_selectedLevel);
-            button.GetComponent<Image>().color = Color.green;
+            button.GetComponent<Image>().color = selectedColor;
+        }
+    }
 
-            if (newGame.GetLevelSelection.Count >= newGame.GetNumberOfLevels) {
-                // load the level
-                mainMenu.Next(newGame);
-            }
+    void ClearSelectedLevels() {
+        // clear list of characters
+        newGame.GetLevelSelection.Clear();
+        // return each button to white
+        foreach (Button button in levelButtons) {
+            button.GetComponent<Image>().color = deselectedColor;
+        }
+    }
+
+    public void ConfirmSelection() {
+        if (newGame.GetLevelSelection.Count == newGame.GetNumberOfLevels) {
+            // load the level
+            mainMenu.Next(newGame);
         }
     }
 }

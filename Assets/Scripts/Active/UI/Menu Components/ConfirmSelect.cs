@@ -22,7 +22,7 @@ public class ConfirmSelect : MenuComponent, ISelectionMenu {
         
     }
 
-    public void Confirmed() {
+    public void ConfirmSelection() {
         mainMenu.Ready(newGame);
     }
 

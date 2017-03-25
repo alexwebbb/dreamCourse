@@ -48,13 +48,12 @@ public class LevelSelect : MenuComponent, ISelectionMenu {
                 // add listener for click event on buttons
                 levelButtonComponent.onClick.AddListener(() => LevelSelected(level, levelButtonComponent));
                 // add buttons to a list
-
+                levelButtons.Add(levelButtonComponent);
             }
         }
     }
 
     void LevelSelected(Level _selectedLevel, Button button) {
-        Debug.Log(newGame.GetLevelSelection.Contains(_selectedLevel));
         if (newGame.GetLevelSelection.Contains(_selectedLevel)) {
             newGame.GetLevelSelection.Remove(_selectedLevel);
             button.GetComponent<Image>().color = deselectedColor;

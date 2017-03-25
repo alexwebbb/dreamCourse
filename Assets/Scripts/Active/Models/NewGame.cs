@@ -51,7 +51,7 @@ public class NewGame : MonoBehaviour {
 
     // character slection stuff
 
-    int numberOfPlayers;
+    int numberOfPlayers = 0;
 
     public int GetNumberOfPlayers { get { return numberOfPlayers; } }
     public int SetNumberOfPlayers { set { numberOfPlayers = value; } }

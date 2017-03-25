@@ -11,4 +11,5 @@ public interface ISelectionMenu {
 
     void ResetMenu();
 
+    void ConfirmSelection();
 }

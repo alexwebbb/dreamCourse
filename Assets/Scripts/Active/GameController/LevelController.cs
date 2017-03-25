@@ -124,7 +124,7 @@ public class LevelController : MonoBehaviour {
         // if it is the last element in the list, set the index to zero, otherwise iterate
         activePlayer = lastElement ? 0 : activePlayer + 1;
 
-        // call the position reset on the now active player
+        // call the position reset on the now active player. may wish to eventually move this functionality to bounce controller, and have it signal when all players are done with an event, or have it ask all players to report when they are done.
         SleepCharacterPosition(player[activePlayer]);
         
         // call to the rest of the system changing the current active player

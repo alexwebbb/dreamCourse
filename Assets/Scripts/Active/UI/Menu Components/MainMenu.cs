@@ -30,6 +30,8 @@ public class MainMenu : MonoBehaviour {
 
     }
 
+    
+
     void Start() {
         userInterface = transform.parent.GetComponent<UserInterface>();
 
@@ -90,6 +92,11 @@ public class MainMenu : MonoBehaviour {
 
         Back(dummyNewGame);
 
+    }
+
+    public void Confirm() {
+
+        dummyNewGame.GetCurrentMenu.ConfirmSelection();
     }
 
     public void Ready(NewGame _newGame) {

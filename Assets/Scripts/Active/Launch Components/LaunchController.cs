@@ -198,7 +198,9 @@ public class LaunchController : MonoBehaviour {
 
     void OnEnable() {
         Subscribe();
-        // resets position at the beginning of turn
+
+        // lock position at beginning of turn
+        playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     void Unsubscribe() {

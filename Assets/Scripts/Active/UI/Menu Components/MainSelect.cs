@@ -19,4 +19,8 @@ public class MainSelect : MenuComponent, ISelectionMenu {
     public override void Start() {
         base.Start();
     }
+
+    public void ConfirmSelection() {
+
+    }
 }

@@ -105,11 +105,19 @@ public class CharacterSelect : MenuComponent, ISelectionMenu {
     }
 
     void CharacterSelected(Character _selectedCharacter, Button button) {
-        if(newGame.GetCharacterSelection.Contains(_selectedCharacter)) {
-            newGame.GetCharacterSelection.Remove(_selectedCharacter);
+        // fetch character list
+        List<Character> currentCharacterSelection = newGame.GetCharacterSelection;
+        // check if the character is in the list
+        if (currentCharacterSelection.Contains(_selectedCharacter)) {
+            // remove the character since this is a toggle action
+            currentCharacterSelection.Remove(_selectedCharacter);
+            // get the image component of the button and set the color
             button.GetComponent<Image>().color = deselectedColor;
-        } else if(newGame.GetCharacterSelection.Count < newGame.GetNumberOfPlayers) {
-            newGame.GetCharacterSelection.Add(_selectedCharacter);
+        // if the character isnt in the list, and the count is still less than the total, add it
+        } else if(currentCharacterSelection.Count < newGame.GetNumberOfPlayers) {
+            // add the character
+            currentCharacterSelection.Add(_selectedCharacter);
+            // change the color of the button
             button.GetComponent<Image>().color = selectedColor;
         }
     }
@@ -124,6 +132,7 @@ public class CharacterSelect : MenuComponent, ISelectionMenu {
     }
 
     public void ConfirmSelection() {
+        // checks if they have the correct number of characters selected
         if (newGame.GetCharacterSelection.Count == newGame.GetNumberOfPlayers) {
             // load the game!
             mainMenu.Next(newGame);

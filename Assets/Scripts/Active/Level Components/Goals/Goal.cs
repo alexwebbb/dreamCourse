@@ -8,7 +8,7 @@ public class Goal : LevelComponent {
     Color defaultColor;
 
     Character currentOwner;
-    Character lastOwner = null;
+    Character lastOwner = new Character();
 
     public Renderer GetRenderer {
         get {
@@ -32,11 +32,14 @@ public class Goal : LevelComponent {
 
     private void OnTriggerEnter(Collider other) {
         BounceController bc = other.GetComponent<BounceController>();
-        if(bc != null && bc.GetCharacter != currentOwner) {
-            lastOwner = currentOwner;
-            currentOwner = bc.GetCharacter;
-            // haha make sure the add point call comes AFTER the assignment of current owner
-            GetLevelController.AddPoint(bc.GetCharacter, this);
+        if (bc != null) {
+            Character player = bc.GetCharacter;
+            if (player != currentOwner) {
+                lastOwner = currentOwner;
+                currentOwner = player;
+                // haha make sure the add point call comes AFTER the assignment of current owner
+                GetLevelController.AddPoint(player, this);
+            } 
         }
     }
 }

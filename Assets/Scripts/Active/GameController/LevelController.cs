@@ -141,8 +141,9 @@ public class LevelController : MonoBehaviour {
         // just a fun little check of the score
         Debug.Log("Scoreable Points: " + scoreablePoints);
         Debug.Log("Total Points Scored: " + GetTotalScored);
-        Debug.Log("player 1: " + score[player[0]].Count);
-        Debug.Log("player 2: " + score[player[1]].Count);
+        foreach(KeyValuePair<Character, List<Goal>> player in score) {
+            Debug.Log("player " + player.Key.characterName + ": " + player.Value.Count);
+        }
     }
 
     public void ReturnOutOfBoundsCharacterToLastPosition(Character rc) {

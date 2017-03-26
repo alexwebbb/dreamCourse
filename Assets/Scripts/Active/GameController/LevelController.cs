@@ -34,7 +34,11 @@ public class LevelController : MonoBehaviour {
         }
     }
 
-    public void RegisterGoal() { scoreablePoints += 1; }
+    public void RegisterGoal(Goal goal) {
+        scoreablePoints += 1;
+
+        goal.pointScoredEvent += AddPoint;
+    }
 
     // there should be a game mode enum here as well
     public void Initialize(List<Character> character, int _numberOfPlayers) {
@@ -62,8 +66,9 @@ public class LevelController : MonoBehaviour {
             // initialize last position for each character
             playerLastPosition.Add(thisCharacter, currentLevel.transform.position);
 
-            // subscribe to end launch event
-            player[i].GetLaunchController.endLaunchEvent += EndTurn;
+            // subscribe to beginning and end of turn events
+            player[i].GetLaunchController.endTurnEvent += EndTurn;
+            player[i].GetLaunchController.beginTurnEvent += BeginTurn;
 
             if (i != 0) {
                 player[i].SetHidden(true);
@@ -124,14 +129,16 @@ public class LevelController : MonoBehaviour {
         // if it is the last element in the list, set the index to zero, otherwise iterate
         activePlayer = lastElement ? 0 : activePlayer + 1;
 
-        // call the position reset on the now active player. may wish to eventually move this functionality to bounce controller, and have it signal when all players are done with an event, or have it ask all players to report when they are done.
-        SleepCharacterPosition(player[activePlayer]);
-        
         // call to the rest of the system changing the current active player
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[activePlayer]);
     }
 
-    public void AddPoint(Character scorer, Goal goal) {
+    void BeginTurn() {
+        // call the position reset on the now active player when the launch controller reports that it is ready
+        SleepCharacterPosition(player[activePlayer]);
+    }
+
+    void AddPoint(Character scorer, Goal goal) {
         // add a point to the score. called from goal gameobjects
         if(!score[scorer].Contains(goal)) score[scorer].Add(goal);
         // change the color of the goal object

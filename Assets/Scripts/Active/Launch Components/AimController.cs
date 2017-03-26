@@ -21,9 +21,9 @@ public class AimController : MonoBehaviour {
     }
 
     void RotateVertical(Vector3 direction, bool up) {
-
-        if (!up && verticalAxis.eulerAngles.z > 10f) verticalAxis.Rotate(direction);
-        if (up && verticalAxis.eulerAngles.z < 70f) verticalAxis.Rotate(direction);
+        Debug.Log(verticalAxis.eulerAngles.z);
+        if (!up && verticalAxis.eulerAngles.z > 90f) verticalAxis.Rotate(direction);
+        if (up && verticalAxis.eulerAngles.z < 160f) verticalAxis.Rotate(direction);
     }
 
     private void OnEnable() {

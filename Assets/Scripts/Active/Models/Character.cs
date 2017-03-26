@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    public string characterName = "default";
-    public Color captureColor = Color.red;
+    public string characterName;
+    public Color captureColor;
 
     // private variable initialization
     GameObject playerContainer;

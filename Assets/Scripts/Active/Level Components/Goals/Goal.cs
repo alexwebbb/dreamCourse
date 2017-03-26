@@ -1,14 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Goal : LevelComponent {
 
+    public event Action<Character, Goal> pointScoredEvent; 
+
     Renderer renderComponent;
     Color defaultColor;
 
     Character currentOwner;
-    Character lastOwner = new Character();
+    Character lastOwner;
 
     public Renderer GetRenderer {
         get {
@@ -27,7 +30,7 @@ public class Goal : LevelComponent {
         defaultColor = GetRenderer.material.color;
 
         // register this goal with the level controller
-        GetLevelController.RegisterGoal();
+        GetLevelController.RegisterGoal(this);
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -37,8 +40,8 @@ public class Goal : LevelComponent {
             if (player != currentOwner) {
                 lastOwner = currentOwner;
                 currentOwner = player;
-                // haha make sure the add point call comes AFTER the assignment of current owner
-                GetLevelController.AddPoint(player, this);
+                // make sure the add point call comes AFTER the assignment of current owner
+                if (pointScoredEvent != null) pointScoredEvent(player, this);
             } 
         }
     }

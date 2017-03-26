@@ -5,7 +5,8 @@ using System.Collections;
 public class LaunchController : MonoBehaviour {
 
     // broadcast event for turn end
-    public event Action endLaunchEvent;
+    public event Action endTurnEvent;
+    public event Action beginTurnEvent;
     // for grabbing the event parent
     LaunchUI launchUI;
 
@@ -38,6 +39,7 @@ public class LaunchController : MonoBehaviour {
     bool launchModeBool;
     bool playerLaunchBool;
     bool restBool;
+    bool turnInitiated;
 
     // experimental section
     [Header("Experimental Section")]
@@ -55,7 +57,17 @@ public class LaunchController : MonoBehaviour {
 
 
     void FixedUpdate() {
-        
+
+        // Debug.Log("Rest Bool : " + restBool);
+        // Debug.Log("Turn Initiated : " + turnInitiated);
+
+        if(!turnInitiated && playerObjectRB.transform.position == transform.position) {
+            // Debug.Log("match");
+            restBool = false;
+        } else {
+            // Debug.Log("no match");
+        }
+
         // this resets the position of the ball when it gets close enough to not moving
         if (restBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
 
@@ -65,14 +77,23 @@ public class LaunchController : MonoBehaviour {
             // this is where the rest limit is checked
             if (restCounter > restLimit) {
 
-                // clear the variables for sleeping before calling the next turn... this is here for single player mode, it is also called on disable which activates in multiplayer mode
-                ClearSleepCheck();
+                if (turnInitiated) {
+                    // call the event that signals to the rest of the system (namely the level controller) that the turn has ended. this will trigger the position reset
+                    if (endTurnEvent != null) endTurnEvent();
 
-                // call the event that signals to the rest of the system (namely the level controller) that the turn has ended. this will trigger the position reset
-                if (endLaunchEvent != null) endLaunchEvent();
+                    turnInitiated = false;
+                } else {
+                    // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
+                    if (beginTurnEvent != null) beginTurnEvent();
+                    // lock position at beginning of turn
+                    playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
+                }
+                // clear the variables for sleeping after calling begin turn or end turn, it is also called on disable which activates in multiplayer mode
+                ClearSleepCheck();
             }
         }
     }
+
 
     void ClearSleepCheck() {
         // these are the variables used in the fixed update to allow the launch controller to sleep the ball. it is necessary to clear these before ending the turn. this gets called on disable and end turn involves disabling this sooo...
@@ -101,8 +122,10 @@ public class LaunchController : MonoBehaviour {
                 
                 // turns off the player launch trigger now that it has been executed
                 playerLaunchBool = false;
-                
-                // a condition for the position reset
+
+                turnInitiated = true;
+
+                // a condition for the position reset at the end of the turn
                 restBool = true;
 
                 // stops the coroutine
@@ -199,8 +222,7 @@ public class LaunchController : MonoBehaviour {
     void OnEnable() {
         Subscribe();
 
-        // lock position at beginning of turn
-        playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
+        restBool = true;
     }
 
     void Unsubscribe() {
@@ -225,5 +247,6 @@ public class LaunchController : MonoBehaviour {
         Unsubscribe();
         // clear the variables used for sleeping the player object
         ClearSleepCheck();
+        turnInitiated = false;
     }
 }

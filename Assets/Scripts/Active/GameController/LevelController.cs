@@ -133,9 +133,9 @@ public class LevelController : MonoBehaviour {
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[activePlayer]);
     }
 
-    void BeginTurn() {
+    void BeginTurn(bool reset) {
         // call the position reset on the now active player when the launch controller reports that it is ready
-        SleepCharacterPosition(player[activePlayer]);
+        if(reset) SleepCharacterPosition(player[activePlayer]);
     }
 
     void AddPoint(Character scorer, Goal goal) {

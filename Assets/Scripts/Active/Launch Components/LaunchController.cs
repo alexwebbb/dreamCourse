@@ -6,7 +6,9 @@ public class LaunchController : MonoBehaviour {
 
     // broadcast event for turn end
     public event Action endTurnEvent;
-    public event Action beginTurnEvent;
+    public event Action<bool> beginTurnEvent;
+    public event Action startLaunchModeEvent;
+    public event Action stopLaunchModeEvent;
     // for grabbing the event parent
     LaunchUI launchUI;
 
@@ -21,7 +23,8 @@ public class LaunchController : MonoBehaviour {
     public float bouncePercent = 0.50f;
 
     [Header("Launch Components")]
-    public float force;
+    public float defaultForce;
+    float playerForce;
     public float lifetime;
     public float ballGap;
 
@@ -53,6 +56,12 @@ public class LaunchController : MonoBehaviour {
 
         // grab the pointer cube that is used to direct the aim of the launcher. the launcher determines launch direction by using this cube and the player object
         pointerCube = transform.GetChild(0).GetChild(0).GetChild(0);
+
+        // get the launch UI to subscribe to it
+        launchUI = FindObjectOfType<LaunchUI>();
+
+        // register the launch controller with the launch UI for launch events, such as resetting values
+        launchUI.RegisterLauncher(this);
     }
 
 
@@ -62,8 +71,10 @@ public class LaunchController : MonoBehaviour {
         // Debug.Log("Turn Initiated : " + turnInitiated);
 
         if(!turnInitiated && playerObjectRB.transform.position == transform.position) {
-            // Debug.Log("match");
-            restBool = false;
+            // set rest bool to false... needs to happen before begin turn is called
+            ClearSleepCheck();
+            // begin turn event... this will be used for UI and such also
+            if (beginTurnEvent != null) beginTurnEvent(restBool);
         } else {
             // Debug.Log("no match");
         }
@@ -84,7 +95,7 @@ public class LaunchController : MonoBehaviour {
                     turnInitiated = false;
                 } else {
                     // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
-                    if (beginTurnEvent != null) beginTurnEvent();
+                    if (beginTurnEvent != null) beginTurnEvent(restBool);
                     // lock position at beginning of turn
                     playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
                 }
@@ -106,6 +117,9 @@ public class LaunchController : MonoBehaviour {
     }
 
     IEnumerator BallLooper() {
+
+        // signal the start of launch mode to the system
+        if (startLaunchModeEvent != null) startLaunchModeEvent();
 
         launchModeBool = true;
         while (launchModeBool) {
@@ -140,6 +154,9 @@ public class LaunchController : MonoBehaviour {
             yield return new WaitForSeconds(ballGap);
         }
 
+        // signal the end of launch mode to the system
+        if (stopLaunchModeEvent != null) stopLaunchModeEvent();
+
         yield return null;
     }
 
@@ -163,7 +180,8 @@ public class LaunchController : MonoBehaviour {
         launchingRB.transform.LookAt(pointerCube);
 
         // launch forces are applied
-        launchingRB.AddRelativeForce(Vector3.forward * force, ForceMode.VelocityChange);
+        if(traceBool) launchingRB.AddRelativeForce(Vector3.forward * defaultForce, ForceMode.VelocityChange);
+        else launchingRB.AddRelativeForce(Vector3.forward * playerForce, ForceMode.VelocityChange);
         launchingRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
 
         // sets the decay time for the tracer objects
@@ -174,7 +192,7 @@ public class LaunchController : MonoBehaviour {
     // these are all simple functions for controlling the variables used in launch ingame
 
     public void SetForce(float _force) {
-        force = _force;
+        playerForce = _force;
     }
 
     public void SetMedialSpin(float _medialSpin) {
@@ -205,8 +223,7 @@ public class LaunchController : MonoBehaviour {
 
     void Subscribe() {
         // event subscription section
-        // get the launch UI to subscribe to it
-        launchUI = FindObjectOfType<LaunchUI>();
+
         // subscribe to the launch toggle event
         launchUI.launchToggleEvent += ToggleLaunchMode;
         // subscribe to initiate launch event

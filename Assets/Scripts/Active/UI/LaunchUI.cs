@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LaunchUI : MonoBehaviour {
 
@@ -18,8 +19,33 @@ public class LaunchUI : MonoBehaviour {
     public event Action<float> setForceEvent;
     public event Action<float> setMedialSpinEvent;
     public event Action<float> setLateralSpinEvent;
+    // default launch values
+    float defaultForce;
+    float defaultMedialSpin;
+    float defaultLateralSpin;
+    // lerp components
+    float lerpTime;
+    float lerpMinimum;
+    float lerpMaximum;
+    bool endLerp;
 
+    List<LaunchController> activeLaunchers = new List<LaunchController>();
+
+    public void RegisterLauncher(LaunchController launcher) {
+        activeLaunchers.Add(launcher);
+        launcher.endTurnEvent += ResetLaunchValues;
+        launcher.startLaunchModeEvent += StartLerp;
+        launcher.stopLaunchModeEvent += StopLerp;
+    }
+
+    
     void Start() {
+        defaultForce = forceSlider.value;
+        defaultMedialSpin = medialSpinSlider.value;
+        defaultLateralSpin = lateralSpinSlider.value;
+        lerpMinimum = forceSlider.minValue;
+        lerpMaximum = forceSlider.maxValue;
+
         forceSlider.onValueChanged.AddListener((value) => SetForce(value));
         medialSpinSlider.onValueChanged.AddListener((value) => SetMedialSpin(value));
         lateralSpinSlider.onValueChanged.AddListener((value) => SetLateralSpin(value));
@@ -42,16 +68,64 @@ public class LaunchUI : MonoBehaviour {
         }
     }
 
+    IEnumerator LerpForce () {
+
+        while (!endLerp) {
+            // set the value of the force slider
+            forceSlider.value = Mathf.Lerp(lerpMinimum, lerpMaximum, lerpTime);
+
+            // .. and increment the interpolater
+            lerpTime += 0.5f * Time.deltaTime;
+            Debug.Log("Time: " + lerpTime);
+            Debug.Log("Min: " + lerpMinimum);
+            Debug.Log("Max: " + lerpMaximum);
+
+            // now check if the interpolator has reached 1.0
+            // and swap maximum and minimum so game object moves
+            // in the opposite direction.
+            if (lerpTime > 1.0f) {
+                float temp = lerpMaximum;
+                lerpMaximum = lerpMinimum;
+                lerpMinimum = temp;
+                lerpTime = 0.0f;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+        }
+
+        yield return null;
+
+    }
+
     // these functions trigger events that act upon the launch controller
-    public void SetForce(float force) {
+    void SetForce(float force) {
         if (setForceEvent != null) setForceEvent(force);
     }
 
-    public void SetMedialSpin(float medialSpin) {
+    void SetMedialSpin(float medialSpin) {
         if (setMedialSpinEvent != null) setMedialSpinEvent(medialSpin);
     }
 
-    public void SetLateralSpin(float lateralSpin) {
+    void SetLateralSpin(float lateralSpin) {
         if (setLateralSpinEvent != null) setLateralSpinEvent(lateralSpin);
     }
+
+    void ResetLaunchValues() {
+        forceSlider.value = defaultForce;
+        medialSpinSlider.value = defaultMedialSpin;
+        lateralSpinSlider.value = defaultLateralSpin;
+        lerpMinimum = forceSlider.minValue;
+        lerpMaximum = forceSlider.maxValue;
+    }
+
+    void StartLerp() {
+        endLerp = false;
+        StartCoroutine("LerpForce");
+    }
+
+    void StopLerp() {
+        endLerp = true;
+    }
+
 }

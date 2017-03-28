@@ -7,8 +7,7 @@ public class LaunchController : MonoBehaviour {
     // broadcast event for turn end
     public event Action endTurnEvent;
     public event Action<bool> beginTurnEvent;
-    public event Action startLaunchModeEvent;
-    public event Action stopLaunchModeEvent;
+
     // for grabbing the event parent
     LaunchUI launchUI;
 
@@ -118,9 +117,6 @@ public class LaunchController : MonoBehaviour {
 
     IEnumerator BallLooper() {
 
-        // signal the start of launch mode to the system
-        if (startLaunchModeEvent != null) startLaunchModeEvent();
-
         launchModeBool = true;
         while (launchModeBool) {
 
@@ -153,9 +149,6 @@ public class LaunchController : MonoBehaviour {
             // this sets the space between the tracer objects
             yield return new WaitForSeconds(ballGap);
         }
-
-        // signal the end of launch mode to the system
-        if (stopLaunchModeEvent != null) stopLaunchModeEvent();
 
         yield return null;
     }

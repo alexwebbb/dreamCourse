@@ -24,18 +24,17 @@ public class LaunchUI : MonoBehaviour {
     float defaultMedialSpin;
     float defaultLateralSpin;
     // lerp components
+    public float lerpSpeed = 1f;
     float lerpTime;
     float lerpMinimum;
     float lerpMaximum;
-    bool endLerp;
+    bool launchModeActive;
 
     List<LaunchController> activeLaunchers = new List<LaunchController>();
 
     public void RegisterLauncher(LaunchController launcher) {
         activeLaunchers.Add(launcher);
         launcher.endTurnEvent += ResetLaunchValues;
-        launcher.startLaunchModeEvent += StartLerp;
-        launcher.stopLaunchModeEvent += StopLerp;
     }
 
     
@@ -58,6 +57,9 @@ public class LaunchUI : MonoBehaviour {
             if (launchToggleEvent != null) {
                 launchToggleEvent();
             }
+
+            if (!launchModeActive) StartLerp();
+            else StopLerp();
         }
 
         if(Input.GetKeyDown(KeyCode.Space)) {
@@ -65,17 +67,19 @@ public class LaunchUI : MonoBehaviour {
             if (initiateLaunchEvent != null) {
                 initiateLaunchEvent();
             }
+
+            StopLerp();
         }
     }
 
     IEnumerator LerpForce () {
 
-        while (!endLerp) {
+        while (launchModeActive) {
             // set the value of the force slider
             forceSlider.value = Mathf.Lerp(lerpMinimum, lerpMaximum, lerpTime);
 
             // .. and increment the interpolater
-            lerpTime += 0.5f * Time.deltaTime;
+            lerpTime += lerpSpeed * Time.deltaTime;
             Debug.Log("Time: " + lerpTime);
             Debug.Log("Min: " + lerpMinimum);
             Debug.Log("Max: " + lerpMaximum);
@@ -100,6 +104,7 @@ public class LaunchUI : MonoBehaviour {
 
     // these functions trigger events that act upon the launch controller
     void SetForce(float force) {
+        // this is now used to set the secret playerForce
         if (setForceEvent != null) setForceEvent(force);
     }
 
@@ -120,12 +125,13 @@ public class LaunchUI : MonoBehaviour {
     }
 
     void StartLerp() {
-        endLerp = false;
+        launchModeActive = true;
         StartCoroutine("LerpForce");
     }
 
     void StopLerp() {
-        endLerp = true;
+        launchModeActive = false;
+        StopCoroutine("LerpForce");
     }
 
 }

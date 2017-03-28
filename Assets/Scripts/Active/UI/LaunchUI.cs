@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 
 public class LaunchUI : MonoBehaviour {
 
     // Launch UI handles player input related to the launch sequence
+
+    public Slider forceSlider;
+    public Slider medialSpinSlider;
+    public Slider lateralSpinSlider;
 
     // events are used to communicate with gameobjects in scene
 
@@ -14,10 +19,13 @@ public class LaunchUI : MonoBehaviour {
     public event Action<float> setMedialSpinEvent;
     public event Action<float> setLateralSpinEvent;
 
+    void Start() {
+        forceSlider.onValueChanged.AddListener((value) => SetForce(value));
+        medialSpinSlider.onValueChanged.AddListener((value) => SetMedialSpin(value));
+        lateralSpinSlider.onValueChanged.AddListener((value) => SetLateralSpin(value));
+    }
 
     void Update() {
-
-        // YES I need to start unsubscribing event delegates
 
         if (Input.GetKeyDown(KeyCode.L)) {
             // this event is for toggling launch mode

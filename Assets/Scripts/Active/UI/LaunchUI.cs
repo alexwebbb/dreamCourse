@@ -25,7 +25,7 @@ public class LaunchUI : MonoBehaviour {
     // lerp components
     public float lerpSpeed = 1f;
 
-    bool launchModeActive;
+    public bool launchModeActive;
 
     List<LaunchController> activeLaunchers = new List<LaunchController>();
 
@@ -51,8 +51,9 @@ public class LaunchUI : MonoBehaviour {
             // this event is for toggling launch mode
             if (launchToggleEvent != null) {
                 launchToggleEvent();
-                if (!launchModeActive) StartLerp();
-                else StopLerp();
+                if (!launchModeActive) {
+                    StartLerp();
+                } else { StopLerp(); }
             }  
         }
 

@@ -40,10 +40,10 @@ public class LaunchController : MonoBehaviour {
     int restCounter = 0;
     int restLimit = 150;
 
-    bool launchModeBool;
-    bool playerLaunchBool;
-    bool restBool;
-    bool turnInitiated;
+    public bool launchModeBool;
+    public bool playerLaunchBool;
+    public bool restBool;
+    public bool turnInitiated;
 
     // experimental section
     [Header("Experimental Section")]

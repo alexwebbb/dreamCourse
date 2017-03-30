@@ -16,12 +16,13 @@ public class Character : MonoBehaviour {
     LaunchController launchController;
     Transform cameraTransform;
     GameObject cameraContainer;
-    bool dead;
+    bool dead = false;
 
     // utility properties
 
-    public bool IsDead { get; }
-
+    public bool IsDead { get; protected set; }
+    public Vector3 LastPosition { get; set; }
+ 
     // property accessors
     public GameObject GetPlayerContainer {
         get {
@@ -107,6 +108,38 @@ public class Character : MonoBehaviour {
             SetAsActivePlayer(true);
             dead = false;
         }
+    }
+
+    public void ReturnOutOfBoundsCharacterToLastPosition() {
+
+        // stops movement
+        GetPlayerRigidbody.angularVelocity = GetPlayerRigidbody.velocity = Vector3.zero;
+
+        // resets localRotation
+        GetPlayer.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+
+        // return character to last launch position
+        GetPlayer.transform.position = LastPosition;
+
+        Died();
+    }
+
+    public void SleepCharacterPosition() {
+
+        // this resets the bounce counter that is attached to the player
+        GetPlayerBounceController.bounceCount = 0;
+
+        // stops movement
+        GetPlayerRigidbody.angularVelocity = GetPlayerRigidbody.velocity = Vector3.zero;
+
+        // resets localRotation
+        GetPlayer.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+
+        // pops the launcher over to the position of the player
+        GetLaunchController.transform.position = GetPlayer.transform.position;
+
+        // update the last position dictionary
+        LastPosition = GetPlayer.transform.position;
     }
 
     public void Died() {

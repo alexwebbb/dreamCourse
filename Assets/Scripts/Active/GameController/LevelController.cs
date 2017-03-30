@@ -19,18 +19,13 @@ public class LevelController : MonoBehaviour {
     List<Character> player = new List<Character>();
     Dictionary<Character, List<Goal>> score = new Dictionary<Character, List<Goal>>();
     
-    // this will most likely also need to be a dictionary of lists eventually
-    Dictionary<Character, Vector3> playerLastPosition = new Dictionary<Character, Vector3>();
-    
     int activePlayer;
     int turnNumber;
 
     public int GetTotalScored {
         get {
             int totalScored = 0;
-            for (int i = 0; i < numberOfPlayers; i++) {
-                totalScored += score[player[i]].Count;
-            }
+            for (int i = 0; i < numberOfPlayers; i++) { totalScored += score[player[i]].Count; }
             return totalScored;
         }
     }
@@ -39,6 +34,10 @@ public class LevelController : MonoBehaviour {
         scoreablePoints += 1;
 
         goal.pointScoredEvent += AddPoint;
+    }
+
+    public void RegisterBoundingBox(BoundingBox boundingBox) {
+        boundingBox.characterOutOfBoundsEvent += EndTurn;
     }
 
     // there should be a game mode enum here as well
@@ -58,14 +57,14 @@ public class LevelController : MonoBehaviour {
             instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.transform, false);
 
             Character thisCharacter = instantiatedCharacter.GetComponent<Character>();
-            // don't worry, gameobject can still be called by using gameObject
+
             player.Add(thisCharacter);
 
             // create score list for each character
             score.Add(thisCharacter, new List<Goal>());
 
             // initialize last position for each character
-            playerLastPosition.Add(thisCharacter, currentLevel.transform.position);
+            thisCharacter.LastPosition = currentLevel.transform.position;
 
             // subscribe to beginning and end of turn events
             player[i].GetLaunchController.ballRestingEvent += EndTurn;
@@ -76,18 +75,10 @@ public class LevelController : MonoBehaviour {
             }
         }
 
-        
         activePlayer = 0;
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[0]);
         // reset turn number
         turnNumber = 0;
-
-
-        // this gets called from session manager
-        
-        // reset all lists and variables to zero
-
-        // load save data if there is any
     }
 
 
@@ -95,8 +86,10 @@ public class LevelController : MonoBehaviour {
 
         if (turnIsOverEvent != null) turnIsOverEvent();
 
-        // this first part could eventually be exported to something like transfer camera. would want to rename active player to like active thing and have a separate current player variable.
-        SleepCharacterPosition(player[activePlayer]);
+        // potential camera switch check here
+
+        if(!player[activePlayer].IsDead) player[activePlayer].SleepCharacterPosition();
+        // else if(numberOfPlayers != 1) player[activePlayer].SetHidden(true);
 
         // activate player whose turn it shall be
         bool lastElement = false;
@@ -112,7 +105,8 @@ public class LevelController : MonoBehaviour {
 
         } else {
             // if it is the last element, jump to the beginning
-            player[0].SetAsActivePlayer(true);
+            if (player[0].IsDead) player[0].SetHidden(false);
+            else player[0].SetAsActivePlayer(true);
 
             lastElement = true;
             turnNumber += 1;
@@ -120,7 +114,6 @@ public class LevelController : MonoBehaviour {
 
         // deactivate the player who called the turn end
         if (numberOfPlayers != 1) {
-            if (player[activePlayer].IsDead) player[activePlayer].SetHidden(true);
             player[activePlayer].SetAsActivePlayer(false);
         }
         // if it is the last element in the list, set the index to zero, otherwise iterate
@@ -130,10 +123,12 @@ public class LevelController : MonoBehaviour {
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[activePlayer]);
     }
 
+
     void BeginTurn(bool reset) {
         // call the position reset on the now active player when the launch controller reports that it is ready
-        if(reset) SleepCharacterPosition(player[activePlayer]);
+        if(reset) player[activePlayer].SleepCharacterPosition();
     }
+
 
     void AddPoint(Character scorer, Goal goal) {
         // add a point to the score. called from goal gameobjects
@@ -142,49 +137,35 @@ public class LevelController : MonoBehaviour {
         goal.SetColor = scorer.captureColor;
         // if the goal is changing hands, remove the point from the previous owner
         if (goal.GetLastOwner != null && scorer != goal.GetLastOwner) { score[goal.GetLastOwner].Remove(goal); }
+        CheckScore();
+    }
+
+    void CheckScore() {
         // just a fun little check of the score
+        int totalScored = GetTotalScored;
         Debug.Log("Scoreable Points: " + scoreablePoints);
-        Debug.Log("Total Points Scored: " + GetTotalScored);
-        foreach(KeyValuePair<Character, List<Goal>> player in score) {
+        Debug.Log("Total Points Scored: " + totalScored);
+
+        List<KeyValuePair<Character, List<Goal>>> sortedScoreList = score.ToList();
+
+        sortedScoreList.Sort((pair1, pair2) => pair1.Value.Count.CompareTo(pair2.Value.Count));
+
+        foreach (KeyValuePair<Character, List<Goal>> player in sortedScoreList) {
             Debug.Log("player " + player.Key.characterName + ": " + player.Value.Count);
         }
-    }
-
-    public void ReturnOutOfBoundsCharacterToLastPosition(Character rc) {
-
-        // rc stands for "returned character". 
-
-        // stops movement
-        rc.GetPlayerRigidbody.angularVelocity = rc.GetPlayerRigidbody.velocity = Vector3.zero;
-
-        // resets localRotation
-        rc.GetPlayer.transform.localRotation = Quaternion.Euler(-90, 0, 0);
         
-        // return character to last launch position
-        rc.GetPlayer.transform.position = playerLastPosition[rc];
+        if(totalScored == scoreablePoints) {
+            Debug.Log(sortedScoreList[0].Key.characterName + " wins!");
+        }
+
     }
 
-    void SleepCharacterPosition(Character rc) {
-
-        // this resets the bounce counter that is attached to the player
-        rc.GetPlayerBounceController.bounceCount = 0;
-
-        // stops movement
-        rc.GetPlayerRigidbody.angularVelocity = rc.GetPlayerRigidbody.velocity = Vector3.zero;
-
-        // resets localRotation
-        rc.GetPlayer.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-
-        // pops the launcher over to the position of the player
-        rc.GetLaunchController.transform.position = rc.GetPlayer.transform.position;
-
-        // update the last position dictionary
-        playerLastPosition[rc] = rc.GetPlayer.transform.position;
-    }
-
+    
+    /* future plans
+     * 
     void ExportLevelSession() {
         // used to export an in progress game to save file, or a record of a completed match (like when someone completes a level in single player mode
     }
-
+    */
 
 }

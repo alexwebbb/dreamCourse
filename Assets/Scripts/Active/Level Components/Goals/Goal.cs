@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Goal : LevelComponent {
 
-    public event Action<Character, Goal> pointScoredEvent; 
+    // public event Action<Character, Goal> pointScoredEvent; 
 
     Renderer renderComponent;
     Color defaultColor;
@@ -41,7 +41,8 @@ public class Goal : LevelComponent {
                 lastOwner = currentOwner;
                 currentOwner = player;
                 // make sure the add point call comes AFTER the assignment of current owner
-                if (pointScoredEvent != null) pointScoredEvent(player, this);
+                // if (pointScoredEvent != null) pointScoredEvent(player, this);
+                GetLevelController.AddPoint(player, this);
             } 
         }
     }

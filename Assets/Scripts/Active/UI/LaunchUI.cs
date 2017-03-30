@@ -30,8 +30,8 @@ public class LaunchUI : MonoBehaviour {
     List<LaunchController> activeLaunchers = new List<LaunchController>();
 
     public void RegisterLauncher(LaunchController launcher) {
+        // probably going to remove this, we'll see
         activeLaunchers.Add(launcher);
-        launcher.launchModeActiveEvent += ToggleLerp;
     }
 
     
@@ -127,7 +127,7 @@ public class LaunchUI : MonoBehaviour {
         
     }
 
-    void ToggleLerp(bool on) {
+    public void ToggleLerp(bool on) {
         Debug.Log("toggle lerp " + on);
         if (on) {
             launchModeActive = true;

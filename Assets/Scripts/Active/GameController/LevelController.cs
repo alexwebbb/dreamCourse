@@ -33,7 +33,7 @@ public class LevelController : MonoBehaviour {
     public void RegisterGoal(Goal goal) {
         scoreablePoints += 1;
 
-        goal.pointScoredEvent += AddPoint;
+        // goal.pointScoredEvent += AddPoint;
     }
 
     public void RegisterBoundingBox(BoundingBox boundingBox) {
@@ -67,8 +67,8 @@ public class LevelController : MonoBehaviour {
             thisCharacter.LastPosition = currentLevel.transform.position;
 
             // subscribe to beginning and end of turn events
-            player[i].GetLaunchController.ballRestingEvent += EndTurn;
-            player[i].GetLaunchController.ballReadyEvent += BeginTurn;
+            // player[i].GetLaunchController.ballRestingEvent += EndTurn;
+            // player[i].GetLaunchController.ballReadyEvent += BeginTurn;
 
             if (i != 0) {
                 player[i].SetHidden(true);
@@ -82,7 +82,7 @@ public class LevelController : MonoBehaviour {
     }
 
 
-    void EndTurn() {
+    public void EndTurn() {
 
         if (turnIsOverEvent != null) turnIsOverEvent();
 
@@ -124,13 +124,13 @@ public class LevelController : MonoBehaviour {
     }
 
 
-    void BeginTurn(bool reset) {
+    public void BeginTurn(bool reset) {
         // call the position reset on the now active player when the launch controller reports that it is ready
         if(reset) player[activePlayer].SleepCharacterPosition();
     }
 
 
-    void AddPoint(Character scorer, Goal goal) {
+    public void AddPoint(Character scorer, Goal goal) {
         // add a point to the score. called from goal gameobjects
         if(!score[scorer].Contains(goal)) score[scorer].Add(goal);
         // change the color of the goal object

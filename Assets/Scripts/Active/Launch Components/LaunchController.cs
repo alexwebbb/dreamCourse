@@ -5,11 +5,12 @@ using System.Collections;
 public class LaunchController : MonoBehaviour {
 
     // broadcast event for turn end
-    public event Action ballRestingEvent;
-    public event Action<bool> ballReadyEvent;
-    public event Action<bool> launchModeActiveEvent;
+    // public event Action ballRestingEvent;
+    // public event Action<bool> ballReadyEvent;
+    // public event Action<bool> launchModeActiveEvent;
 
     // for grabbing the event parent
+    LevelController levelController;
     LaunchUI launchUI;
 
     public GameObject tracerObject;
@@ -63,7 +64,10 @@ public class LaunchController : MonoBehaviour {
         launchUI = FindObjectOfType<LaunchUI>();
 
         // register the launch controller with the launch UI for launch events, such as resetting values
+        // will probably remove this
         launchUI.RegisterLauncher(this);
+
+        levelController = FindObjectOfType<LevelController>();
     }
 
 
@@ -76,7 +80,8 @@ public class LaunchController : MonoBehaviour {
             // set rest bool to false... needs to happen before begin turn is called
             ClearSleepCheck();
             // begin turn event... this will be used for UI and such also
-            if (ballReadyEvent != null) ballReadyEvent(restBool);
+            // if (ballReadyEvent != null) ballReadyEvent(restBool);
+            levelController.BeginTurn(restBool);
         } 
 
         // this resets the position of the ball when it gets close enough to not moving
@@ -97,14 +102,15 @@ public class LaunchController : MonoBehaviour {
                     turnInitiated = false;
 
                     // call the event that signals to the rest of the system (namely the level controller) that the ball is resting. this will trigger the position reset and call the end of the turn in the level controller
-                    if (ballRestingEvent != null) ballRestingEvent();
+                    levelController.EndTurn();
+                    
 
                 } else {
                     // lock position at beginning of turn
                     playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
 
                     // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
-                    if (ballReadyEvent != null) ballReadyEvent(restBool);
+                    levelController.BeginTurn(restBool);
                 }
             }
         }
@@ -122,15 +128,15 @@ public class LaunchController : MonoBehaviour {
 
     IEnumerator BallLooper() {
 
-        if (launchModeActiveEvent != null) launchModeActiveEvent(true);
+        launchUI.ToggleLerp(true);
         launchModeBool = true;
 
         while (launchModeBool) {
 
             // launch player, end coroutine
             if (playerLaunchBool) {
-
-                if (launchModeActiveEvent != null) launchModeActiveEvent(false);
+                
+                launchUI.ToggleLerp(false);
 
                 // may still keep this in case of player effects that freeze position, like porcupine
                 // unlocks the player object constraints
@@ -161,7 +167,7 @@ public class LaunchController : MonoBehaviour {
             yield return new WaitForSeconds(ballGap);
         }
 
-        if (launchModeActiveEvent != null) launchModeActiveEvent(false);
+        launchUI.ToggleLerp(false);
 
         yield return null;
     }

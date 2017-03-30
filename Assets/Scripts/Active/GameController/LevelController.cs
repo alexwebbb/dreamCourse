@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class LevelController : MonoBehaviour {
 
     public event Action<Character> setActivePlayerEvent;
+    public event Action turnIsOverEvent;
 
     Level currentLevel;
 
@@ -67,7 +68,7 @@ public class LevelController : MonoBehaviour {
             playerLastPosition.Add(thisCharacter, currentLevel.transform.position);
 
             // subscribe to beginning and end of turn events
-            player[i].GetLaunchController.endTurnEvent += EndTurn;
+            player[i].GetLaunchController.ballRestingEvent += EndTurn;
             player[i].GetLaunchController.beginTurnEvent += BeginTurn;
 
             if (i != 0) {
@@ -92,6 +93,8 @@ public class LevelController : MonoBehaviour {
 
     void EndTurn() {
 
+        if (turnIsOverEvent != null) turnIsOverEvent();
+
         // this first part could eventually be exported to something like transfer camera. would want to rename active player to like active thing and have a separate current player variable.
         SleepCharacterPosition(player[activePlayer]);
 
@@ -99,33 +102,27 @@ public class LevelController : MonoBehaviour {
         bool lastElement = false;
 
         if (activePlayer + 1 < numberOfPlayers) {
-
+            
             // set the soon to be active player as visible if it has been hidden
-            if (turnNumber == 0) {
+            if (turnNumber == 0 || player[activePlayer + 1].IsDead) {
                 player[activePlayer + 1].SetHidden(false);
-            } else if(player[activePlayer + 1].IsDead) {
-                player[activePlayer + 1].SetHidden(false);
-                player[activePlayer + 1].IsDead = false;
             } else {
                 player[activePlayer + 1].SetAsActivePlayer(true);
             }
 
         } else {
             // if it is the last element, jump to the beginning
-            if (player[0].IsDead) {
-                player[0].SetHidden(false);
-                player[0].IsDead = false;
-            } else {
-                player[0].SetAsActivePlayer(true);
-            }
+            player[0].SetAsActivePlayer(true);
 
             lastElement = true;
             turnNumber += 1;
         }
 
         // deactivate the player who called the turn end
-        if(numberOfPlayers != 1) player[activePlayer].SetAsActivePlayer(false);
-        
+        if (numberOfPlayers != 1) {
+            if (player[activePlayer].IsDead) player[activePlayer].SetHidden(true);
+            player[activePlayer].SetAsActivePlayer(false);
+        }
         // if it is the last element in the list, set the index to zero, otherwise iterate
         activePlayer = lastElement ? 0 : activePlayer + 1;
 
@@ -165,15 +162,6 @@ public class LevelController : MonoBehaviour {
         
         // return character to last launch position
         rc.GetPlayer.transform.position = playerLastPosition[rc];
-
-        // hide the character
-        rc.SetHidden(true);
-
-        // character is now dead! they fell off
-        rc.IsDead = true;
-
-        // manually call the end of the turn
-        EndTurn();
     }
 
     void SleepCharacterPosition(Character rc) {

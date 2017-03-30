@@ -5,7 +5,7 @@ using System.Collections;
 public class LaunchController : MonoBehaviour {
 
     // broadcast event for turn end
-    public event Action endTurnEvent;
+    public event Action ballRestingEvent;
     public event Action<bool> beginTurnEvent;
 
     // for grabbing the event parent
@@ -23,6 +23,8 @@ public class LaunchController : MonoBehaviour {
 
     [Header("Launch Components")]
     public float defaultForce;
+    public float minForce;
+    public float maxForce;
     float playerForce;
     public float lifetime;
     public float ballGap;
@@ -74,9 +76,7 @@ public class LaunchController : MonoBehaviour {
             ClearSleepCheck();
             // begin turn event... this will be used for UI and such also
             if (beginTurnEvent != null) beginTurnEvent(restBool);
-        } else {
-            // Debug.Log("no match");
-        }
+        } 
 
         // this resets the position of the ball when it gets close enough to not moving
         if (restBool && !launchModeBool && playerObjectRB.angularVelocity.sqrMagnitude < rollLimit && playerObjectRB.velocity.sqrMagnitude < velocitySleep) {
@@ -87,23 +87,27 @@ public class LaunchController : MonoBehaviour {
             // this is where the rest limit is checked
             if (restCounter > restLimit) {
 
-                if (turnInitiated) {
-                    // call the event that signals to the rest of the system (namely the level controller) that the turn has ended. this will trigger the position reset
-                    if (endTurnEvent != null) endTurnEvent();
-
-                    turnInitiated = false;
-                } else {
-                    // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
-                    if (beginTurnEvent != null) beginTurnEvent(restBool);
-                    // lock position at beginning of turn
-                    playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
-                }
                 // clear the variables for sleeping after calling begin turn or end turn, it is also called on disable which activates in multiplayer mode
                 ClearSleepCheck();
+
+                if (turnInitiated) {
+
+                    // turn this off so that end turn event doesn't get called twice
+                    turnInitiated = false;
+
+                    // call the event that signals to the rest of the system (namely the level controller) that the ball is resting. this will trigger the position reset and call the end of the turn in the level controller
+                    if (ballRestingEvent != null) ballRestingEvent();
+
+                } else {
+                    // lock position at beginning of turn
+                    playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
+
+                    // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
+                    if (beginTurnEvent != null) beginTurnEvent(restBool);
+                }
             }
         }
     }
-
 
     void ClearSleepCheck() {
         // these are the variables used in the fixed update to allow the launch controller to sleep the ball. it is necessary to clear these before ending the turn. this gets called on disable and end turn involves disabling this sooo...
@@ -163,7 +167,7 @@ public class LaunchController : MonoBehaviour {
         // set launcher checks to see if the launch controller has been set (ie the player object) and sets initial variables
         bc.SetLauncher = this;
 
-        // weird fix for launching inside water bug and other issues
+        // for launching inside water, so that ontrigger enter will be called, etc
         if(!traceBool) { launchingObject.SetActive(false); launchingObject.SetActive(true);}
         
         // grabs the rigidbody of the object that is produced by the prior operation
@@ -182,10 +186,10 @@ public class LaunchController : MonoBehaviour {
     }
 
     // these are called by events
-    // these are all simple functions for controlling the variables used in launch ingame
 
-    public void SetForce(float _force) {
-        playerForce = _force;
+    public void SetForce(float normalizedForce) {
+        float temp = normalizedForce;
+        playerForce = (temp * (maxForce - minForce)) + minForce;
     }
 
     public void SetMedialSpin(float _medialSpin) {
@@ -229,12 +233,6 @@ public class LaunchController : MonoBehaviour {
         launchUI.setLateralSpinEvent += SetLateralSpin;
     }
 
-    void OnEnable() {
-        Subscribe();
-
-        restBool = true;
-    }
-
     void Unsubscribe() {
         // unsubscribe to the launch toggle event
         launchUI.launchToggleEvent -= ToggleLaunchMode;
@@ -248,15 +246,30 @@ public class LaunchController : MonoBehaviour {
         launchUI.setLateralSpinEvent -= SetLateralSpin;
     }
 
+    void ResetLaunchValues() {
+        spinForce = Vector3.zero;
+    }
+
+    void OnEnable() {
+        Subscribe();
+
+        restBool = true;
+    }
+
     void OnDestroy() {
         Unsubscribe();
     }
 
     void OnDisable() {
+        // reset values set by UI during launch
+        ResetLaunchValues();
+
         // unsubscribe the events so it doesn't call an error while inactive
         Unsubscribe();
+
         // clear the variables used for sleeping the player object
         ClearSleepCheck();
+
         turnInitiated = false;
     }
 }

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 public class LaunchUI : MonoBehaviour {
 
+    LevelController lc;
+
     // Launch UI handles player input related to the launch sequence
 
     public Slider forceSlider;
@@ -19,31 +21,24 @@ public class LaunchUI : MonoBehaviour {
     public event Action<float> setForceEvent;
     public event Action<float> setMedialSpinEvent;
     public event Action<float> setLateralSpinEvent;
-    // default launch values
-    float defaultForce;
-    float defaultMedialSpin;
-    float defaultLateralSpin;
+
     // lerp components
     public float lerpSpeed = 1f;
-    float lerpTime;
-    float lerpMinimum;
-    float lerpMaximum;
+
     bool launchModeActive;
 
     List<LaunchController> activeLaunchers = new List<LaunchController>();
 
     public void RegisterLauncher(LaunchController launcher) {
         activeLaunchers.Add(launcher);
-        launcher.endTurnEvent += ResetLaunchValues;
+        // launcher.ballRestingEvent += ResetLaunchValues;
     }
 
     
     void Start() {
-        defaultForce = forceSlider.value;
-        defaultMedialSpin = medialSpinSlider.value;
-        defaultLateralSpin = lateralSpinSlider.value;
-        lerpMinimum = forceSlider.minValue;
-        lerpMaximum = forceSlider.maxValue;
+        lc = FindObjectOfType<LevelController>();
+        lc.turnIsOverEvent += ResetLaunchValues;
+
 
         forceSlider.onValueChanged.AddListener((value) => SetForce(value));
         medialSpinSlider.onValueChanged.AddListener((value) => SetMedialSpin(value));
@@ -56,27 +51,29 @@ public class LaunchUI : MonoBehaviour {
             // this event is for toggling launch mode
             if (launchToggleEvent != null) {
                 launchToggleEvent();
-            }
-
-            if (!launchModeActive) StartLerp();
-            else StopLerp();
+                if (!launchModeActive) StartLerp();
+                else StopLerp();
+            }  
         }
 
         if(Input.GetKeyDown(KeyCode.Space)) {
-            StopLerp();
             // sets the next gameobject to be launched as the player object
             if (initiateLaunchEvent != null) {
+                StopLerp();
                 initiateLaunchEvent();
             }
-
         }
     }
 
     IEnumerator LerpForce () {
 
+        float lerpTime = 0f;
+        float lerpMinimum = 0f;
+        float lerpMaximum = 1f;
+
         while (launchModeActive) {
             // set the value of the force slider
-            forceSlider.value = Mathf.Lerp(lerpMinimum, lerpMaximum, lerpTime);
+            forceSlider.normalizedValue = Mathf.Lerp(lerpMinimum, lerpMaximum, lerpTime);
 
             // .. and increment the interpolater
             lerpTime += lerpSpeed * Time.deltaTime;
@@ -94,6 +91,8 @@ public class LaunchUI : MonoBehaviour {
                 lerpTime = 0.0f;
             }
 
+            if(!launchModeActive) yield return null;
+
             yield return new WaitForEndOfFrame();
 
         }
@@ -103,9 +102,9 @@ public class LaunchUI : MonoBehaviour {
     }
 
     // these functions trigger events that act upon the launch controller
-    void SetForce(float force) {
+    void SetForce(float normalizedForce) {
         // this is now used to set the secret playerForce
-        if (setForceEvent != null) setForceEvent(force);
+        if (setForceEvent != null) setForceEvent(normalizedForce);
     }
 
     void SetMedialSpin(float medialSpin) {
@@ -117,11 +116,9 @@ public class LaunchUI : MonoBehaviour {
     }
 
     void ResetLaunchValues() {
-        forceSlider.value = defaultForce;
-        medialSpinSlider.value = defaultMedialSpin;
-        lateralSpinSlider.value = defaultLateralSpin;
-        lerpMinimum = forceSlider.minValue;
-        lerpMaximum = forceSlider.maxValue;
+        forceSlider.normalizedValue = 0.5f;
+        medialSpinSlider.value = 0;
+        lateralSpinSlider.value = 0;
     }
 
     void StartLerp() {
@@ -131,7 +128,7 @@ public class LaunchUI : MonoBehaviour {
 
     void StopLerp() {
         launchModeActive = false;
-        // StopCoroutine("LerpForce");
+        StopCoroutine("LerpForce");
     }
 
 }

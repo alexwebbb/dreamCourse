@@ -133,7 +133,7 @@ public class CharacterSelect : MenuComponent, ISelectionMenu {
 
     public void ConfirmSelection() {
         // checks if they have the correct number of characters selected
-        if (newGame.GetCharacterSelection.Count == newGame.GetNumberOfPlayers) {
+        if (newGame.GetNumberOfPlayers != 0 && newGame.GetCharacterSelection.Count == newGame.GetNumberOfPlayers) {
             // load the game!
             mainMenu.Next(newGame);
         }

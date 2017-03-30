@@ -20,7 +20,7 @@ public class Character : MonoBehaviour {
 
     // utility properties
 
-    public bool IsDead { get; set; }
+    public bool IsDead { get; }
 
     // property accessors
     public GameObject GetPlayerContainer {
@@ -94,19 +94,23 @@ public class Character : MonoBehaviour {
 
     }
 
-    public void SetHidden(bool hiding) {
+    public void SetHidden(bool goingToBeHidden) {
 
-        if (hiding) {
+        if (goingToBeHidden) {
 
             SetAsActivePlayer(false);
             SetAsVisiblePlayer(false);
 
-        } else if (!hiding) {
+        } else if (!goingToBeHidden) {
 
             SetAsVisiblePlayer(true);
             SetAsActivePlayer(true);
-
+            dead = false;
         }
     }
 
+    public void Died() {
+        SetHidden(true);
+        dead = true;
+    }
 }

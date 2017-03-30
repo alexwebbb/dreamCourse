@@ -68,7 +68,7 @@ public class LevelController : MonoBehaviour {
 
             // subscribe to beginning and end of turn events
             player[i].GetLaunchController.ballRestingEvent += EndTurn;
-            player[i].GetLaunchController.beginTurnEvent += BeginTurn;
+            player[i].GetLaunchController.ballReadyEvent += BeginTurn;
 
             if (i != 0) {
                 player[i].SetHidden(true);
@@ -89,7 +89,7 @@ public class LevelController : MonoBehaviour {
         // potential camera switch check here
 
         if(!player[activePlayer].IsDead) player[activePlayer].SleepCharacterPosition();
-        // else if(numberOfPlayers != 1) player[activePlayer].SetHidden(true);
+        else if(numberOfPlayers != 1) player[activePlayer].SetHidden(true);
 
         // activate player whose turn it shall be
         bool lastElement = false;

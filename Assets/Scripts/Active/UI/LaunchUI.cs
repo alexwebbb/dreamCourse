@@ -31,7 +31,7 @@ public class LaunchUI : MonoBehaviour {
 
     public void RegisterLauncher(LaunchController launcher) {
         activeLaunchers.Add(launcher);
-        // launcher.ballRestingEvent += ResetLaunchValues;
+        launcher.launchModeActiveEvent += ToggleLerp;
     }
 
     
@@ -51,16 +51,12 @@ public class LaunchUI : MonoBehaviour {
             // this event is for toggling launch mode
             if (launchToggleEvent != null) {
                 launchToggleEvent();
-                if (!launchModeActive) {
-                    StartLerp();
-                } else { StopLerp(); }
             }  
         }
 
         if(Input.GetKeyDown(KeyCode.Space)) {
             // sets the next gameobject to be launched as the player object
             if (initiateLaunchEvent != null) {
-                StopLerp();
                 initiateLaunchEvent();
             }
         }
@@ -78,9 +74,6 @@ public class LaunchUI : MonoBehaviour {
 
             // .. and increment the interpolater
             lerpTime += lerpSpeed * Time.deltaTime;
-            Debug.Log("Time: " + lerpTime);
-            Debug.Log("Min: " + lerpMinimum);
-            Debug.Log("Max: " + lerpMaximum);
 
             // now check if the interpolator has reached 1.0
             // and swap maximum and minimum so game object moves
@@ -128,8 +121,20 @@ public class LaunchUI : MonoBehaviour {
     }
 
     void StopLerp() {
+        Debug.Log("Stopping Launch Mode : " + launchModeActive);
         launchModeActive = false;
-        StopCoroutine("LerpForce");
+        Debug.Log("Stopped Launch Mode : " + launchModeActive);
+        
     }
 
+    void ToggleLerp(bool on) {
+        Debug.Log("toggle lerp " + on);
+        if (on) {
+            launchModeActive = true;
+            StartCoroutine("LerpForce");
+        } else {
+            launchModeActive = false;
+            StopCoroutine("LerpForce");
+        }
+    }
 }

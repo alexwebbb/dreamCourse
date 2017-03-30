@@ -6,7 +6,8 @@ public class LaunchController : MonoBehaviour {
 
     // broadcast event for turn end
     public event Action ballRestingEvent;
-    public event Action<bool> beginTurnEvent;
+    public event Action<bool> ballReadyEvent;
+    public event Action<bool> launchModeActiveEvent;
 
     // for grabbing the event parent
     LaunchUI launchUI;
@@ -75,7 +76,7 @@ public class LaunchController : MonoBehaviour {
             // set rest bool to false... needs to happen before begin turn is called
             ClearSleepCheck();
             // begin turn event... this will be used for UI and such also
-            if (beginTurnEvent != null) beginTurnEvent(restBool);
+            if (ballReadyEvent != null) ballReadyEvent(restBool);
         } 
 
         // this resets the position of the ball when it gets close enough to not moving
@@ -103,7 +104,7 @@ public class LaunchController : MonoBehaviour {
                     playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
 
                     // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
-                    if (beginTurnEvent != null) beginTurnEvent(restBool);
+                    if (ballReadyEvent != null) ballReadyEvent(restBool);
                 }
             }
         }
@@ -121,11 +122,15 @@ public class LaunchController : MonoBehaviour {
 
     IEnumerator BallLooper() {
 
+        if (launchModeActiveEvent != null) launchModeActiveEvent(true);
         launchModeBool = true;
+
         while (launchModeBool) {
 
             // launch player, end coroutine
             if (playerLaunchBool) {
+
+                if (launchModeActiveEvent != null) launchModeActiveEvent(false);
 
                 // may still keep this in case of player effects that freeze position, like porcupine
                 // unlocks the player object constraints
@@ -144,7 +149,9 @@ public class LaunchController : MonoBehaviour {
 
                 // stops the coroutine
                 launchModeBool = false;
-                
+
+                yield return null;
+
             } else {
                    
                 // launch tracer
@@ -153,6 +160,8 @@ public class LaunchController : MonoBehaviour {
             // this sets the space between the tracer objects
             yield return new WaitForSeconds(ballGap);
         }
+
+        if (launchModeActiveEvent != null) launchModeActiveEvent(false);
 
         yield return null;
     }

@@ -16,7 +16,6 @@ public class Character : MonoBehaviour {
     LaunchController launchController;
     Transform cameraTransform;
     GameObject cameraContainer;
-    bool dead = false;
 
     // utility properties
 
@@ -106,7 +105,7 @@ public class Character : MonoBehaviour {
 
             SetAsVisiblePlayer(true);
             SetAsActivePlayer(true);
-            dead = false;
+            IsDead = false;
         }
     }
 
@@ -121,7 +120,7 @@ public class Character : MonoBehaviour {
         // return character to last launch position
         GetPlayer.transform.position = LastPosition;
 
-        Died();
+        IsDead = true;
     }
 
     public void SleepCharacterPosition() {
@@ -142,8 +141,4 @@ public class Character : MonoBehaviour {
         LastPosition = GetPlayer.transform.position;
     }
 
-    public void Died() {
-        SetHidden(true);
-        dead = true;
-    }
 }

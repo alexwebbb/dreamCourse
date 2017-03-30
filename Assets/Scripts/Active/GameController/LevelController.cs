@@ -56,8 +56,10 @@ public class LevelController : MonoBehaviour {
             // it is necessary to instantiate the game object first since that is what monobehavior scripts require
             instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.transform, false);
 
+            // grab the character component of the character gameobject we just instantiated
             Character thisCharacter = instantiatedCharacter.GetComponent<Character>();
 
+            // add instantiated character to local player list. player order is maintained there
             player.Add(thisCharacter);
 
             // create score list for each character
@@ -66,17 +68,16 @@ public class LevelController : MonoBehaviour {
             // initialize last position for each character
             thisCharacter.LastPosition = currentLevel.transform.position;
 
-            // subscribe to beginning and end of turn events
-            // player[i].GetLaunchController.ballRestingEvent += EndTurn;
-            // player[i].GetLaunchController.ballReadyEvent += BeginTurn;
-
-            if (i != 0) {
-                player[i].SetHidden(true);
-            }
+            // hide the characters except for the first one for the first round
+            if (i != 0) { player[i].SetHidden(true); }
         }
 
+        // set the active player to 0 since that it is first turn 
         activePlayer = 0;
+
+        // call event that attaches the active player to the camera
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[0]);
+        
         // reset turn number
         turnNumber = 0;
     }
@@ -84,11 +85,15 @@ public class LevelController : MonoBehaviour {
 
     public void EndTurn() {
 
+        // event signaling that the turn is over, reset methods can be called for UI elements
         if (turnIsOverEvent != null) turnIsOverEvent();
 
         // potential camera switch check here
 
+        // sleep the character after returning it, as long as it isnt dead
         if(!player[activePlayer].IsDead) player[activePlayer].SleepCharacterPosition();
+
+        // if the player is dead, hide it.
         else if(numberOfPlayers != 1) player[activePlayer].SetHidden(true);
 
         // activate player whose turn it shall be
@@ -148,7 +153,8 @@ public class LevelController : MonoBehaviour {
 
         List<KeyValuePair<Character, List<Goal>>> sortedScoreList = score.ToList();
 
-        sortedScoreList.Sort((pair1, pair2) => pair1.Value.Count.CompareTo(pair2.Value.Count));
+        // sortedScoreList.Sort((pair1, pair2) => pair1.Value.Count.CompareTo(pair2.Value.Count));
+        sortedScoreList.OrderBy(x => x.Value);
 
         foreach (KeyValuePair<Character, List<Goal>> player in sortedScoreList) {
             Debug.Log("player " + player.Key.characterName + ": " + player.Value.Count);

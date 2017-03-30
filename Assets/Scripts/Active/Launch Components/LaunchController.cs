@@ -128,7 +128,7 @@ public class LaunchController : MonoBehaviour {
 
     IEnumerator BallLooper() {
 
-        launchUI.ToggleLerp(true);
+        
         launchModeBool = true;
 
         while (launchModeBool) {
@@ -136,7 +136,7 @@ public class LaunchController : MonoBehaviour {
             // launch player, end coroutine
             if (playerLaunchBool) {
                 
-                launchUI.ToggleLerp(false);
+                launchUI.LaunchModeEnded();
 
                 // may still keep this in case of player effects that freeze position, like porcupine
                 // unlocks the player object constraints
@@ -167,7 +167,7 @@ public class LaunchController : MonoBehaviour {
             yield return new WaitForSeconds(ballGap);
         }
 
-        launchUI.ToggleLerp(false);
+        
 
         yield return null;
     }
@@ -219,10 +219,14 @@ public class LaunchController : MonoBehaviour {
     void ToggleLaunchMode() {
         // this begins the ball looper routine when L is pressed if it is not running, and ends it if it is
         if (!launchModeBool && !restBool) {
+            Debug.Log("launch mode started at LaunchCon");
+            launchUI.LaunchModeStarted();
             StartCoroutine("BallLooper");
         } else {
             playerLaunchBool = false;
             launchModeBool = false;
+            Debug.Log("launch mode ended at LaunchCon");
+            launchUI.LaunchModeEnded();
         }
     }
 
@@ -237,7 +241,7 @@ public class LaunchController : MonoBehaviour {
         // event subscription section
 
         // subscribe to the launch toggle event
-        launchUI.launchToggleEvent += ToggleLaunchMode;
+        launchUI.launchModeToggleEvent += ToggleLaunchMode;
         // subscribe to initiate launch event
         launchUI.initiateLaunchEvent += InitiateLaunchFromUI;
         // subscribe to set force event
@@ -250,7 +254,7 @@ public class LaunchController : MonoBehaviour {
 
     void Unsubscribe() {
         // unsubscribe to the launch toggle event
-        launchUI.launchToggleEvent -= ToggleLaunchMode;
+        launchUI.launchModeToggleEvent -= ToggleLaunchMode;
         // unsubscribe to initiate launch event
         launchUI.initiateLaunchEvent -= InitiateLaunchFromUI;
         // unsubscribe to set force event

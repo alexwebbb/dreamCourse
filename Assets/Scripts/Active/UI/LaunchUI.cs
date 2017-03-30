@@ -16,7 +16,7 @@ public class LaunchUI : MonoBehaviour {
 
     // events are used to communicate with gameobjects in scene
 
-    public event Action launchToggleEvent;
+    public event Action launchModeToggleEvent;
     public event Action initiateLaunchEvent;
     public event Action<float> setForceEvent;
     public event Action<float> setMedialSpinEvent;
@@ -25,7 +25,9 @@ public class LaunchUI : MonoBehaviour {
     // lerp components
     public float lerpSpeed = 1f;
 
-    public bool launchModeActive;
+    public bool launchModeActive = false;
+    bool launchModeLoading = false;
+    bool launchModeUnloading = false;
 
     List<LaunchController> activeLaunchers = new List<LaunchController>();
 
@@ -49,14 +51,16 @@ public class LaunchUI : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.L)) {
             // this event is for toggling launch mode
-            if (launchToggleEvent != null) {
-                launchToggleEvent();
+            if (!launchModeLoading && !launchModeUnloading && launchModeToggleEvent != null) {
+                ToggleLerp(!launchModeActive);
+                launchModeToggleEvent();
             }  
         }
 
-        if(Input.GetKeyDown(KeyCode.Space)) {
+        if(launchModeActive && Input.GetKeyDown(KeyCode.Space)) {
             // sets the next gameobject to be launched as the player object
-            if (initiateLaunchEvent != null) {
+            if (!launchModeLoading && !launchModeUnloading && initiateLaunchEvent != null) {
+                ToggleLerp(false);
                 initiateLaunchEvent();
             }
         }
@@ -115,24 +119,21 @@ public class LaunchUI : MonoBehaviour {
         lateralSpinSlider.value = 0;
     }
 
-    void StartLerp() {
-        launchModeActive = true;
-        StartCoroutine("LerpForce");
+    public void LaunchModeStarted() {
+        launchModeLoading = false;
     }
 
-    void StopLerp() {
-        Debug.Log("Stopping Launch Mode : " + launchModeActive);
-        launchModeActive = false;
-        Debug.Log("Stopped Launch Mode : " + launchModeActive);
-        
+    public void LaunchModeEnded() {
+        launchModeUnloading = false;
     }
 
     public void ToggleLerp(bool on) {
-        Debug.Log("toggle lerp " + on);
         if (on) {
+            launchModeLoading = true;
             launchModeActive = true;
             StartCoroutine("LerpForce");
         } else {
+            launchModeUnloading = false;
             launchModeActive = false;
             StopCoroutine("LerpForce");
         }

@@ -63,12 +63,12 @@ public class LaunchUI : MonoBehaviour {
         }
 
         if(Input.GetKeyDown(KeyCode.Space)) {
+            StopLerp();
             // sets the next gameobject to be launched as the player object
             if (initiateLaunchEvent != null) {
                 initiateLaunchEvent();
             }
 
-            StopLerp();
         }
     }
 
@@ -131,7 +131,7 @@ public class LaunchUI : MonoBehaviour {
 
     void StopLerp() {
         launchModeActive = false;
-        StopCoroutine("LerpForce");
+        // StopCoroutine("LerpForce");
     }
 
 }

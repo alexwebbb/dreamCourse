@@ -88,10 +88,9 @@ public class Character : MonoBehaviour {
 
     }
 
-    public void SetAsVisiblePlayer(bool visible) {
+    void SetAsVisiblePlayer(bool visible) {
 
         GetPlayerContainer.SetActive(visible);
-
     }
 
     public void SetHidden(bool goingToBeHidden) {

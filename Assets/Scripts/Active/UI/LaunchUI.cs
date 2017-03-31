@@ -23,11 +23,9 @@ public class LaunchUI : MonoBehaviour {
     public event Action<float> setLateralSpinEvent;
 
     // lerp components
-    public float lerpSpeed = 1f;
-
-    public bool launchModeActive = false;
-    bool launchModeLoading = false;
-    bool launchModeUnloading = false;
+    float lerpSpeed = 1f;
+    bool launchModeActive;
+    bool playerReady;
 
     List<LaunchController> activeLaunchers = new List<LaunchController>();
 
@@ -40,7 +38,7 @@ public class LaunchUI : MonoBehaviour {
     void Start() {
         lc = FindObjectOfType<LevelController>();
         lc.turnIsOverEvent += ResetLaunchValues;
-
+        lc.playerIsReadyEvent += ((value) => playerReady = value);
 
         forceSlider.onValueChanged.AddListener((value) => SetForce(value));
         medialSpinSlider.onValueChanged.AddListener((value) => SetMedialSpin(value));
@@ -49,20 +47,19 @@ public class LaunchUI : MonoBehaviour {
 
     void Update() {
 
-        if (Input.GetKeyDown(KeyCode.L)) {
-            // this event is for toggling launch mode
-            if (!launchModeLoading && !launchModeUnloading && launchModeToggleEvent != null) {
+        if (playerReady) {
+            if (Input.GetKeyDown(KeyCode.L)) {
                 ToggleLerp(!launchModeActive);
-                launchModeToggleEvent();
-            }  
-        }
-
-        if(launchModeActive && Input.GetKeyDown(KeyCode.Space)) {
-            // sets the next gameobject to be launched as the player object
-            if (!launchModeLoading && !launchModeUnloading && initiateLaunchEvent != null) {
-                ToggleLerp(false);
-                initiateLaunchEvent();
+                // this event is for toggling launch mode
+                if (launchModeToggleEvent != null) launchModeToggleEvent();
             }
+
+            if (launchModeActive && Input.GetKeyDown(KeyCode.Space)) {
+                playerReady = false;
+                ToggleLerp(false);
+                // sets the next gameobject to be launched as the player object
+                if (initiateLaunchEvent != null) { initiateLaunchEvent(); }
+            } 
         }
     }
 
@@ -119,21 +116,11 @@ public class LaunchUI : MonoBehaviour {
         lateralSpinSlider.value = 0;
     }
 
-    public void LaunchModeStarted() {
-        launchModeLoading = false;
-    }
-
-    public void LaunchModeEnded() {
-        launchModeUnloading = false;
-    }
-
     public void ToggleLerp(bool on) {
         if (on) {
-            launchModeLoading = true;
             launchModeActive = true;
             StartCoroutine("LerpForce");
         } else {
-            launchModeUnloading = false;
             launchModeActive = false;
             StopCoroutine("LerpForce");
         }

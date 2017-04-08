@@ -10,8 +10,8 @@ public class UserInterface : MonoBehaviour {
 
     void Start() {
         sessionController = transform.parent.GetComponent<SessionController>();
-        mainMenu = transform.FindChild("Main Menu").gameObject;
-        launchUI = transform.FindChild("Launch UI").gameObject;
+        mainMenu = transform.Find("Main Menu").gameObject;
+        launchUI = transform.Find("Launch UI").gameObject;
     }
 
 

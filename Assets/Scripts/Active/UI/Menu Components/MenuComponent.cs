@@ -11,7 +11,7 @@ public abstract class MenuComponent : MonoBehaviour {
 
     public GameObject GetElements {
         get {
-            if (elements == null) elements = transform.FindChild("Elements").gameObject;
+            if (elements == null) elements = transform.Find("Elements").gameObject;
             return elements;
         }
     }

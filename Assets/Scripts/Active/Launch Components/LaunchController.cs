@@ -4,11 +4,6 @@ using System.Collections;
 
 public class LaunchController : MonoBehaviour {
 
-    // broadcast event for turn end
-    // public event Action ballRestingEvent;
-    // public event Action<bool> ballReadyEvent;
-    // public event Action<bool> launchModeActiveEvent;
-
     // for grabbing the event parent
     LevelController levelController;
     LaunchUI launchUI;
@@ -51,7 +46,7 @@ public class LaunchController : MonoBehaviour {
 
     bool launchModeIsActive;
     bool playerLaunchButtonHasBeenPressed;
-    bool readyToRest;
+    public bool readyToRest { get; set; }
     bool launchInitiated;
     bool playerReadyForLaunch;
 

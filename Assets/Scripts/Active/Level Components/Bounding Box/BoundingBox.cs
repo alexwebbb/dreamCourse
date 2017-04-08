@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BoundingBox : LevelComponent {
 
-    public event Action characterOutOfBoundsEvent; 
+    public event Action<Character> characterOutOfBoundsEvent; 
 
     private void Start() {
         GetLevelController.RegisterBoundingBox(this);
@@ -14,8 +14,9 @@ public class BoundingBox : LevelComponent {
     private void OnTriggerExit(Collider other) {
         BounceController bc = other.GetComponent<BounceController>();
         if (bc != null) {
-            bc.GetCharacter.ReturnOutOfBoundsCharacterToLastPosition();
-            if (characterOutOfBoundsEvent != null) characterOutOfBoundsEvent();
+            Character character = bc.GetCharacter;
+            character.ReturnOutOfBoundsCharacterToLastPosition();
+            if (characterOutOfBoundsEvent != null) characterOutOfBoundsEvent(character);
         }
     }
 }

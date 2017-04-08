@@ -7,6 +7,7 @@ public class LaunchController : MonoBehaviour {
     // for grabbing the event parent
     LevelController levelController;
     LaunchUI launchUI;
+    Character character;
 
     public GameObject tracerObject;
     public GameObject playerObject;
@@ -46,7 +47,7 @@ public class LaunchController : MonoBehaviour {
 
     bool launchModeIsActive;
     bool playerLaunchButtonHasBeenPressed;
-    public bool readyToRest { get; set; }
+    bool readyToRest;
     bool launchInitiated;
     bool playerReadyForLaunch;
 
@@ -69,8 +70,26 @@ public class LaunchController : MonoBehaviour {
         launchUI.RegisterLauncher(this);
         // fetch the level controller
         levelController = FindObjectOfType<LevelController>();
+        character = GetComponentInParent<Character>();
     }
 
+
+
+
+    void ResetLaunchValues() {
+        // this covers both later and medial spin
+        spinForce = Vector3.zero;
+
+        // clear the variables used for sleeping the player object
+        ClearRestCheck();
+
+        launchInitiated = false;
+
+        // sleep the character after returning it, as long as it isnt dead
+        if (!character.IsDead) character.SleepCharacterPosition();
+        // if the player is dead, hide it.
+        else if (levelController.NumberOfPlayers != 1) character.SetHidden(true);
+    }
 
     void FixedUpdate() {
         // this block is here in case the player hasn't moved at all.. so that it can skip that few second count down
@@ -78,7 +97,7 @@ public class LaunchController : MonoBehaviour {
             // immediately turn off the variable that passed this block, so that begin turn is called only once
             playerReadyForLaunch = true;
             // set rest bool to false... needs to happen before begin turn is called
-            ResetRestCheck();
+            ClearRestCheck();
             // begin turn event... this will be used for UI and such also
             levelController.BeginTurn(false);
         } 
@@ -94,30 +113,35 @@ public class LaunchController : MonoBehaviour {
             if (restCounter > restLimit) {
                 playerReadyForLaunch = true;
                 // clear the variables for sleeping after calling begin turn or end turn, it is also called on disable which activates in multiplayer mode
-                ResetRestCheck();
+                ClearRestCheck();
 
                 if (launchInitiated) {
-                    // turn this off so that end turn event doesn't get called twice
-                    launchInitiated = false;
                     // call the end turn event in the levelcontroller.. most player switching logic is there
                     levelController.EndTurn();
-                    
                 } else {
+
+                    // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
+                    levelController.BeginTurn(true);
+
                     // lock position at beginning of turn
                     playerObjectRB.constraints = RigidbodyConstraints.FreezeAll;
-                    // call this at the beginning of the turn in case the player is rolling along as a result of other player action or hazards
-                    levelController.BeginTurn(false);
+
                 }
             }
         }
     }
 
 
-    void ResetRestCheck() {
+    void ClearRestCheck() {
         // these are the variables used in the fixed update to allow the launch controller to sleep the ball
         readyToRest = false;
         // rest counter is reset
         restCounter = 0;
+    }
+
+    void SetRestCheck(Character activeCharacter) {
+        // to call when the player is starting their turn, so that begin turn can be called
+        if(character == activeCharacter) readyToRest = true;
     }
 
 
@@ -201,6 +225,10 @@ public class LaunchController : MonoBehaviour {
     }
 
     void Subscribe() {
+        // subscribe to end of turn event for resetting values
+        levelController.turnIsOverEvent += ResetLaunchValues;
+        // subscribe to set active player event, kind of like "awake" for the turn
+        levelController.setActivePlayerEvent += SetRestCheck;
         // subscribe to the launch toggle event
         launchUI.launchModeToggleEvent += ToggleLaunchMode;
         // subscribe to initiate launch event
@@ -214,6 +242,10 @@ public class LaunchController : MonoBehaviour {
     }
 
     void Unsubscribe() {
+        // unsubscribe to end of turn event for resetting values
+        levelController.turnIsOverEvent -= ResetLaunchValues;
+        // unsubscribe to set active player event, kind of like "awake" for the turn
+        levelController.setActivePlayerEvent -= SetRestCheck;
         // unsubscribe to the launch toggle event
         launchUI.launchModeToggleEvent -= ToggleLaunchMode;
         // unsubscribe to initiate launch event
@@ -224,11 +256,6 @@ public class LaunchController : MonoBehaviour {
         launchUI.setMedialSpinEvent -= SetMedialSpin;
         // unsubscribe to set lateral spin
         launchUI.setLateralSpinEvent -= SetLateralSpin;
-    }
-
-    void ResetLaunchValues() {
-        // this covers both later and medial spin
-        spinForce = Vector3.zero;
     }
 
     void OnEnable() {
@@ -243,16 +270,10 @@ public class LaunchController : MonoBehaviour {
     }
 
     void OnDisable() {
-        // reset values set by UI during launch
-        ResetLaunchValues();
-
         // unsubscribe the events so it doesn't call an error while inactive
         Unsubscribe();
 
-        // clear the variables used for sleeping the player object
-        ResetRestCheck();
 
-        launchInitiated = false;
     }
 
 

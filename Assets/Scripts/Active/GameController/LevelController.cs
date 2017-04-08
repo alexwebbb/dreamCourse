@@ -23,6 +23,8 @@ public class LevelController : MonoBehaviour {
     int activePlayer;
     int turnNumber;
 
+    public Character GetActivePlayer { get { return player[activePlayer]; } }
+
     public int GetTotalScored {
         get {
             int totalScored = 0;
@@ -36,7 +38,7 @@ public class LevelController : MonoBehaviour {
     }
 
     public void RegisterBoundingBox(BoundingBox boundingBox) {
-        boundingBox.characterOutOfBoundsEvent += EndTurn;
+        boundingBox.characterOutOfBoundsEvent += PlayerOut;
     }
     
     public void Initialize(List<Character> character, int _numberOfPlayers) {
@@ -68,16 +70,11 @@ public class LevelController : MonoBehaviour {
         turnNumber = 0;
     }
 
-
     public void EndTurn() {
-        // event signaling that the turn is over, reset methods can be called for UI elements
+        // event signaling that the turn is over, reset methods can be called for UI elements and Launch controller
         if (turnIsOverEvent != null) turnIsOverEvent();
         // potential camera switch check here
 
-        // sleep the character after returning it, as long as it isnt dead
-        if(!player[activePlayer].IsDead) player[activePlayer].SleepCharacterPosition();
-        // if the player is dead, hide it.
-        else if(NumberOfPlayers != 1) player[activePlayer].SetHidden(true);
         // begin sequence to activate player whose turn it shall be
         bool lastElement = false;
         if (activePlayer + 1 < NumberOfPlayers) {
@@ -123,6 +120,10 @@ public class LevelController : MonoBehaviour {
         // if the goal is changing hands, remove the point from the previous owner
         if (goal.GetLastOwner != null && scorer != goal.GetLastOwner) { score[goal.GetLastOwner].Remove(goal); }
         CheckScore();
+    }
+
+    void PlayerOut(Character playerThatIsOut) {
+        if (playerThatIsOut == player[activePlayer]) EndTurn();
     }
 
     void CheckScore() {

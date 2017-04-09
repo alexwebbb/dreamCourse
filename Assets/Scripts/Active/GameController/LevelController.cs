@@ -71,6 +71,8 @@ public class LevelController : MonoBehaviour {
     }
 
     public void EndTurn() {
+        // sleep the character after returning it, as long as it isnt dead.
+        if (!player[activePlayer].IsDead) player[activePlayer].SleepCharacterPosition();
         // event signaling that the turn is over, reset methods can be called for UI elements and Launch controller
         if (turnIsOverEvent != null) turnIsOverEvent();
         // potential camera switch check here
@@ -93,11 +95,11 @@ public class LevelController : MonoBehaviour {
             turnNumber += 1;
             // unhide that player 1!
             if (player[0].IsDead) player[0].SetHidden(false);
-            // or just him active since he was well behaved
+            // or just she active since she was well behaved
             else player[0].SetAsActivePlayer(true);
         }
         // deactivate the player who called the turn end
-        if (NumberOfPlayers != 1) player[activePlayer].SetAsActivePlayer(false);
+        if (NumberOfPlayers != 1 && !player[activePlayer].IsDead) player[activePlayer].SetAsActivePlayer(false);
         // if it is the last player to go, set the index to zero, otherwise iterate
         activePlayer = lastElement ? 0 : activePlayer + 1;
         // call to the rest of the system changing the current active player
@@ -123,7 +125,10 @@ public class LevelController : MonoBehaviour {
     }
 
     void PlayerOut(Character playerThatIsOut) {
+        // if the player who fell off is the active one, their turn is over
         if (playerThatIsOut == player[activePlayer]) EndTurn();
+        // no matter what, hide the player
+        if (NumberOfPlayers != 1) playerThatIsOut.SetHidden(true);
     }
 
     void CheckScore() {

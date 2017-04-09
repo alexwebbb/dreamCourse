@@ -76,19 +76,15 @@ public class LaunchController : MonoBehaviour {
 
 
 
-    void ResetLaunchValues() {
+    void OnTurnEnd() {
         // this covers both later and medial spin
         spinForce = Vector3.zero;
 
         // clear the variables used for sleeping the player object
         ClearRestCheck();
 
+        // reset the variable that tracks the launch event 
         launchInitiated = false;
-
-        // sleep the character after returning it, as long as it isnt dead
-        if (!character.IsDead) character.SleepCharacterPosition();
-        // if the player is dead, hide it.
-        else if (levelController.NumberOfPlayers != 1) character.SetHidden(true);
     }
 
     void FixedUpdate() {
@@ -114,7 +110,7 @@ public class LaunchController : MonoBehaviour {
                 playerReadyForLaunch = true;
                 // clear the variables for sleeping after calling begin turn or end turn, it is also called on disable which activates in multiplayer mode
                 ClearRestCheck();
-
+                
                 if (launchInitiated) {
                     // call the end turn event in the levelcontroller.. most player switching logic is there
                     levelController.EndTurn();
@@ -226,7 +222,7 @@ public class LaunchController : MonoBehaviour {
 
     void Subscribe() {
         // subscribe to end of turn event for resetting values
-        levelController.turnIsOverEvent += ResetLaunchValues;
+        levelController.turnIsOverEvent += OnTurnEnd;
         // subscribe to set active player event, kind of like "awake" for the turn
         levelController.setActivePlayerEvent += SetRestCheck;
         // subscribe to the launch toggle event
@@ -243,7 +239,7 @@ public class LaunchController : MonoBehaviour {
 
     void Unsubscribe() {
         // unsubscribe to end of turn event for resetting values
-        levelController.turnIsOverEvent -= ResetLaunchValues;
+        levelController.turnIsOverEvent -= OnTurnEnd;
         // unsubscribe to set active player event, kind of like "awake" for the turn
         levelController.setActivePlayerEvent -= SetRestCheck;
         // unsubscribe to the launch toggle event

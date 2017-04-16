@@ -6,6 +6,7 @@ public class Level : MonoBehaviour {
 
     public string levelName;
     public string fileName;
+    public Transform origin;
 
     // public Transform GetLevelOrigin { get { return transform; } }
 

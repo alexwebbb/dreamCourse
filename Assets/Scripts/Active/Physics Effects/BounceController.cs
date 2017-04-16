@@ -67,14 +67,16 @@ public class BounceController : MonoBehaviour {
     
     void OnCollisionEnter(Collision collision) {
 
-        // There needs to be an event here that reports the position of the collision to the level controller
-        // something like if(bounceCount > 0) 
+        // explosive force when two player objects collide
+        if(collision.gameObject.tag == "Player") {
+            // may want to give this a public value at some point
+            rb.AddExplosionForce(300f, collision.transform.position, 0);
+        }
 
         // caputures the current bounce position and the very last one. used to determine the bounce direction
         if (gameObject != null) {
             bouncePositions[1] = bouncePositions[0];
             bouncePositions[0] = rb.position;
-
         }
     }
 

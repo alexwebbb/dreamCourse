@@ -50,7 +50,7 @@ public class LevelController : MonoBehaviour {
         GameObject instantiatedCharacter;
         for (int i = 0; i < NumberOfPlayers; i++) {
             // it is necessary to instantiate the game object first since that is what monobehavior scripts require
-            instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.transform, false);
+            instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.origin, false);
             // grab the character component of the character gameobject we just instantiated
             Character thisCharacter = instantiatedCharacter.GetComponent<Character>();
             // add instantiated character to local player list. player order is maintained there
@@ -58,7 +58,7 @@ public class LevelController : MonoBehaviour {
             // create score list for each character
             score.Add(thisCharacter, new List<Goal>());
             // initialize last position for each character
-            thisCharacter.LastPosition = currentLevel.transform.position;
+            thisCharacter.LastPosition = currentLevel.origin.position;
             // hide the characters except for the first one for the first round
             if (i != 0) { player[i].SetHidden(true); }
         }

@@ -7,14 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour {
 
+    public event Action levelIsLoaded;
     public event Action<Character> setActivePlayerEvent;
     public event Action turnIsOverEvent;
     public event Action<bool> playerIsReadyEvent;
+    public event Action scoreAdjusted;
 
     Level currentLevel;
 
-    public int NumberOfPlayers { get; protected set; }
-    int scoreablePoints;
+
 
     // first field is player one, second is player 2
     List<Character> player = new List<Character>();
@@ -23,7 +24,11 @@ public class LevelController : MonoBehaviour {
     int activePlayer;
     int turnNumber;
 
-    public Character GetActivePlayer { get { return player[activePlayer]; } }
+    public int NumberOfPlayers { get; protected set; }
+    public int ScoreablePoints { get; protected set; }
+
+    public List<Character> GetPlayers { get { return player; } }
+    public Dictionary<Character, List<Goal>> GetScore { get { return score; } }
 
     public int GetTotalScored {
         get {
@@ -34,7 +39,7 @@ public class LevelController : MonoBehaviour {
     }
 
     public void RegisterGoal(Goal goal) {
-        scoreablePoints += 1;
+        ScoreablePoints += 1;
     }
 
     public void RegisterBoundingBox(BoundingBox boundingBox) {
@@ -68,6 +73,8 @@ public class LevelController : MonoBehaviour {
         if (setActivePlayerEvent != null) setActivePlayerEvent(player[0]);
         // reset turn number
         turnNumber = 0;
+
+        if (levelIsLoaded != null) levelIsLoaded();
     }
 
     public void EndTurn() {
@@ -121,7 +128,8 @@ public class LevelController : MonoBehaviour {
         goal.SetColor = scorer.captureColor;
         // if the goal is changing hands, remove the point from the previous owner
         if (goal.GetLastOwner != null && scorer != goal.GetLastOwner) { score[goal.GetLastOwner].Remove(goal); }
-        CheckScore();
+
+        if (scoreAdjusted != null) scoreAdjusted();
     }
 
     void PlayerOut(Character playerThatIsOut) {
@@ -131,31 +139,7 @@ public class LevelController : MonoBehaviour {
         if (NumberOfPlayers != 1) playerThatIsOut.SetHidden(true);
     }
 
-    void CheckScore() {
-        // just a fun little check of the score
-        int totalScored = GetTotalScored;
-        Debug.Log("Scoreable Points: " + scoreablePoints);
-        Debug.Log("Total Points Scored: " + totalScored);
-
-
-        List<KeyValuePair<Character, int>> sortedScoreList = new List<KeyValuePair<Character, int>>();
-
-        foreach(KeyValuePair<Character, List<Goal>> player in score) {
-            
-            sortedScoreList.Add(new KeyValuePair<Character, int>(player.Key, player.Value.Count));
-        }
-
-        sortedScoreList.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value));
-        
-        foreach (KeyValuePair<Character, int> player in sortedScoreList) {
-            Debug.Log("player " + player.Key.characterName + ": " + player.Value);
-        }
-        
-        if(totalScored == scoreablePoints) {
-            Debug.Log(sortedScoreList[0].Key.characterName + " wins!");
-        }
-
-    }
+    
 
     
     /* future plans

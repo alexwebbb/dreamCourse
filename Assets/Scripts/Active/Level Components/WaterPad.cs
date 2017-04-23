@@ -6,7 +6,7 @@ public class WaterPad : MonoBehaviour {
 
     public float power = 5f;
     public float resistance = 2f;
-    public float skipThreshhold = 0.95f;
+    public float skipThreshhold = 0.9f;
     public float skipPower = 1.2f;
 
     private void OnTriggerEnter(Collider other) {

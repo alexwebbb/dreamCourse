@@ -8,7 +8,7 @@ public class NavTest : MonoBehaviour {
     public enum Mode { Explode, Nudge }
 
     public Mode mode = Mode.Explode;
-    public float range = 0;
+    public float range = 2f;
 
     // only reason I am using a list is because a queue is not visible in the editor
     public List<Transform> goal;
@@ -26,7 +26,8 @@ public class NavTest : MonoBehaviour {
 
         if (agent.enabled) {
             float dist = agent.remainingDistance;
-            if (dist != Mathf.Infinity && agent.pathStatus == NavMeshPathStatus.PathComplete && dist == 0) {
+            // && agent.pathStatus == NavMeshPathStatus.PathComplete
+            if (dist != Mathf.Infinity && dist <= 2) {
                 if (active < goal.Count - 1) {
                     active++;
                 } else {
@@ -49,6 +50,8 @@ public class NavTest : MonoBehaviour {
                     rb.isKinematic = false;
                     // may want to give this a public value at some point
                     rb.AddExplosionForce(800f, collision.transform.position, 0);
+
+                    collision.gameObject.GetComponent<Rigidbody>().AddExplosionForce(300f, collision.transform.position, 10);
                 }
                 break;
         }

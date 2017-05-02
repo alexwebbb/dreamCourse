@@ -30,11 +30,8 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
             pos.y /= bgImg.rectTransform.sizeDelta.y;
 
             // the formula used below converts the normalized pos into a value between -1 and 1
-            float x = pos.x * 2 - 1;
-            float y = pos.y * 2 - 1;
+            inputVector = new Vector2(pos.x * 2 - 1, pos.y * 2 - 1);
 
-            // input vector is accessed by properties
-            inputVector = new Vector2(x, y);
             // if the inputVector magnitude is greater than 1, return the normalized vector
             inputVector = (inputVector.sqrMagnitude > 1.0f) ? inputVector.normalized : inputVector;
             

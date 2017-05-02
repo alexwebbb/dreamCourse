@@ -4,6 +4,10 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour {
 
+    public enum CameraMode { Perspective, Orthographic }
+
+    public CameraMode camMode = CameraMode.Perspective;
+
     public Slider zoomControl;
     public VirtualJoystick joystick1;
 
@@ -14,7 +18,9 @@ public class CameraController : MonoBehaviour {
     LevelController levelController;
     Character activePlayer;
     GameObject player;
-    Transform cameraTransform;
+    Transform perspCamTransform;
+    Transform orthoCamTransform;
+    Transform orthoSubTransform;
 
 
     void Start() {
@@ -28,19 +34,55 @@ public class CameraController : MonoBehaviour {
 
     void FixedUpdate() {
 
-        if (cameraTransform != null) {
-            // follows the object placed in the player position
-            cameraTransform.position = player.transform.position;
+        switch (camMode) {
+            case CameraMode.Perspective:
+                if (perspCamTransform != null) {
+                    //
+                    if (!perspCamTransform.gameObject.activeSelf) {
+                        orthoCamTransform.gameObject.SetActive(false);
+                        perspCamTransform.gameObject.SetActive(true);
+                    }
 
-            // right joystickk control. this is control for rotating the camera
-            cameraTransform.Rotate(joystick1.Vertical() * verticalScalar, joystick1.Horizontal() * horizontalScalar, 0);
-            // following line locks the z axis down, since Rotate is leaky. also where rotation clamp is performed
-            cameraTransform.localEulerAngles = new Vector3(RotationClamp(cameraTransform.localEulerAngles.x, -30f, 50f), cameraTransform.localEulerAngles.y, 0);    
+                    // follows the object placed in the player position
+                    perspCamTransform.position = player.transform.position;
+
+                    // right joystickk control. this is control for rotating the camera
+                    perspCamTransform.Rotate(joystick1.GetVertical * verticalScalar, joystick1.GetHorizontal * horizontalScalar, 0);
+                    // following line locks the z axis down, since Rotate is leaky. also where rotation clamp is performed
+                    perspCamTransform.localEulerAngles = new Vector3(RotationClamp(perspCamTransform.localEulerAngles.x, -30f, 50f), perspCamTransform.localEulerAngles.y, 0);
+                }
+                break;
+            case CameraMode.Orthographic:
+                if (orthoCamTransform != null) {
+                    //
+                    if (!orthoCamTransform.gameObject.activeSelf) {
+                        perspCamTransform.gameObject.SetActive(false);
+                        orthoCamTransform.gameObject.SetActive(true);
+                    }
+
+                    // follows the object placed in the player position
+                    orthoCamTransform.position = player.transform.position;
+
+                    orthoSubTransform.Translate(Vector3.forward * joystick1.GetVertical, Space.Self);
+                    orthoSubTransform.Translate(Vector3.right * joystick1.GetHorizontal, Space.Self);
+
+                }
+                break;
         }
+        
     }
 
     void DollyCamera(float distance) {
-        cameraTransform.localScale = Vector3.one * ((distance * 9.5f) + 0.5f);
+        
+        switch (camMode) {
+            case CameraMode.Perspective:
+                perspCamTransform.localScale = Vector3.one * ((distance * 9.5f) + 0.5f);
+                break;
+            case CameraMode.Orthographic:
+                activePlayer.GetOrthoCamera.orthographicSize = ((distance * 21f) + 9f);
+                break;
+        }
+
     }
 
     void SetActivePlayer(Character _activePlayer) {
@@ -52,8 +94,12 @@ public class CameraController : MonoBehaviour {
         // get the player object which the camera follows
         player = activePlayer.GetPlayer;
 
-        // get the camera transform which the camera sits inside of
-        cameraTransform = activePlayer.GetCameraTransform;
+        // get the camera transform and camera for perspective camera
+        perspCamTransform = activePlayer.GetPerspCamTransform;
+
+        // get the camera transform and camera for ortho camera
+        orthoCamTransform = activePlayer.GetOrthoCamTransform;
+        orthoSubTransform = activePlayer.GetOrthoCamSubTransform;
 
     }
 

@@ -14,8 +14,13 @@ public class Character : MonoBehaviour {
     BounceController playerBC;
     GameObject playerLauncher;
     LaunchController launchController;
-    Transform cameraTransform;
-    GameObject cameraContainer;
+    Transform perspCamTransform;
+    Transform orthoCamTransform;
+    Transform orthoCamSubTransform;
+    // GameObject cameraContainer;
+
+    Camera perspCamera;
+    Camera orthoCamera;
 
     // utility properties
 
@@ -65,25 +70,54 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public Transform GetCameraTransform {
+    public Transform GetPerspCamTransform {
         get {
-            if(cameraTransform == null) cameraTransform = transform.GetChild(1);
-            return cameraTransform;
+            if(perspCamTransform == null) perspCamTransform = transform.GetChild(1);
+            return perspCamTransform;
         }
     }
 
-    public GameObject GetCameraContainer {
+    public Camera GetPerspCamera {
         get {
-            if(cameraContainer == null) cameraContainer = GetCameraTransform.gameObject;
+            if (perspCamera == null) perspCamera = transform.GetComponentInChildren<Camera>();
+            return perspCamera;
+        }
+    }
+
+    public Transform GetOrthoCamTransform {
+        get {
+            if (orthoCamTransform == null) orthoCamTransform = transform.GetChild(2);
+            return orthoCamTransform;
+        }
+    }
+
+    public Transform GetOrthoCamSubTransform {
+        get {
+            if (orthoCamSubTransform == null) orthoCamSubTransform = transform.GetChild(2).GetChild(0);
+            return orthoCamSubTransform;
+        }
+    }
+
+    public Camera GetOrthoCamera {
+        get {
+            if (orthoCamera == null) orthoCamera = transform.GetComponentInChildren<Camera>();
+            return orthoCamera;
+        }
+    }
+    /*
+    GameObject GetCameraContainer {
+        get {
+            if(cameraContainer == null) cameraContainer = GetPerspCamTransform.gameObject;
             return cameraContainer;
         }
     }
+    */
 
 
     // utility methods
-	public void SetAsActivePlayer(bool active) {
+    public void SetAsActivePlayer(bool active) {
 
-        GetCameraContainer.SetActive(active);
+        // GetCameraContainer.SetActive(active);
         GetPlayerLauncher.SetActive(active);
 
     }

@@ -15,8 +15,6 @@ public class LevelController : MonoBehaviour {
 
     Level currentLevel;
 
-
-
     // first field is player one, second is player 2
     List<Character> player = new List<Character>();
     Dictionary<Character, List<Goal>> score = new Dictionary<Character, List<Goal>>();
@@ -46,7 +44,7 @@ public class LevelController : MonoBehaviour {
         boundingBox.characterOutOfBoundsEvent += PlayerOut;
     }
     
-    public void Initialize(List<Character> character, int _numberOfPlayers) {
+    public void Initialize(List<Character> character, int _numberOfPlayers, GameObject[] cameras) {
         // initialize number of players
         NumberOfPlayers = _numberOfPlayers;
         // set current level so that calls to custom level object can be made
@@ -56,6 +54,11 @@ public class LevelController : MonoBehaviour {
         for (int i = 0; i < NumberOfPlayers; i++) {
             // it is necessary to instantiate the game object first since that is what monobehavior scripts require
             instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.origin, false);
+            // instantiate the cameras for the character
+            for(int j = 0; j < cameras.Count(); j++) {
+                GameObject cam = Instantiate<GameObject>(cameras[j], instantiatedCharacter.transform, false);
+                if (j != 0) cam.SetActive(false);
+            }
             // grab the character component of the character gameobject we just instantiated
             Character thisCharacter = instantiatedCharacter.GetComponent<Character>();
             // add instantiated character to local player list. player order is maintained there

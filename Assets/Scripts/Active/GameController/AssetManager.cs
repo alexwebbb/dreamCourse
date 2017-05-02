@@ -9,4 +9,7 @@ public class AssetManager : MonoBehaviour {
 
     // create a class called level that can go on the level origin gameobject
     public GameObject[] level;
+
+    // cameras
+    public GameObject[] cameras;
 }

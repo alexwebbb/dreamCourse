@@ -33,6 +33,7 @@ public class SessionController : MonoBehaviour {
 
         // get the level controller
         levelController = GetComponent<LevelController>();
+        assetManager = GetComponent<AssetManager>();
     }
 
     public void StartGame (NewGame newGame) {
@@ -56,6 +57,6 @@ public class SessionController : MonoBehaviour {
         Debug.Log(scene);
         Debug.Log(mode);
 
-        levelController.Initialize(characters, numberOfPlayers);
+        levelController.Initialize(characters, numberOfPlayers, assetManager.cameras);
     }
 }

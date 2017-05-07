@@ -48,6 +48,11 @@ public class SessionController : MonoBehaviour {
 
         // load the requested scene
         SceneManager.LoadScene(levels[currentLevel].fileName);
+        // should add the current level to a list
+        // whenever the player moves to a new area, it calls a function like NextLevel
+        // which checks to see if the requested level has already been visited, and if so
+        // supplies that prior version which has had its variables modified
+        // actually may store as strings and integers
 
         // on scene load will now run
     }

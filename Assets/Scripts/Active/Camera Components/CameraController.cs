@@ -5,15 +5,18 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
     public enum CameraMode { Perspective, Orthographic }
-
     public CameraMode camMode = CameraMode.Perspective;
 
     public Slider zoomControl;
+    public Button leftButton;
+    public Button rightButton;
     public VirtualJoystick joystick1;
 
     public float verticalScalar = 2f;
     public float horizontalScalar = 5f;
     public float defaultHeight = 5;
+
+    enum Direction { Left, Right }
 
     LevelController levelController;
     Character activePlayer;
@@ -30,6 +33,8 @@ public class CameraController : MonoBehaviour {
         levelController.setActivePlayerEvent += SetActivePlayer;
 
         zoomControl.onValueChanged.AddListener((value) => DollyCamera(value));
+        leftButton.onClick.AddListener(() => RotateView(Direction.Left));
+        rightButton.onClick.AddListener(() => RotateView(Direction.Right));
     }
 
     void FixedUpdate() {
@@ -83,6 +88,21 @@ public class CameraController : MonoBehaviour {
                 break;
         }
 
+    }
+
+    void RotateView(Direction direction) {
+        switch (camMode) {
+            case CameraMode.Orthographic:
+                switch (direction) {
+                    case Direction.Left:
+                        orthoSubTransform.Rotate(new Vector3(0, -15, 0));
+                        break;
+                    case Direction.Right:
+                        orthoSubTransform.Rotate(new Vector3(0, 15, 0));
+                        break;
+                }
+                break;
+        }
     }
 
     void SetActivePlayer(Character _activePlayer) {

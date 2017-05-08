@@ -12,10 +12,10 @@ public class Panel : MonoBehaviour {
 
     public int heightLevel;
     
-    public bool ApplyRotation(int rotation) {
+    public void ApplyRotation(int rotation) {
 
-        while(rotation > 0) {
-            
+        if(rotation == 90) {
+
             Side _left = left;
             Side _up = up;
             Side _right = right;
@@ -27,11 +27,39 @@ public class Panel : MonoBehaviour {
             left = _down;
 
             this.transform.Rotate(new Vector3(0, 90f, 0));
-            rotation -= 90;
+            // rotation -= 90;
+
+        } else if (rotation == 180) {
+
+            Side _left = left;
+            Side _up = up;
+            Side _right = right;
+            Side _down = down;
+
+            right = _left;
+            down = _up;
+            left = _right;
+            up = _down;
+
+            this.transform.Rotate(new Vector3(0, 180f, 0));
+
+        } else if (rotation == 270) {
+
+            Side _left = left;
+            Side _up = up;
+            Side _right = right;
+            Side _down = down;
+
+            down = _left;
+            left = _up;
+            up = _right;
+            right = _down;
+
+            this.transform.Rotate(new Vector3(0, 270f, 0));
         }
-        return true;
+
     }
-    
+
 }
 
 [System.Serializable]

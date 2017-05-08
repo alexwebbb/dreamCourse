@@ -95,12 +95,12 @@ public class CourseGenerator : MonoBehaviour {
                 map[i, j] = Instantiate(selectedPanel.panelPick.gameObject, 
                     new Vector3(j * panelDiameter, currentLevel * tierHeight, i * panelDiameter), 
                     Quaternion.identity).GetComponent<Panel>();
-
+                /*
                 bool goofyWaitBool = false;
                 while(!goofyWaitBool) {
                     goofyWaitBool = map[i, j].ApplyRotation(selectedPanel.rotation);
-                }
-                // map[i, j].ApplyRotation(selectedPanel.rotation);
+                }*/
+                map[i, j].ApplyRotation(selectedPanel.rotation);
 
 
                 map[i, j].transform.parent = mapHolder;

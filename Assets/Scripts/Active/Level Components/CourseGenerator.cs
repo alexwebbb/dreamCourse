@@ -81,26 +81,19 @@ public class CourseGenerator : MonoBehaviour {
                     selectedPanel = potentialPanels[Random.Range(0, potentialPanels.Count)];
                 }
 
-
-                // (int)map[i, j - 1].right.sideHeight
-                if (i != 0 && j != 0) currentLevel = map[i, j - 1].heightLevel + lastHeight;
+               
+                if (j != 0) currentLevel = map[i, j - 1].heightLevel + map[i, j - 1].right.sideHeight;
                 else if (i > 0) currentLevel = map[i - 1, j].heightLevel + map[i - 1, j].up.sideHeight;
 
 
                 currentLevel -= selectedPanel.sideOfPanel.sideHeight;
                 lastHeight = selectedPanel.oppositeSide.sideHeight;
-                Debug.Log(lastHeight);
+
                 map[i, j] = Instantiate(selectedPanel.panelPick.gameObject, 
                     new Vector3(j * panelDiameter, currentLevel * tierHeight, i * panelDiameter), 
                     Quaternion.identity).GetComponent<Panel>();
-                /*
-                bool goofyWaitBool = false;
-                while(!goofyWaitBool) {
-                    goofyWaitBool = map[i, j].ApplyRotation(selectedPanel.rotation);
-                }*/
+
                 map[i, j].ApplyRotation(selectedPanel.rotation);
-
-
                 map[i, j].transform.parent = mapHolder;
 
                 map[i, j].heightLevel = currentLevel;

@@ -12,11 +12,10 @@ public class Panel : MonoBehaviour {
 
     public int heightLevel;
     
-    public void ApplyRotation(int rotation) {
+    public bool ApplyRotation(int rotation) {
 
         while(rotation > 0) {
-            this.transform.Rotate(new Vector3(0, 90f, 0));
-
+            
             Side _left = left;
             Side _up = up;
             Side _right = right;
@@ -27,11 +26,12 @@ public class Panel : MonoBehaviour {
             down = _right;
             left = _down;
 
-            Debug.Log("rotation complete");
+            this.transform.Rotate(new Vector3(0, 90f, 0));
             rotation -= 90;
         }
+        return true;
     }
-
+    
 }
 
 [System.Serializable]
@@ -55,7 +55,6 @@ public class Side : IEquatable<Side> {
                 return true;
             }
         }
-
         return false;
     }
 }

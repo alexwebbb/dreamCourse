@@ -41,11 +41,6 @@ public class CourseGenerator : MonoBehaviour {
                 
                 List<PanelSet> potentialPanels = new List<PanelSet>();
 
-                Debug.Log("assigning height based on last panel");
-                // (int)map[i, j - 1].right.sideHeight
-                if (i != 0 && j != 0) currentLevel = map[i, j - 1].heightLevel + lastHeight;
-                else if(i > 0) currentLevel = map[i - 1, j].heightLevel + (int)map[i - 1, j].up.sideHeight;
-
                 foreach (Panel tryPanel in panels) {
 
                     if (j != 0) {
@@ -82,13 +77,17 @@ public class CourseGenerator : MonoBehaviour {
                 }
 
                 // pick a random panel
-                // Random.Range(0, potentialPanels.Count)
-                
                 if(i == 0 && j == 0) {
                     selectedPanel = potentialPanels[0];
                 } else {
                     selectedPanel = potentialPanels[Random.Range(0, potentialPanels.Count)];
                 }
+
+
+                // (int)map[i, j - 1].right.sideHeight
+                if (i != 0 && j != 0) currentLevel = map[i, j - 1].heightLevel + lastHeight;
+                else if (i > 0) currentLevel = map[i - 1, j].heightLevel + (int)map[i - 1, j].up.sideHeight;
+
 
                 currentLevel -= (int)selectedPanel.sideOfPanel.sideHeight;
                 lastHeight = (int)selectedPanel.oppositeSide.sideHeight;
@@ -96,8 +95,14 @@ public class CourseGenerator : MonoBehaviour {
                 map[i, j] = Instantiate(selectedPanel.panelPick.gameObject, 
                     new Vector3(j * panelDiameter, currentLevel * tierHeight, i * panelDiameter), 
                     Quaternion.identity).GetComponent<Panel>();
-                Debug.Log("Rotation Initiated");
-                map[i, j].ApplyRotation(selectedPanel.rotation);
+
+                bool goofyWaitBool = false;
+                while(!goofyWaitBool) {
+                    goofyWaitBool = map[i, j].ApplyRotation(selectedPanel.rotation);
+                }
+                // map[i, j].ApplyRotation(selectedPanel.rotation);
+
+
                 map[i, j].transform.parent = mapHolder;
 
                 map[i, j].heightLevel = currentLevel;
@@ -118,6 +123,7 @@ public struct PanelSet {
     public PanelSet(Panel _panel, Side _side, Side _oppositeSide, int _rotation) {
         this.panelPick = _panel;
         this.sideOfPanel = _side;
+        // this is just here because of the dumb leveling bug
         this.oppositeSide = _oppositeSide;
         this.rotation = _rotation;
     }

@@ -63,7 +63,7 @@ public class Panel : MonoBehaviour {
 }
 
 [System.Serializable]
-public class Side : IEquatable<Side> {
+public struct Side : IEquatable<Side> {
 
     public enum SideShape { Straight, Left, Right }
     public enum SideAngle { Flat = 0, Fifteen = 1, Thirty = 2 }

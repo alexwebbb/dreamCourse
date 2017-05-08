@@ -15,9 +15,11 @@ public class CourseGenerator : MonoBehaviour {
     float panelDiameter = 8f;
     float tierHeight = 2.14f;
 
-    int currentLevel = 0;
+    int currentLevel { get; set; }
 
     public void GenerateCourse() {
+
+        currentLevel = 0;
 
         map = new Panel[height, width];
 
@@ -31,13 +33,20 @@ public class CourseGenerator : MonoBehaviour {
         mapHolder.parent = transform;
 
         for (int i = 0; i < height; i++) {
+
+            float lastHeight;
+
             for (int j = 0; j < width; j++) {
 
                 PanelSet selectedPanel;
                 
                 List<PanelSet> potentialPanels = new List<PanelSet>();
 
-                foreach(Panel tryPanel in panels) {
+                Debug.Log("assigning height based on last panel");
+                if(i != 0 && j != 0) currentLevel = map[i, j - 1].heightLevel + (int)map[i, j - 1].right.sideHeight;
+                else if(i > 0) currentLevel = map[i - 1, j].heightLevel + (int)map[i - 1, j].up.sideHeight;
+
+                foreach (Panel tryPanel in panels) {
 
                     if (j != 0) {
 
@@ -47,9 +56,9 @@ public class CourseGenerator : MonoBehaviour {
 
                         }
 
-                        if (map[i, j - 1].right.Equals(tryPanel.up)) {
+                        if (map[i, j - 1].right.Equals(tryPanel.down)) {
 
-                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.up, 90));
+                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.down, 90));
 
                         }
 
@@ -59,11 +68,13 @@ public class CourseGenerator : MonoBehaviour {
 
                         }
 
-                        if (map[i, j - 1].right.Equals(tryPanel.down)) {
+                        if (map[i, j - 1].right.Equals(tryPanel.up)) {
 
-                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.down, 270));
+                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.up, 270));
 
                         }
+
+
                     } else {
                         potentialPanels.Add(new PanelSet(panels[0], panels[0].left, 0));
                     }
@@ -71,33 +82,42 @@ public class CourseGenerator : MonoBehaviour {
                 }
 
                 // pick a random panel
-                selectedPanel = potentialPanels[0];
-                currentLevel -= (int)selectedPanel.sideOfPanel.sideHeight;
+                // Random.Range(0, potentialPanels.Count)
+                
+                if(i == 0 && j == 0) {
+                    selectedPanel = potentialPanels[0];
+                } else {
+                    selectedPanel = potentialPanels[Random.Range(0, potentialPanels.Count)];
+                }
 
-                Debug.Log("i : " + i + ", j: " + j);
+                currentLevel -= (int)selectedPanel.sideOfPanel.sideHeight;
+                
                 map[i, j] = Instantiate(selectedPanel.panelPick.gameObject, 
                     new Vector3(j * panelDiameter, currentLevel * tierHeight, i * panelDiameter), 
                     Quaternion.identity).GetComponent<Panel>();
+                Debug.Log("Rotation Initiated");
                 map[i, j].ApplyRotation(selectedPanel.rotation);
                 map[i, j].transform.parent = mapHolder;
 
                 map[i, j].heightLevel = currentLevel;
-
-
+               
             }
         }
     }
 }
 
-public struct PanelSet {
+[System.Serializable]
+public class PanelSet {
 
     public Panel panelPick;
     public Side sideOfPanel;
+    public Side oppositeSide;
     public int rotation;
 
     public PanelSet(Panel _panel, Side _side, int _rotation) {
         this.panelPick = _panel;
         this.sideOfPanel = _side;
+        //this.oppositeSide = _oppositeSide;
         this.rotation = _rotation;
     }
 

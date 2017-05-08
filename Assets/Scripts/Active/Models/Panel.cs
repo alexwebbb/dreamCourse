@@ -26,7 +26,9 @@ public class Panel : MonoBehaviour {
             right = _up;
             down = _right;
             left = _down;
-            
+
+            Debug.Log("rotation complete");
+            rotation -= 90;
         }
     }
 

@@ -67,11 +67,11 @@ public struct Side : IEquatable<Side> {
 
     public enum SideShape { Straight, Left, Right }
     public enum SideAngle { Flat = 0, Fifteen = 1, Thirty = 2 }
-    public enum SideHeight { Zero = 0, One = 1, Two = 2 }
+    // public enum SideHeight { Zero = 0, One = 1, Two = 2 }
 
     public SideShape sideShape;
     public SideAngle sideAngle;
-    public SideHeight sideHeight;
+    public int sideHeight;
 
     public bool Equals(Side otherPanel) {
 

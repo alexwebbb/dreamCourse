@@ -14,12 +14,10 @@ public class CourseGenerator : MonoBehaviour {
     Panel[,] map;
     float panelDiameter = 8f;
     float tierHeight = 2.14f;
-
-    int currentLevel { get; set; }
-
+    
     public void GenerateCourse() {
 
-        currentLevel = 0;
+        int currentLevel = 0;
 
         map = new Panel[height, width];
 
@@ -86,12 +84,12 @@ public class CourseGenerator : MonoBehaviour {
 
                 // (int)map[i, j - 1].right.sideHeight
                 if (i != 0 && j != 0) currentLevel = map[i, j - 1].heightLevel + lastHeight;
-                else if (i > 0) currentLevel = map[i - 1, j].heightLevel + (int)map[i - 1, j].up.sideHeight;
+                else if (i > 0) currentLevel = map[i - 1, j].heightLevel + map[i - 1, j].up.sideHeight;
 
 
-                currentLevel -= (int)selectedPanel.sideOfPanel.sideHeight;
-                lastHeight = (int)selectedPanel.oppositeSide.sideHeight;
-
+                currentLevel -= selectedPanel.sideOfPanel.sideHeight;
+                lastHeight = selectedPanel.oppositeSide.sideHeight;
+                Debug.Log(lastHeight);
                 map[i, j] = Instantiate(selectedPanel.panelPick.gameObject, 
                     new Vector3(j * panelDiameter, currentLevel * tierHeight, i * panelDiameter), 
                     Quaternion.identity).GetComponent<Panel>();

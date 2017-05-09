@@ -77,8 +77,12 @@ public class CourseGenerator : MonoBehaviour {
                         // this default case is here for the initial tile on each row
                         potentialPanels.Add(new PanelSet(panels[0], panels[0].left, 0));
                     }
-
                 }
+
+                /// going to have the other check for the side of the tile occur here
+                /// maybe add some optional parameters to the panel set struct
+                /// 
+
 
                 // pick a random panel if it is not the first panel
                 if(i == 0 && j == 0) {

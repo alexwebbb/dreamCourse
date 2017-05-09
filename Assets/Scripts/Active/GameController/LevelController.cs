@@ -54,6 +54,8 @@ public class LevelController : MonoBehaviour {
         for (int i = 0; i < NumberOfPlayers; i++) {
             // it is necessary to instantiate the game object first since that is what monobehavior scripts require
             instantiatedCharacter = Instantiate<GameObject>(character[i].gameObject, currentLevel.origin, false);
+            // set initial rotation... why didnt I have this before?
+            instantiatedCharacter.transform.localRotation = currentLevel.origin.transform.localRotation;
             // instantiate the cameras for the character
             for(int j = 0; j < cameras.Count(); j++) {
                 GameObject cam = Instantiate<GameObject>(cameras[j], instantiatedCharacter.transform, false);

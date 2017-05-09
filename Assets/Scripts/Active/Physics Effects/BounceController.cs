@@ -74,7 +74,7 @@ public class BounceController : MonoBehaviour {
         }
 
         // caputures the current bounce position and the very last one. used to determine the bounce direction
-        if (gameObject != null) {
+        if (rb != null) {
             bouncePositions[1] = bouncePositions[0];
             bouncePositions[0] = rb.position;
         }
@@ -88,6 +88,7 @@ public class BounceController : MonoBehaviour {
             // calculate the direction spin force will be applied in using the bounce positions array
             Vector3 spinDirection = bouncePositions[0] - bouncePositions[1];
             Vector3.Normalize(spinDirection);
+
 
             // this is adds to the vertical force of the bounce. SHOULD work even when hitting things from underneath
             rb.AddForce(Vector3.up * rb.velocity.y * launcher.bouncePercent, ForceMode.VelocityChange);
@@ -105,7 +106,7 @@ public class BounceController : MonoBehaviour {
         }
 
         // increment the bounce count. used to establish the range that spin adjustments occur in
-        bounceCount++;
+        if(rb != null) bounceCount++;
 
     }
 }

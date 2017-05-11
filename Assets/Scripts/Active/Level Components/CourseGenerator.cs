@@ -46,8 +46,61 @@ public class CourseGenerator : MonoBehaviour {
                 // to the last tile and added to the list if it matches 
                 foreach (Panel tryPanel in panels) {
 
-                    if (j != 0) {
 
+                    if (i != 0 && j != 0) {
+                        // this case is the default case in most cases, assumes a panel below and to the left
+                        if (map[i, j - 1].right.Equals(tryPanel.left)) {
+                            if (map[i - 1, j].up.Equals(tryPanel.down)) {
+                                potentialPanels.Add(new PanelSet(tryPanel, tryPanel.left, 0));
+                            }
+                        }
+
+                        if (map[i, j - 1].right.Equals(tryPanel.down)) {
+                            if (map[i - 1, j].up.Equals(tryPanel.right)) {
+                                potentialPanels.Add(new PanelSet(tryPanel, tryPanel.down, 90));
+                            }
+                        }
+
+                        if (map[i, j - 1].right.Equals(tryPanel.right)) {
+                            if (map[i - 1, j].up.Equals(tryPanel.up)) {
+                                potentialPanels.Add(new PanelSet(tryPanel, tryPanel.right, 180));
+                            }
+                        }
+
+                        if (map[i, j - 1].right.Equals(tryPanel.up)) {
+                            if (map[i - 1, j].up.Equals(tryPanel.left)) {
+                                potentialPanels.Add(new PanelSet(tryPanel, tryPanel.up, 270));
+                            }
+                        }
+
+                    } else if (i != 0 && j == 0) {
+                        // this is the case on the first column
+                        if (map[i - 1, j].up.Equals(tryPanel.down)) {
+
+                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.down, 0));
+
+                        }
+
+                        if (map[i - 1, j].up.Equals(tryPanel.right)) {
+
+                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.right, 90));
+
+                        }
+
+                        if (map[i - 1, j].up.Equals(tryPanel.up)) {
+
+                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.up, 180));
+
+                        }
+
+                        if (map[i - 1, j].up.Equals(tryPanel.left)) {
+
+                            potentialPanels.Add(new PanelSet(tryPanel, tryPanel.left, 270));
+
+                        }
+
+                    } else if(i == 0 && j != 0) {
+                        // this case is for the first row only
                         if (map[i, j - 1].right.Equals(tryPanel.left)) {
 
                             potentialPanels.Add(new PanelSet(tryPanel, tryPanel.left, 0));
@@ -72,7 +125,6 @@ public class CourseGenerator : MonoBehaviour {
 
                         }
 
-
                     } else {
                         // this default case is here for the initial tile on each row
                         potentialPanels.Add(new PanelSet(panels[0], panels[0].left, 0));
@@ -88,6 +140,7 @@ public class CourseGenerator : MonoBehaviour {
                 if(i == 0 && j == 0) {
                     selectedPanel = potentialPanels[0];
                 } else {
+                    Debug.Log(potentialPanels.Count);
                     selectedPanel = potentialPanels[Random.Range(0, potentialPanels.Count)];
                 }
 
@@ -98,7 +151,11 @@ public class CourseGenerator : MonoBehaviour {
 
                 // adjust the height based on which side of the tile got selected
                 // ie if the top edge of a tile got selected, it will shift it down
-                currentLevel -= selectedPanel.sideOfPanel.sideHeight;
+                if(j == 0) {
+                    currentLevel -= selectedPanel.sideOfPanel.sideHeight;
+                } else {
+                    currentLevel -= selectedPanel.sideOfPanel.sideHeight;
+                }
 
                 // instantiate the tile in the correct position on the grid based on the loops
                 map[i, j] = Instantiate(selectedPanel.panelPick.gameObject, 

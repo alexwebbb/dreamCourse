@@ -4,40 +4,38 @@ using UnityEngine;
 
 public class ConstantScale : MonoBehaviour {
 
-    float initialSize;
-
-    SizeScaler scaleField;
+    Dictionary<SizeScaler, float> initialSize = new Dictionary<SizeScaler, float>();
+    List<SizeScaler> scaleField = new List<SizeScaler>();
 
     public SizeScaler SetReference {
         set {
-            if (scaleField == null) {
-                initialSize = transform.localScale.z;
-                scaleField = value;
-            }
+            scaleField.Add(value);
+            initialSize.Add(value, transform.localScale.z);
         }
     }
 
     public SizeScaler UnsetReference {
         set {
-            if (scaleField = value) scaleField = null;
+            initialSize.Remove(value);
+            scaleField.Remove(value);
         }
     }
 
     private void FixedUpdate() {
 
-        if (scaleField != null) {
+        if (scaleField[0] != null) {
 
-            switch(scaleField.type) {
+            switch(scaleField[0].type) {
                 case ScaleType.Static:
-                    if (transform.localScale.z != scaleField.targetSize) transform.localScale = Vector3.one * scaleField.targetSize;
+                    if (transform.localScale.z != scaleField[0].targetSize) transform.localScale = Vector3.one * scaleField[0].targetSize;
                     break;
                 case ScaleType.Linear:
-                    float scalar = (transform.position.z - (scaleField.transform.position.z - (0.5f * transform.localScale.z))) / scaleField.transform.localScale.z;
+                    float scalar = (transform.position.z - (scaleField[0].transform.position.z - (0.5f * transform.localScale.z))) / scaleField[0].transform.localScale.z;
                     scalar = ScaleModifier(scalar);
                     transform.localScale = Vector3.one * scalar;
                     break;
                 case ScaleType.Radial:
-                    float radialScalar = (transform.position - scaleField.transform.position).sqrMagnitude / scaleField.transform.localScale.sqrMagnitude;
+                    float radialScalar = (transform.position - scaleField[0].transform.position).sqrMagnitude / scaleField[0].transform.localScale.sqrMagnitude;
                     radialScalar = ScaleModifier(radialScalar);
                     transform.localScale = Vector3.one * radialScalar;
                     break;
@@ -47,6 +45,8 @@ public class ConstantScale : MonoBehaviour {
 
 
     float ScaleModifier(float _scalar) {
-        return initialSize <= scaleField.targetSize ? (_scalar * (scaleField.targetSize - initialSize)) + initialSize : ((1 - _scalar) * (initialSize - scaleField.targetSize)) + scaleField.targetSize;
+        float _initial = initialSize[scaleField[0]];
+        float _target = scaleField[0].targetSize;
+        return _initial <= _target ? (_scalar * (_target - _initial)) + _initial : ((1 - _scalar) * (_initial - _target)) + _target;
     }
 }

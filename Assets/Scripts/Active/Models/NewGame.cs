@@ -32,14 +32,14 @@ public class NewGame : MonoBehaviour {
 
     public GameObject NextMenu() {
 
-        current++;
+        if(current < callList.Count) current++;
         return callList[current];
 
     }
 
     public GameObject PreviousMenu() {
 
-        current--;
+        if(current > 0) current--;
         return callList[current];
 
     }

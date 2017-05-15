@@ -2,34 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ScaleType { Static, Linear, Radial };
+
 public class SizeScaler : MonoBehaviour {
 
-    public float minSize;
-    public float maxSize;
+    public float targetSize;
 
-    List<GameObject> captiveObject = new List<GameObject>();
+    public ScaleType type; 
 
     private void Start() {
         
     }
 
     private void FixedUpdate() {
-        foreach(GameObject captive in captiveObject) {
-            if (captive != null) {
-                float scalar = (captive.transform.position.z - (transform.position.z - (0.5f * transform.localScale.z))) / transform.localScale.z;
-                scalar = (scalar * (maxSize - minSize)) + minSize;
-                captive.transform.localScale = new Vector3(scalar, scalar, scalar);
-            }
-        }
+        // check if resident constant scale objects are available to be set
+        // there is a problem with this, ie what to do about overlapping fields
+        // this was intended to be a fix for that... but it doesnt actually solve that problem
+        // maybe it will work after all. since radial field only cares about 
+        // your initial scale, not how far you are from the center when it activates
     }
 
     private void OnTriggerEnter(Collider other) {
-        if(other.gameObject.layer == 9 || other.gameObject.layer == 8) {
-            captiveObject.Add(other.gameObject);
-        }
+        // adds constant scale object to list which is checked in the fixed update
     }
 
     private void OnTriggerExit(Collider other) {
-        captiveObject.Remove(other.gameObject);
+        // unsets the object exiting the field, removes it from the list
     }
 }

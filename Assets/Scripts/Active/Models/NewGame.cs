@@ -13,37 +13,34 @@ public class NewGame : MonoBehaviour {
     // game mode will be provided with the call list
 
     bool callListSet = false;
-    public bool IsCallList { get { return callListSet; } }
+    public bool IsCallListSet { get { return callListSet; } }
 
-    Stack<GameObject> callListPre = new Stack<GameObject>();
-    GameObject callListCurrent;
-    Stack<GameObject> callListPost = new Stack<GameObject>();
+    List<GameObject> callList = new List<GameObject>();
+    int current;
 
-    public Stack<GameObject> SetCallList {
+    public List<GameObject> SetCallList {
         set {
-            callListPre = value;
+            callList = value;
             callListSet = true;
-            callListCurrent = callListPre.Pop();
+            current = 0;
         }
     }
 
     public ISelectionMenu GetCurrentMenu {
-        get { return callListCurrent.GetComponent<ISelectionMenu>(); }
+        get { return callList[current].GetComponent<ISelectionMenu>(); }
     }
 
     public GameObject NextMenu() {
 
-        callListPost.Push(callListCurrent);
-        callListCurrent = callListPre.Pop();
-        return callListCurrent;
+        current++;
+        return callList[current];
 
     }
 
     public GameObject PreviousMenu() {
 
-        callListPre.Push(callListCurrent);
-        callListCurrent = callListPost.Pop();
-        return callListCurrent;
+        current--;
+        return callList[current];
 
     }
 

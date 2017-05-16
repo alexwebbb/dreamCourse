@@ -201,14 +201,9 @@ public class LaunchController : MonoBehaviour {
             launchingRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
 
             // sets the decay time for the tracer objects
-            if (traceBool) Destroy(launchingObject, lifetime);
+            Destroy(launchingObject, lifetime);
 
         } else {
-            // for launching inside water, so that ontrigger enter will be called, etc
-            // not sure if this is still needed since I will be clearing where the CF gets set in the BC
-            playerObject.SetActive(false);
-            playerObject.SetActive(true);
-
             // point the player rb at the cube
             playerObjectRB.transform.LookAt(pointerCube);
 

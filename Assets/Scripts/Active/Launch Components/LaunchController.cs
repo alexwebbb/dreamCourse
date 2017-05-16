@@ -4,15 +4,9 @@ using System.Collections;
 
 public class LaunchController : MonoBehaviour {
 
-    // for grabbing the event parent
-    LevelController levelController;
-    LaunchUI launchUI;
-    Character character;
-
+    
     public GameObject tracerObject;
     public GameObject playerObject;
-
-    Transform pointerCube;
 
     [Header("Bounce Controller Items")]
     public Vector3 spinForce;
@@ -24,13 +18,6 @@ public class LaunchController : MonoBehaviour {
     public float minForce;
     public float maxForce;
 
-    float normalizedForce;
-    float GetPlayerForce {
-        get {
-            return (normalizedForce * (maxForce - minForce)) + minForce;
-        }
-    }
-
     public float lifetime;
     public float ballGap;
 
@@ -40,7 +27,14 @@ public class LaunchController : MonoBehaviour {
     public float rollLimit = 5f;
     public float velocitySleep = 5f;
 
+    // for grabbing the event parent
+    LevelController levelController;
+    LaunchUI launchUI;
+
+    Character character;
+    Transform pointerCube;
     Rigidbody playerObjectRB;
+    ConstantScale playerObjectCS;
 
     int restCounter = 0;
     int restLimit = 150;
@@ -51,7 +45,9 @@ public class LaunchController : MonoBehaviour {
     bool launchInitiated;
     bool playerReadyForLaunch;
 
-    // experimental section
+    float normalizedForce;
+    float GetPlayerForce { get { return (normalizedForce * (maxForce - minForce)) + minForce; } }
+
     [Header("Experimental Section")]
     public Vector3 centerOfMass;
 
@@ -59,7 +55,14 @@ public class LaunchController : MonoBehaviour {
         // grab the players rigidbody for launching purposes
         playerObjectRB = playerObject.GetComponent<Rigidbody>();
 
-        // grab the pointer cube that is used to direct the aim of the launcher. the launcher determines launch direction by using this cube and the player object
+        // grab the players bounce controller and sets the launcher field, which also sets such values as drag
+        playerObject.GetComponent<BounceController>().SetLauncher = this;
+
+        // grab the constant scale component of the player
+        playerObjectCS = playerObject.GetComponent<ConstantScale>();
+
+        // grab the pointer cube that is used to direct the aim of the launcher. 
+        // the launcher determines launch direction by using this cube and the player object
         pointerCube = transform.GetChild(0).GetChild(0).GetChild(0);
 
         // get the launch UI to subscribe to it
@@ -72,8 +75,6 @@ public class LaunchController : MonoBehaviour {
         levelController = FindObjectOfType<LevelController>();
         character = GetComponentInParent<Character>();
     }
-
-
 
 
     void OnTurnEnd() {
@@ -179,30 +180,42 @@ public class LaunchController : MonoBehaviour {
 
     void Launch(bool traceBool) {
 
-        // this ternary operator uses the trace bool to determine whether to launch a tracer object or the player object
-        GameObject launchingObject = traceBool ? (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation) : playerObject;
-        
-        // get the launching object's bounce controller so that it can invoke the set launcher property
-        BounceController bc = launchingObject.GetComponent<BounceController>();
-        // set launcher checks to see if the launch controller has been set (ie the player object) and sets initial variables
-        bc.SetLauncher = this;
+        GameObject launchingObject;
 
-        // for launching inside water, so that ontrigger enter will be called, etc
-        if(!traceBool) { launchingObject.SetActive(false); launchingObject.SetActive(true);}
-        
-        // grabs the rigidbody of tahe object that is produced by the prior operation
-        Rigidbody launchingRB = bc.GetRigidbody;
+        if (traceBool) {
+            // instantiate the tracer object
+            launchingObject = (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation);
 
-        // the object which has been grabbed is pointed at the cube
-        launchingRB.transform.LookAt(pointerCube);
+            // set the launcher field in the bounce controller. BC uses the launcher to set initial launch qualities
+            launchingObject.GetComponent<BounceController>().SetLauncher = this;
 
-        // launch forces are applied
-        if(traceBool) launchingRB.AddRelativeForce(Vector3.forward * defaultForce, ForceMode.VelocityChange);
-        else launchingRB.AddRelativeForce(Vector3.forward * GetPlayerForce, ForceMode.VelocityChange);
-        launchingRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
+            // copying the characteristics of the scaler to the instance object
+            launchingObject.GetComponent<ConstantScale>().CopyScale(playerObjectCS);
 
-        // sets the decay time for the tracer objects
-        if (traceBool) Destroy(launchingObject, lifetime);
+            // grab the rb and point it at the cube
+            Rigidbody launchingRB = launchingObject.GetComponent<Rigidbody>();
+            launchingRB.transform.LookAt(pointerCube);
+
+            // launch forces are applied
+            launchingRB.AddRelativeForce(Vector3.forward * defaultForce, ForceMode.VelocityChange);
+            launchingRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
+
+            // sets the decay time for the tracer objects
+            if (traceBool) Destroy(launchingObject, lifetime);
+
+        } else {
+            // for launching inside water, so that ontrigger enter will be called, etc
+            // not sure if this is still needed since I will be clearing where the CF gets set in the BC
+            playerObject.SetActive(false);
+            playerObject.SetActive(true);
+
+            // point the player rb at the cube
+            playerObjectRB.transform.LookAt(pointerCube);
+
+            // launch forces are applied
+            playerObjectRB.AddRelativeForce(Vector3.forward * GetPlayerForce, ForceMode.VelocityChange);
+            playerObjectRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);
+        }
     }
 
     // Functions called by the UI

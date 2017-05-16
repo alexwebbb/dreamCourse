@@ -39,17 +39,20 @@ public class BounceController : MonoBehaviour {
 
     public LaunchController SetLauncher {
         set {
-            if (launcher == null) launcher = value;
+            if (launcher == null) {
+                launcher = value;
 
-            // cache and set the properties of rb. necessary if environmental effects change these. magnus force?
-            GetRigidbody.angularDrag = launcher.angleDrag;
-            GetRigidbody.drag = dragDefault = launcher.drag;
+                // cache and set the properties of rb. necessary if environmental effects change these. magnus force?
+                GetRigidbody.angularDrag = launcher.angleDrag;
+                GetRigidbody.drag = dragDefault = launcher.drag;
 
-            // experimental --- changing the center of mass
-            GetRigidbody.centerOfMass = launcher.centerOfMass;
+                // experimental --- changing the center of mass
+                GetRigidbody.centerOfMass = launcher.centerOfMass;
 
-            // if a character spec is added for constant force, should be added to launch controller
-            GetConstantForce.force = cfDefault = Vector3.zero;
+                // if a character spec is added for constant force, should be added to launch controller
+                GetConstantForce.force = cfDefault = Vector3.zero;
+            }
+            
         }
     }
 

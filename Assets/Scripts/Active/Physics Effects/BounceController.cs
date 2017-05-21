@@ -60,6 +60,7 @@ public class BounceController : MonoBehaviour {
     public float AddDrag { set { GetRigidbody.drag = dragDefault + value; } }
     public void ResetDrag() { GetRigidbody.drag = dragDefault; }
 
+    public Vector3 ScaleConstantForce { set { GetConstantForce.force = cfDefault = value; } }
     public Vector3 AddConstantForce { set { GetConstantForce.force = cfDefault + value; } }
     public void ResetConstantForce() { GetConstantForce.force = cfDefault; }
 

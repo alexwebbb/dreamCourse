@@ -213,6 +213,7 @@ public class LaunchController : MonoBehaviour {
         }
     }
 
+
     // Functions called by the UI
     void ToggleLaunchMode() {
         // this begins the ball looper routine when L is pressed if it is not running, and ends it if it is

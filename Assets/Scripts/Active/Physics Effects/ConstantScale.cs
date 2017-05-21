@@ -22,7 +22,6 @@ public class ConstantScale : MonoBehaviour {
     public Dictionary<SizeScaler, float> initialSize = new Dictionary<SizeScaler, float>();
     public List<SizeScaler> scaleField = new List<SizeScaler>();
 
-
     public SizeScaler SetReference {
         set {
             if (!scaleField.Contains(value)) {
@@ -46,6 +45,13 @@ public class ConstantScale : MonoBehaviour {
         scaleField = other.scaleField;
 
     }
+
+    BounceController bc;
+
+    private void Start() {
+        bc = GetComponent<BounceController>();
+    }
+
 
     private void FixedUpdate() {
 
@@ -75,10 +81,14 @@ public class ConstantScale : MonoBehaviour {
             float _initial = initialSize[scaleField[0]];
             float _target = scaleField[0].targetSize;
 
+            // damn this is one dirty fix but it seems to work!
+            bc.ScaleConstantForce = Vector3.up * 9 * _scalar;
+
             // use left function if target scale is greater than  initial scale, right if vice versa
             _scalar = _initial <= _target ? (_scalar * (_target - _initial)) + _initial : ((1 - _scalar) * (_initial - _target)) + _target;
 
             transform.localScale = Vector3.one * _scalar;
+            
         }
 
     }

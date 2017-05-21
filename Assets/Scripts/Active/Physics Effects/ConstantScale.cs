@@ -57,23 +57,29 @@ public class ConstantScale : MonoBehaviour {
                     break;
                 case ScaleType.Linear:
                     float scalar = (transform.position.z - (scaleField[0].transform.position.z - (0.5f * scaleField[0].transform.localScale.z))) / scaleField[0].transform.localScale.z;
-                    scalar = ScaleModifier(scalar);
-                    transform.localScale = Vector3.one * scalar;
+                    ScaleModifier(scalar);
                     break;
                 case ScaleType.Radial:
-                    float radialScalar =(transform.position - scaleField[0].transform.position).sqrMagnitude / (scaleField[0].transform.localScale * 0.25f).sqrMagnitude;
-                    radialScalar = 1 - radialScalar;
-                    radialScalar = ScaleModifier(radialScalar);
-                    transform.localScale = Vector3.one * radialScalar;
+                    float radialScalar = 1 - ((transform.position - scaleField[0].transform.position).sqrMagnitude / (scaleField[0].transform.localScale * 0.25f).sqrMagnitude);
+                    ScaleModifier(radialScalar);
                     break;
             }
         }
     }
 
 
-    float ScaleModifier(float _scalar) {
-        float _initial = initialSize[scaleField[0]];
-        float _target = scaleField[0].targetSize;
-        return _initial <= _target ? (_scalar * (_target - _initial)) + _initial : ((1 - _scalar) * (_initial - _target)) + _target;
+    void ScaleModifier(float _scalar) {
+        // ensure that scalar is indeed a scalar (between zero and one).
+        if (_scalar <= 1 && _scalar > 0) {
+
+            float _initial = initialSize[scaleField[0]];
+            float _target = scaleField[0].targetSize;
+
+            // use left function if target scale is greater than  initial scale, right if vice versa
+            _scalar = _initial <= _target ? (_scalar * (_target - _initial)) + _initial : ((1 - _scalar) * (_initial - _target)) + _target;
+
+            transform.localScale = Vector3.one * _scalar;
+        }
+
     }
 }

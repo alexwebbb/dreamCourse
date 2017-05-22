@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class BounceController : MonoBehaviour {
 
@@ -16,19 +16,9 @@ public class BounceController : MonoBehaviour {
     float dragDefault;
     Vector3 cfDefault;
 
-    public Rigidbody GetRigidbody {
-        get {
-            if (rb == null) rb = GetComponent<Rigidbody>();
-            return rb;
-        }
-    }
+    
 
-    public ConstantForce GetConstantForce {
-        get {
-            if (cf == null) cf = GetComponent<ConstantForce>();
-            return cf;
-        }
-    }
+    public Rigidbody SetRigidbody { set { rb = value; } }
 
     public Character GetCharacter {
         get {
@@ -42,12 +32,9 @@ public class BounceController : MonoBehaviour {
             if (launcher == null) {
                 launcher = value;
 
-                // cache and set the properties of rb. necessary if environmental effects change these. magnus force?
-                GetRigidbody.angularDrag = launcher.angleDrag;
-                GetRigidbody.drag = dragDefault = launcher.drag;
 
                 // experimental --- changing the center of mass
-                GetRigidbody.centerOfMass = launcher.centerOfMass;
+                rb.centerOfMass = launcher.centerOfMass;
 
                 // if a character spec is added for constant force, should be added to launch controller
                 GetConstantForce.force = cfDefault = Vector3.zero;
@@ -56,13 +43,7 @@ public class BounceController : MonoBehaviour {
         }
     }
 
-    // if you want to add support for overlapping effects, just replace the reset functions with remove properties
-    public float AddDrag { set { GetRigidbody.drag = dragDefault + value; } }
-    public void ResetDrag() { GetRigidbody.drag = dragDefault; }
 
-    public Vector3 ScaleConstantForce { set { GetConstantForce.force = cfDefault = value; } }
-    public Vector3 AddConstantForce { set { GetConstantForce.force = cfDefault + value; } }
-    public void ResetConstantForce() { GetConstantForce.force = cfDefault; }
 
     void Start () {
         // initialize the bounce positions array

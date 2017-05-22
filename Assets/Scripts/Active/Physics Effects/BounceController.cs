@@ -1,25 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BounceController : MonoBehaviour {
+public class BounceController : MonoBehaviour, IBallComponent {
 
     public float power;
     public int bounceLimit = 3;
     public int bounceCount;
 
     Rigidbody rb;
-    ConstantForce cf;
-    LaunchController launcher;
+    LaunchController lc;
     Character character;
     Vector3[] bouncePositions = new Vector3[2];
 
-    float dragDefault;
-    Vector3 cfDefault;
-
-    
-
-    public Rigidbody SetRigidbody { set { rb = value; } }
-
+    // this is for when the ball interacts with colliders that have a game role
     public Character GetCharacter {
         get {
             if (character == null) character = GetComponentInParent<Character>();
@@ -27,23 +20,10 @@ public class BounceController : MonoBehaviour {
         }
     }
 
-    public LaunchController SetLauncher {
-        set {
-            if (launcher == null) {
-                launcher = value;
-
-
-                // experimental --- changing the center of mass
-                rb.centerOfMass = launcher.centerOfMass;
-
-                // if a character spec is added for constant force, should be added to launch controller
-                GetConstantForce.force = cfDefault = Vector3.zero;
-            }
-            
-        }
+    public void Initialize(Rigidbody _rb, LaunchController _lc) {
+        rb = _rb;
+        lc = _lc;
     }
-
-
 
     void Start () {
         // initialize the bounce positions array
@@ -76,16 +56,16 @@ public class BounceController : MonoBehaviour {
 
 
             // this is adds to the vertical force of the bounce. SHOULD work even when hitting things from underneath
-            rb.AddForce(Vector3.up * rb.velocity.y * launcher.bouncePercent, ForceMode.VelocityChange);
+            rb.AddForce(Vector3.up * rb.velocity.y * lc.bouncePercent, ForceMode.VelocityChange);
 
             // because unity angular velocity is very finicky and doesn't tell you direction of spin, the power of the spin correction is determined by the original spin power that is entered into the launch controller
-            if (launcher.spinForce.x > 0 || launcher.spinForce.x < 0) {
+            if (lc.spinForce.x > 0 || lc.spinForce.x < 0) {
 
                 // force is applied. make sure to always use velociy for the force mode!
-                rb.AddForce(spinDirection * launcher.spinForce.x * launcher.spinForceFactor, ForceMode.VelocityChange);
+                rb.AddForce(spinDirection * lc.spinForce.x * lc.spinForceFactor, ForceMode.VelocityChange);
 
                 // torque is applied. keeps the object spinning in the correct direction visibly.
-                rb.AddRelativeTorque(launcher.spinForce, ForceMode.VelocityChange);
+                rb.AddRelativeTorque(lc.spinForce, ForceMode.VelocityChange);
                 
             } 
         }

@@ -55,8 +55,9 @@ public class LaunchController : MonoBehaviour {
         // grab the players rigidbody for launching purposes
         playerObjectRB = playerObject.GetComponent<Rigidbody>();
 
-        // grab the players bounce controller and sets the launcher field, which also sets such values as drag
-        playerObject.GetComponent<BounceController>().SetLauncher = this;
+        foreach (IBallComponent component in playerObject.GetComponents<IBallComponent>()) {
+            component.Initialize(playerObjectRB, this);
+        }
 
         // grab the constant scale component of the player
         playerObjectCS = playerObject.GetComponent<ConstantScale>();
@@ -187,15 +188,20 @@ public class LaunchController : MonoBehaviour {
             launchingObject = (GameObject)Instantiate(tracerObject, playerObject.transform.position, playerObject.transform.localRotation);
 
             // set the launcher field in the bounce controller. BC uses the launcher to set initial launch qualities
-            launchingObject.GetComponent<BounceController>().SetLauncher = this;
 
             // copying the characteristics of the scaler to the instance object
             launchingObject.GetComponent<ConstantScale>().CopyScale(playerObjectCS);
 
-            // grab the rb and point it at the cube
+            // grab the rb
             Rigidbody launchingRB = launchingObject.GetComponent<Rigidbody>();
-            launchingRB.transform.LookAt(pointerCube);
 
+            foreach(IBallComponent component in launchingObject.GetComponents<IBallComponent>()) {
+                component.Initialize(launchingRB, this);
+            }
+            
+            // look at the aiming cube
+            launchingRB.transform.LookAt(pointerCube);
+            
             // launch forces are applied
             launchingRB.AddRelativeForce(Vector3.forward * defaultForce, ForceMode.VelocityChange);
             launchingRB.AddRelativeTorque(spinForce, ForceMode.VelocityChange);

@@ -8,14 +8,6 @@ public class ConstantScale : MonoBehaviour {
     // need to test negative scaling
 
     // need to create reset for returning to origin.
-    // ie it should be a value that records the scale at time of launch
-    // or possibly it resets on disable
-    // or it can subscribe to the turn over event
-    // do I need to implement velocity scaling?
-    // maybe have velocity scaling
-    // maybe launch controller needs to reference scale here
-    // need to clamp the scalar on the radial scaler 
-
 
 
     // these are public so they can be copied

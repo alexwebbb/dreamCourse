@@ -45,20 +45,20 @@ public class WaterPad : MonoBehaviour {
         }
 
 
-        BounceController bc = other.GetComponent<BounceController>();
+        ForceController fc = other.GetComponent<ForceController>();
 
-        bc.AddDrag = resistance;
+        fc.AddDrag = resistance;
 
-        bc.AddConstantForce = new Vector3(0, power, 0);
+        fc.SetConstantForce(this, power);
     }
 
     private void OnTriggerExit(Collider other) {
 
-        BounceController bc = other.GetComponent<BounceController>();
+        ForceController fc = other.GetComponent<ForceController>();
 
-        bc.ResetDrag();
+        fc.ResetDrag();
 
-        bc.ResetConstantForce();
+        fc.ReleaseConstantForce(this);
 
     }
 }

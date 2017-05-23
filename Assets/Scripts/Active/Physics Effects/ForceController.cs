@@ -12,6 +12,9 @@ public class ForceController : MonoBehaviour, IBallComponent {
     public void Initialize(Rigidbody _rb, LaunchController _lc) {
         rb = _rb;
         lc = _lc;
+
+        rb.drag = lc.drag;
+        rb.angularDrag = lc.angleDrag;
     }
 
     public float AddDrag { set { rb.drag = lc.drag + value; } }

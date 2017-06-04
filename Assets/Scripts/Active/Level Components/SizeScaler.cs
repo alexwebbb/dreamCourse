@@ -8,7 +8,7 @@ public class SizeScaler : MonoBehaviour {
 
     public float targetSize;
 
-    public ScaleType type; 
+    public ScaleType type = ScaleType.Radial; 
 
     private void OnTriggerEnter(Collider other) {
         ConstantScale cs = other.GetComponent<ConstantScale>();

@@ -27,6 +27,7 @@ public class ConstantScale : MonoBehaviour {
         set {
             scaleField.Remove(value);
             initialSize.Remove(value);
+            fc.ReleaseDrag(this);
         }
     }
 
@@ -39,22 +40,24 @@ public class ConstantScale : MonoBehaviour {
     }
 
     BounceController bc;
+    ForceController fc;
 
-    private void Start() {
+    private void Awake() {
         bc = GetComponent<BounceController>();
+        fc = GetComponent<ForceController>();
     }
 
 
     private void FixedUpdate() {
 
         if (scaleField.Count != 0) {
-
+            // looks like I am going to go radial only lads
             switch(scaleField[0].type) {
                 case ScaleType.Static:
                     if (transform.localScale.z != scaleField[0].targetSize) transform.localScale = Vector3.one * scaleField[0].targetSize;
                     break;
                 case ScaleType.Linear:
-                    float scalar = (transform.position.z - (scaleField[0].transform.position.z - (0.5f * scaleField[0].transform.localScale.z))) / scaleField[0].transform.localScale.z;
+                    float scalar = (transform.position.z - (scaleField[0].transform.localPosition.z - (0.5f * scaleField[0].transform.localScale.z))) / scaleField[0].transform.localScale.z;
                     ScaleModifier(scalar);
                     break;
                 case ScaleType.Radial:
@@ -79,10 +82,13 @@ public class ConstantScale : MonoBehaviour {
             // damn this is one dirty fix but it seems to work!
             // bc.ScaleConstantForce = Vector3.up * 9 * _scalar;
 
+
+
             // use left function if target scale is greater than  initial scale, right if vice versa
             _scalar = _initial <= _target ? (_scalar * (_target - _initial)) + _initial : ((1 - _scalar) * (_initial - _target)) + _target;
 
             transform.localScale = Vector3.one * _scalar;
+            fc.SetDrag(this, _scalar);
         }
 
 

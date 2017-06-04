@@ -47,7 +47,7 @@ public class WaterPad : MonoBehaviour {
 
         ForceController fc = other.GetComponent<ForceController>();
 
-        fc.AddDrag = resistance;
+        fc.SetDrag(this, resistance);
 
         fc.SetConstantForce(this, power);
     }
@@ -56,7 +56,7 @@ public class WaterPad : MonoBehaviour {
 
         ForceController fc = other.GetComponent<ForceController>();
 
-        fc.ResetDrag();
+        fc.ReleaseDrag(this);
 
         fc.ReleaseConstantForce(this);
 

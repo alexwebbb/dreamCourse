@@ -5,7 +5,7 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
     public enum CameraMode { Perspective, Orthographic }
-    public CameraMode camMode = CameraMode.Perspective;
+    public CameraMode camMode = CameraMode.Orthographic;
 
     public Slider zoomControl;
     public Button leftButton;

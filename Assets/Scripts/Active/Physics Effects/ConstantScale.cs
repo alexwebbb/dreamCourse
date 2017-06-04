@@ -67,22 +67,25 @@ public class ConstantScale : MonoBehaviour {
 
 
     void ScaleModifier(float _scalar) {
-        // ensure that scalar is indeed a scalar (between zero and one).
-        if (_scalar > 1 || _scalar < 0) {
 
-            Mathf.Clamp(_scalar, 0, 1);
+
+        // ensure that scalar is indeed a scalar (between zero and one).
+        if (_scalar < 1 && _scalar > 0) {
+
+
+            float _initial = initialSize[scaleField[0]];
+            float _target = scaleField[0].targetSize;
+
+            // damn this is one dirty fix but it seems to work!
+            // bc.ScaleConstantForce = Vector3.up * 9 * _scalar;
+
+            // use left function if target scale is greater than  initial scale, right if vice versa
+            _scalar = _initial <= _target ? (_scalar * (_target - _initial)) + _initial : ((1 - _scalar) * (_initial - _target)) + _target;
+
+            transform.localScale = Vector3.one * _scalar;
         }
 
-        float _initial = initialSize[scaleField[0]];
-        float _target = scaleField[0].targetSize;
 
-        // damn this is one dirty fix but it seems to work!
-        // bc.ScaleConstantForce = Vector3.up * 9 * _scalar;
-
-        // use left function if target scale is greater than  initial scale, right if vice versa
-        _scalar = _initial <= _target ? (_scalar * (_target - _initial)) + _initial : ((1 - _scalar) * (_initial - _target)) + _target;
-
-        transform.localScale = Vector3.one * _scalar;
 
     }
 }

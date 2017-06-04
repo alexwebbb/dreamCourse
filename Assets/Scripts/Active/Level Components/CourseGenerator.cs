@@ -23,8 +23,8 @@ public class CourseGenerator : MonoBehaviour {
 
         // Set name for map holder, detroy the previous one
         string holderName = "Generated Map";
-        if (transform.FindChild(holderName)) {
-            DestroyImmediate(transform.FindChild(holderName).gameObject);
+        if (transform.Find(holderName)) {
+            DestroyImmediate(transform.Find(holderName).gameObject);
         }
 
         // create a holder for the tiles and set the parent as the current gameobject

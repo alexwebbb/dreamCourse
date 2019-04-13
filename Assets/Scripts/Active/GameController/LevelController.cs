@@ -18,7 +18,7 @@ public class LevelController : MonoBehaviour {
     // first field is player one, second is player 2
     List<Character> player = new List<Character>();
     Dictionary<Character, List<Goal>> score = new Dictionary<Character, List<Goal>>();
-    
+
     int activePlayer;
     int turnNumber;
 
@@ -43,7 +43,7 @@ public class LevelController : MonoBehaviour {
     public void RegisterBoundingBox(BoundingBox boundingBox) {
         boundingBox.characterOutOfBoundsEvent += PlayerOut;
     }
-    
+
     public void Initialize(List<Character> character, int _numberOfPlayers, GameObject[] cameras) {
         // initialize number of players
         NumberOfPlayers = _numberOfPlayers;
@@ -57,7 +57,7 @@ public class LevelController : MonoBehaviour {
             // set initial rotation... why didnt I have this before?
             instantiatedCharacter.transform.rotation = currentLevel.origin.transform.rotation;
             // instantiate the cameras for the character
-            for(int j = 0; j < cameras.Count(); j++) {
+            for (int j = 0; j < cameras.Count(); j++) {
                 GameObject cam = Instantiate<GameObject>(cameras[j], instantiatedCharacter.transform, false);
                 if (j != 0) cam.SetActive(false);
             }
@@ -121,14 +121,14 @@ public class LevelController : MonoBehaviour {
 
     public void BeginTurn(bool reset) {
         // call the position reset on the now active player when the launch controller reports that it is ready
-        if(reset) player[activePlayer].SleepCharacterPosition();
+        if (reset) player[activePlayer].SleepCharacterPosition();
         if (playerIsReadyEvent != null) playerIsReadyEvent(true);
     }
 
 
     public void AddPoint(Character scorer, Goal goal) {
         // add a point to the score. called from goal gameobjects
-        if(!score[scorer].Contains(goal)) score[scorer].Add(goal);
+        if (!score[scorer].Contains(goal)) score[scorer].Add(goal);
         // change the color of the goal object
         goal.SetColor = scorer.captureColor;
         // if the goal is changing hands, remove the point from the previous owner
@@ -144,9 +144,9 @@ public class LevelController : MonoBehaviour {
         if (NumberOfPlayers != 1) playerThatIsOut.SetHidden(true);
     }
 
-    
 
-    
+
+
     /* future plans
      * 
     void ExportLevelSession() {
